@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synq — API Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080b10;
+    --bg2: #0d1117;
+    --bg3: #111620;
+    --surface: #141923;
+    --surface2: #1a2030;
+    --border: #1f2a3a;
+    --border2: #263040;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #f97316;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #475569;
+    --glow: 0 0 30px rgba(0,212,255,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  /* ─── GRID NOISE BACKGROUND ─── */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events:none; z-index:0;
+  }
+
+  /* ─── HERO GLOW ORBS ─── */
+  .orb {
+    position:fixed; border-radius:50%;
+    filter:blur(120px); pointer-events:none; z-index:0;
+    animation: orb-drift 12s ease-in-out infinite alternate;
+  }
+  .orb1 { width:500px;height:500px; background:rgba(0,212,255,0.06); top:-100px;left:-100px; }
+  .orb2 { width:400px;height:400px; background:rgba(124,58,237,0.07); bottom:-50px;right:-50px; animation-delay:-6s; }
+  .orb3 { width:300px;height:300px; background:rgba(249,115,22,0.04); top:50%;left:50%; animation-delay:-3s; }
+  @keyframes orb-drift { from{transform:translate(0,0)} to{transform:translate(30px,20px)} }
+
+  /* ─── LAYOUT ─── */
+  .container { max-width:1320px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
+
+  /* ─── NAV ─── */
+  nav {
+    position:sticky; top:0; z-index:100;
+    background: rgba(8,11,16,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+  }
+  .nav-inner {
+    max-width:1320px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    height:60px;
+  }
+  .logo {
+    font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem;
+    color:var(--accent); letter-spacing:-0.02em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo-dot { width:8px;height:8px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+  .nav-links { display:flex; gap:4px; }
+  .nav-links a {
+    color:var(--text2); text-decoration:none; font-size:0.72rem;
+    padding:6px 12px; border-radius:6px; transition:all 0.2s;
+    letter-spacing:0.05em; text-transform:uppercase;
+  }
+  .nav-links a:hover { color:var(--accent); background:rgba(0,212,255,0.06); }
+
+  .nav-badge {
+    background:rgba(0,212,255,0.1); border:1px solid rgba(0,212,255,0.3);
+    color:var(--accent); font-size:0.65rem; padding:4px 10px; border-radius:20px;
+    letter-spacing:0.08em;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+  }
+  .hero-tag {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(0,212,255,0.06); border:1px solid rgba(0,212,255,0.2);
+    color:var(--accent); font-size:0.7rem; padding:6px 16px; border-radius:20px;
+    letter-spacing:0.1em; text-transform:uppercase; margin-bottom:28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family:'Syne',sans-serif; font-size:clamp(3rem,8vw,6rem);
+    font-weight:800; line-height:1; letter-spacing:-0.03em;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 span { color:var(--accent); }
+  .hero-sub {
+    color:var(--text2); font-size:0.9rem; margin-top:20px; line-height:1.8;
+    max-width:560px; margin-left:auto; margin-right:auto;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display:flex; justify-content:center; gap:0;
+    margin-top:56px; border:1px solid var(--border);
+    border-radius:12px; overflow:hidden; background:var(--surface);
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .stat {
+    flex:1; padding:20px 28px; text-align:center;
+    border-right:1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .stat:last-child { border-right:none; }
+  .stat:hover { background:var(--surface2); }
+  .stat-num {
+    font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800;
+    color:var(--accent); display:block;
+  }
+  .stat-label { font-size:0.65rem; color:var(--text3); letter-spacing:0.08em; text-transform:uppercase; margin-top:4px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header {
+    display:flex; align-items:center; gap:16px;
+    margin-bottom:32px; padding-bottom:16px;
+    border-bottom:1px solid var(--border);
+  }
+  .section-icon {
+    width:36px;height:36px; border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1rem; flex-shrink:0;
+  }
+  .section-header h2 {
+    font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:700;
+    letter-spacing:0.02em;
+  }
+  .section-header p { font-size:0.72rem; color:var(--text3); margin-top:2px; }
+  .module-count {
+    margin-left:auto; background:var(--surface2);
+    border:1px solid var(--border2); border-radius:20px;
+    font-size:0.65rem; padding:4px 12px; color:var(--text2);
+    letter-spacing:0.06em;
+  }
+
+  /* ─── SECTION ─── */
+  .section { padding:72px 0; }
+  .section + .section { border-top:1px solid var(--border); }
+
+  /* ─── TECH STACK ─── */
+  .tech-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px;
+  }
+  .tech-category {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:20px; transition:all 0.25s;
+  }
+  .tech-category:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:var(--glow); }
+  .tech-cat-label {
+    font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:12px; display:flex; align-items:center; gap:6px;
+  }
+  .tech-cat-label::after { content:''; flex:1; height:1px; background:rgba(0,212,255,0.15); }
+  .tech-tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .tech-tag {
+    background:var(--bg3); border:1px solid var(--border2);
+    font-size:0.68rem; padding:4px 10px; border-radius:5px; color:var(--text2);
+    transition:all 0.2s;
+  }
+  .tech-tag:hover { color:var(--accent); border-color:rgba(0,212,255,0.4); }
+
+  /* ─── MODULE GRID ─── */
+  .modules-grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:16px;
+  }
+  .module-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; overflow:hidden;
+    transition:all 0.3s; cursor:pointer;
+  }
+  .module-card:hover { border-color:var(--border2); transform:translateY(-3px); box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+  .module-card.open .module-body { display:block; }
+  .module-card.open .chevron { transform:rotate(180deg); }
+
+  .module-head {
+    padding:18px 20px; display:flex; align-items:center; gap:14px;
+  }
+  .module-num {
+    font-family:'Syne',sans-serif; font-size:0.65rem; font-weight:700;
+    color:var(--text3); letter-spacing:0.06em; width:28px; flex-shrink:0;
+  }
+  .module-icon {
+    width:34px;height:34px; border-radius:8px;
+    display:flex;align-items:center;justify-content:center; font-size:1rem; flex-shrink:0;
+  }
+  .module-title { font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; flex:1; }
+  .module-feat-count {
+    font-size:0.62rem; color:var(--text3);
+    background:var(--bg3); border:1px solid var(--border);
+    padding:3px 9px; border-radius:12px; flex-shrink:0;
+  }
+  .chevron { color:var(--text3); font-size:0.7rem; transition:transform 0.2s; flex-shrink:0; }
+
+  .module-body { display:none; border-top:1px solid var(--border); }
+
+  /* Features */
+  .feat-section { padding:16px 20px; }
+  .feat-label { font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); margin-bottom:10px; }
+  .feat-pills { display:flex; flex-wrap:wrap; gap:6px; }
+  .feat-pill {
+    font-size:0.65rem; padding:4px 10px; border-radius:5px;
+    background:var(--bg3); border:1px solid var(--border2); color:var(--text2);
+  }
+
+  /* API table */
+  .api-section { padding:0 20px 16px; }
+  .api-table { width:100%; border-collapse:collapse; }
+  .api-table tr { border-bottom:1px solid var(--border); }
+  .api-table tr:last-child { border-bottom:none; }
+  .api-table td { padding:8px 0; font-size:0.7rem; }
+  .method {
+    display:inline-block; font-size:0.6rem; font-weight:700;
+    padding:3px 7px; border-radius:4px; letter-spacing:0.05em; width:52px; text-align:center;
+  }
+  .method.GET    { background:rgba(34,197,94,0.12);  color:var(--green);  border:1px solid rgba(34,197,94,0.25); }
+  .method.POST   { background:rgba(0,212,255,0.10);  color:var(--accent); border:1px solid rgba(0,212,255,0.25); }
+  .method.PATCH  { background:rgba(234,179,8,0.10);  color:var(--yellow); border:1px solid rgba(234,179,8,0.25); }
+  .method.DELETE { background:rgba(239,68,68,0.10);  color:var(--red);    border:1px solid rgba(239,68,68,0.25); }
+  .api-path { color:var(--text2); padding-left:12px; font-size:0.7rem; }
+  .api-path span { color:var(--text3); }
+
+  /* Socket events */
+  .socket-section { padding:0 20px 16px; }
+  .socket-events { display:flex; flex-wrap:wrap; gap:6px; }
+  .socket-event {
+    font-size:0.65rem; padding:4px 10px; border-radius:5px;
+    background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.3); color:#a78bfa;
+  }
+
+  /* ─── ARCHITECTURE ─── */
+  .arch-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .arch-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:24px; transition:all 0.25s;
+  }
+  .arch-card:hover { border-color:var(--border2); }
+  .arch-card h3 { font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:700; margin-bottom:16px; }
+  .arch-tree {
+    font-size:0.68rem; color:var(--text2); line-height:1.9;
+    font-family:'JetBrains Mono',monospace;
+    background:var(--bg3); border:1px solid var(--border); border-radius:8px;
+    padding:16px; overflow-x:auto;
+  }
+  .arch-tree .folder { color:var(--accent); }
+  .arch-tree .file { color:var(--text3); }
+
+  /* ─── SCALABILITY ─── */
+  .scale-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .scale-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:20px; transition:all 0.25s;
+  }
+  .scale-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+  .scale-icon { font-size:1.5rem; margin-bottom:10px; }
+  .scale-title { font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:700; margin-bottom:6px; }
+  .scale-desc { font-size:0.68rem; color:var(--text3); line-height:1.7; }
+
+  /* ─── FUTURE ─── */
+  .future-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; }
+  .future-item {
+    background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    padding:14px 16px; display:flex; align-items:center; gap:10px;
+    font-size:0.72rem; color:var(--text2); transition:all 0.2s;
+  }
+  .future-item:hover { color:var(--text); border-color:var(--border2); }
+  .future-item::before { content:'→'; color:var(--accent3); font-size:0.8rem; flex-shrink:0; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top:1px solid var(--border); padding:32px 0;
+    text-align:center; color:var(--text3); font-size:0.65rem; letter-spacing:0.08em;
+    position:relative; z-index:1;
+  }
+  footer span { color:var(--accent); }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:var(--text3); }
+
+  /* ─── RESPONSIVE ─── */
+  @media(max-width:768px) {
+    .arch-grid { grid-template-columns:1fr; }
+    .modules-grid { grid-template-columns:1fr; }
+    .stats-bar { flex-direction:column; }
+    .stat { border-right:none; border-bottom:1px solid var(--border); }
+    .stat:last-child { border-bottom:none; }
+    .nav-links { display:none; }
+  }
+
+  /* ─── ER DIAGRAM ─── */
+  .er-container {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:24px;
+    display:flex; justify-content:center; align-items:center;
+    overflow-x:auto;
+  }
+  .er-container:hover { border-color:var(--border2); }
+  .er-image {
+    max-width:100%; height:auto;
+    border-radius:8px; display:block;
+    box-shadow:0 4px 24px rgba(0,0,0,0.3);
+  }
+
+  /* Animate on scroll */
+  .reveal { opacity:0; transform:translateY(24px); transition:all 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      Synq
+    </div>
+    <div class="nav-links">
+      <a href="#stack">Stack</a>
+      <a href="#modules">Modules</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#scalability">Scalability</a>
+      <a href="#er-diagram">ER Diagram</a>
+      <a href="#future">Roadmap</a>
+    </div>
+    <div class="nav-badge">v1.0 — Production</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="container">
+  <div class="hero">
+    <div class="hero-tag">⚡ Realtime Communication Platform</div>
+    <h1>Synq<span>.</span></h1>
+    <p class="hero-sub">A production-grade, AI-powered realtime collaboration platform — built to understand scalable architecture, WebSocket systems, and distributed engineering.</p>
+
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-num">30</span><span class="stat-label">System Modules</span></div>
+      <div class="stat"><span class="stat-num">80+</span><span class="stat-label">API Endpoints</span></div>
+      <div class="stat"><span class="stat-num">25+</span><span class="stat-label">Socket Events</span></div>
+      <div class="stat"><span class="stat-num">15+</span><span class="stat-label">Tech Stack</span></div>
+      <div class="stat"><span class="stat-num">AI</span><span class="stat-label">Powered</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TECH STACK -->
+<div class="section" id="stack">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-icon" style="background:rgba(0,212,255,0.1)">⚙️</div>
+      <div>
+        <h2>Technology Stack</h2>
+        <p>Full-stack production engineering</p>
+      </div>
+    </div>
+    <div class="tech-grid reveal">
+      <div class="tech-category">
+        <div class="tech-cat-label">Frontend</div>
+        <div class="tech-tags">
+          <span class="tech-tag">React</span><span class="tech-tag">Next.js</span>
+          <span class="tech-tag">TypeScript</span><span class="tech-tag">Tailwind CSS</span>
+          <span class="tech-tag">Zustand</span><span class="tech-tag">TanStack Query</span>
+          <span class="tech-tag">Socket.IO Client</span>
+        </div>
+      </div>
+      <div class="tech-category">
+        <div class="tech-cat-label">Backend</div>
+        <div class="tech-tags">
+          <span class="tech-tag">Node.js</span><span class="tech-tag">Express.js</span>
+          <span class="tech-tag">Fastify</span><span class="tech-tag">Socket.IO</span>
+          <span class="tech-tag">JWT Auth</span><span class="tech-tag">MongoDB</span>
+          <span class="tech-tag">Redis</span><span class="tech-tag">BullMQ</span>
+        </div>
+      </div>
+      <div class="tech-category">
+        <div class="tech-cat-label">Infrastructure</div>
+        <div class="tech-tags">
+          <span class="tech-tag">Docker</span><span class="tech-tag">Docker Compose</span>
+          <span class="tech-tag">nginx</span><span class="tech-tag">GitHub Actions</span>
+          <span class="tech-tag">VPS / AWS</span>
+        </div>
+      </div>
+      <div class="tech-category">
+        <div class="tech-cat-label">AI Stack</div>
+        <div class="tech-tags">
+          <span class="tech-tag">OpenAI API</span><span class="tech-tag">Gemini API</span>
+          <span class="tech-tag">Pinecone</span><span class="tech-tag">Qdrant</span>
+          <span class="tech-tag">Embeddings</span><span class="tech-tag">RAG</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODULES -->
+<div class="section" id="modules">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-icon" style="background:rgba(124,58,237,0.15)">🧩</div>
+      <div>
+        <h2>System Modules & APIs</h2>
+        <p>Click any module to expand features and endpoints</p>
+      </div>
+      <div class="module-count">30 MODULES</div>
+    </div>
+
+    <div class="modules-grid" id="modulesGrid">
+      <!-- Dynamically generated by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ARCHITECTURE -->
+<div class="section" id="architecture">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-icon" style="background:rgba(249,115,22,0.1)">🏗️</div>
+      <div>
+        <h2>Project Architecture</h2>
+        <p>Recommended folder structure for scale</p>
+      </div>
+    </div>
+    <div class="arch-grid reveal">
+      <div class="arch-card">
+        <h3>🖥️ Backend Structure</h3>
+        <div class="arch-tree">
+<span class="folder">server/</span>
+├── <span class="folder">src/</span>
+│   ├── <span class="folder">modules/</span>       <span class="file">← feature modules</span>
+│   ├── <span class="folder">sockets/</span>       <span class="file">← socket handlers</span>
+│   ├── <span class="folder">services/</span>      <span class="file">← business logic</span>
+│   ├── <span class="folder">queues/</span>        <span class="file">← BullMQ workers</span>
+│   ├── <span class="folder">events/</span>        <span class="file">← event emitters</span>
+│   ├── <span class="folder">middlewares/</span>   <span class="file">← auth, rate-limit</span>
+│   ├── <span class="folder">validations/</span>   <span class="file">← zod schemas</span>
+│   ├── <span class="folder">utils/</span>         <span class="file">← helpers</span>
+│   └── <span class="folder">config/</span>        <span class="file">← env, db, redis</span>
+├── Dockerfile
+├── docker-compose.yml
+└── package.json
+        </div>
+      </div>
+      <div class="arch-card">
+        <h3>🎨 Frontend Structure</h3>
+        <div class="arch-tree">
+<span class="folder">src/</span>
+├── <span class="folder">app/</span>           <span class="file">← Next.js routes</span>
+├── <span class="folder">shared/</span>        <span class="file">← common UI</span>
+├── <span class="folder">features/</span>      <span class="file">← feature modules</span>
+│   ├── <span class="folder">auth/</span>
+│   ├── <span class="folder">channels/</span>
+│   ├── <span class="folder">messages/</span>
+│   └── <span class="folder">servers/</span>
+├── <span class="folder">sockets/</span>       <span class="file">← socket client</span>
+├── <span class="folder">services/</span>      <span class="file">← API calls</span>
+├── <span class="folder">hooks/</span>         <span class="file">← custom hooks</span>
+├── <span class="folder">store/</span>         <span class="file">← Zustand state</span>
+└── <span class="folder">styles/</span>        <span class="file">← global CSS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCALABILITY -->
+<div class="section" id="scalability">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-icon" style="background:rgba(34,197,94,0.1)">📈</div>
+      <div>
+        <h2>Scalability Features</h2>
+        <p>Built for production-scale loads</p>
+      </div>
+    </div>
+    <div class="scale-grid reveal">
+      <div class="scale-card"><div class="scale-icon">🔴</div><div class="scale-title">Redis Pub/Sub</div><div class="scale-desc">Distributed WebSocket scaling across multiple server instances with event broadcasting.</div></div>
+      <div class="scale-card"><div class="scale-icon">⚡</div><div class="scale-title">Event-Driven Arch</div><div class="scale-desc">Decoupled services communicating via events — loose coupling, high cohesion.</div></div>
+      <div class="scale-card"><div class="scale-icon">📬</div><div class="scale-title">Queue-Based Jobs</div><div class="scale-desc">BullMQ workers handle emails, notifications, AI processing and analytics async.</div></div>
+      <div class="scale-card"><div class="scale-icon">🗄️</div><div class="scale-title">Caching Layer</div><div class="scale-desc">Redis caches presence, socket maps, unread counts and rate limiting state.</div></div>
+      <div class="scale-card"><div class="scale-icon">📜</div><div class="scale-title">Cursor Pagination</div><div class="scale-desc">Efficient infinite scroll with cursor-based pagination on messages and data.</div></div>
+      <div class="scale-card"><div class="scale-icon">🐳</div><div class="scale-title">Docker + CI/CD</div><div class="scale-desc">Containerized deployment with GitHub Actions pipeline for automated builds.</div></div>
+      <div class="scale-card"><div class="scale-icon">🤖</div><div class="scale-title">AI Integration</div><div class="scale-desc">RAG-based semantic search, moderation, smart replies via vector embeddings.</div></div>
+      <div class="scale-card"><div class="scale-icon">🔒</div><div class="scale-title">RBAC Permissions</div><div class="scale-desc">Role-based access control with channel-level permission overrides.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FUTURE -->
+<div class="section" id="future">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-icon" style="background:rgba(249,115,22,0.1)">🚀</div>
+      <div>
+        <h2>Future Roadmap</h2>
+        <p>Long-term platform evolution</p>
+      </div>
+    </div>
+    <div class="future-grid reveal">
+      <div class="future-item">Mobile Applications</div>
+      <div class="future-item">Kubernetes Deployment</div>
+      <div class="future-item">Microservices Architecture</div>
+      <div class="future-item">CQRS Architecture</div>
+      <div class="future-item">Event Sourcing</div>
+      <div class="future-item">End-to-End Encryption</div>
+      <div class="future-item">AI Voice Assistant</div>
+      <div class="future-item">Collaborative Documents</div>
+      <div class="future-item">Livestreaming System</div>
+      <div class="future-item">Distributed Media Processing</div>
+      <div class="future-item">GraphQL API Layer</div>
+      <div class="future-item">Multi-Region Deployment</div>
+    </div>
+  </div>
+</div>
+
+<!-- ER DIAGRAM -->
+<div class="section" id="er-diagram">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-icon" style="background:rgba(0,212,255,0.1)">🗃️</div>
+      <div>
+        <h2>Entity-Relationship Diagram</h2>
+        <p>Database schema design for the entire platform</p>
+      </div>
+    </div>
+    <div class="er-container reveal">
+      <img src="er-diagram.png" alt="ER Diagram" class="er-image" loading="lazy">
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <span>Synq</span> — Production-Grade Realtime Communication Platform &nbsp;·&nbsp; Built to learn. Designed to scale.
+  </div>
+</footer>
+
+<script>
+const modules = [
+  {
+    num:"01", icon:"🔐", color:"rgba(0,212,255,0.12)",
+    title:"Auth System",
+    features:["Signup / Login / Logout","Refresh Token","Forgot & Reset Password","Email Verification","Session Management","OAuth Login","Device Tracking","Secure Cookies","JWT Authentication"],
+    apis:[
+      {m:"POST",p:"/auth/register"},{m:"POST",p:"/auth/login"},{m:"POST",p:"/auth/logout"},
+      {m:"POST",p:"/auth/refresh"},{m:"POST",p:"/auth/forgot-password"},{m:"POST",p:"/auth/reset-password"},
+      {m:"POST",p:"/auth/verify-email"},{m:"GET",p:"/auth/me"},{m:"GET",p:"/auth/sessions"},
+      {m:"DELETE",p:"/auth/sessions/:sessionId"}
+    ]
+  },
+  {
+    num:"02", icon:"👤", color:"rgba(124,58,237,0.12)",
+    title:"User System",
+    features:["Profile Management","Avatar Upload","Bio & Status","Custom Username","Online/Offline Status","User Search","Account Settings","Privacy Settings"],
+    apis:[
+      {m:"GET",p:"/users/:userId"},{m:"PATCH",p:"/users/profile"},{m:"PATCH",p:"/users/avatar"},
+      {m:"PATCH",p:"/users/status"},{m:"PATCH",p:"/users/settings"},{m:"GET",p:"/users/search"},
+      {m:"GET",p:"/users/mutual/:userId"}
+    ]
+  },
+  {
+    num:"03", icon:"🤝", color:"rgba(34,197,94,0.12)",
+    title:"Friend System",
+    features:["Send Friend Request","Accept / Reject Request","Remove Friend","Block / Unblock User","Mutual Friends","Friend Suggestions"],
+    apis:[
+      {m:"POST",p:"/friends/request/:userId"},{m:"PATCH",p:"/friends/accept/:requestId"},
+      {m:"PATCH",p:"/friends/reject/:requestId"},{m:"DELETE",p:"/friends/:friendId"},
+      {m:"POST",p:"/friends/block/:userId"},{m:"DELETE",p:"/friends/block/:userId"},
+      {m:"GET",p:"/friends"},{m:"GET",p:"/friends/requests"},{m:"GET",p:"/friends/suggestions"}
+    ]
+  },
+  {
+    num:"04", icon:"🏠", color:"rgba(249,115,22,0.12)",
+    title:"Server System",
+    features:["Create & Join Server","Leave Server","Invite System","Public / Private Server","Server Banner & Icon","Transfer Ownership","Server Discovery"],
+    apis:[
+      {m:"POST",p:"/servers"},{m:"GET",p:"/servers/:serverId"},{m:"GET",p:"/servers/discover"},
+      {m:"PATCH",p:"/servers/:serverId"},{m:"DELETE",p:"/servers/:serverId"},
+      {m:"POST",p:"/servers/:serverId/invite"},{m:"POST",p:"/servers/join/:inviteCode"},
+      {m:"DELETE",p:"/servers/:serverId/members/:memberId"},{m:"PATCH",p:"/servers/:serverId/ownership"}
+    ]
+  },
+  {
+    num:"05", icon:"👥", color:"rgba(234,179,8,0.12)",
+    title:"Server Member System",
+    features:["Join / Leave Tracking","Member Roles","Nickname Inside Server","Mute / Deafen State","Timeout System","Ban System"],
+    apis:[
+      {m:"GET",p:"/servers/:serverId/members"},
+      {m:"PATCH",p:"/servers/:serverId/members/:memberId/roles"},
+      {m:"PATCH",p:"/servers/:serverId/members/:memberId/nickname"},
+      {m:"PATCH",p:"/servers/:serverId/members/:memberId/timeout"},
+      {m:"POST",p:"/servers/:serverId/members/:memberId/ban"},
+      {m:"DELETE",p:"/servers/:serverId/members/:memberId/ban"}
+    ]
+  },
+  {
+    num:"06", icon:"📢", color:"rgba(0,212,255,0.12)",
+    title:"Channel System",
+    features:["Text Channels","Voice Channels","Video Channels","Categories","Channel Ordering","Channel Permissions","Slow Mode","Private Channels"],
+    apis:[
+      {m:"POST",p:"/channels"},{m:"GET",p:"/channels/:channelId"},
+      {m:"GET",p:"/channels/server/:serverId"},{m:"PATCH",p:"/channels/:channelId"},
+      {m:"DELETE",p:"/channels/:channelId"}
+    ]
+  },
+  {
+    num:"07", icon:"📂", color:"rgba(124,58,237,0.12)",
+    title:"Category System",
+    features:["Organize Channels","Reorder Categories","Nested Structure"],
+    apis:[
+      {m:"POST",p:"/categories"},{m:"PATCH",p:"/categories/:categoryId"},
+      {m:"DELETE",p:"/categories/:categoryId"}
+    ]
+  },
+  {
+    num:"08", icon:"💬", color:"rgba(34,197,94,0.12)",
+    title:"Message System",
+    features:["Send / Edit / Delete","Reply to Message","Mentions","Pinned Messages","Message History","Infinite Scroll","Message Formatting","Attachments"],
+    apis:[
+      {m:"POST",p:"/messages"},{m:"GET",p:"/messages/channel/:channelId"},
+      {m:"PATCH",p:"/messages/:messageId"},{m:"DELETE",p:"/messages/:messageId"},
+      {m:"POST",p:"/messages/:messageId/reply"},{m:"PATCH",p:"/messages/:messageId/pin"},
+      {m:"PATCH",p:"/messages/:messageId/unpin"}
+    ]
+  },
+  {
+    num:"09", icon:"😄", color:"rgba(249,115,22,0.12)",
+    title:"Reaction System",
+    features:["Emoji Reactions","Remove Reaction","Reaction Counts"],
+    apis:[
+      {m:"POST",p:"/messages/:messageId/reactions"},
+      {m:"DELETE",p:"/messages/:messageId/reactions"}
+    ]
+  },
+  {
+    num:"10", icon:"🧵", color:"rgba(234,179,8,0.12)",
+    title:"Thread System",
+    features:["Thread Creation","Thread Replies","Thread Members","Archive Thread"],
+    apis:[
+      {m:"POST",p:"/threads"},{m:"GET",p:"/threads/:threadId/messages"},
+      {m:"PATCH",p:"/threads/:threadId/archive"},{m:"DELETE",p:"/threads/:threadId"}
+    ]
+  },
+  {
+    num:"11", icon:"🔔", color:"rgba(0,212,255,0.12)",
+    title:"Notification System",
+    features:["Realtime Notifications","Mentions","Reply Notifications","Friend Request Notifications","Unread Counters","Push Notifications"],
+    apis:[
+      {m:"GET",p:"/notifications"},{m:"PATCH",p:"/notifications/read/:notificationId"},
+      {m:"PATCH",p:"/notifications/read-all"},{m:"DELETE",p:"/notifications/:notificationId"}
+    ]
+  },
+  {
+    num:"12", icon:"🟢", color:"rgba(34,197,94,0.12)",
+    title:"Presence System",
+    features:["Online / Offline Status","Idle Status","Invisible Mode","Typing Indicators","Activity Tracking","Voice Presence"],
+    apis:[{m:"GET",p:"/presence/:userId"},{m:"PATCH",p:"/presence/status"}]
+  },
+  {
+    num:"13", icon:"⌨️", color:"rgba(124,58,237,0.12)",
+    title:"Typing System",
+    features:["Typing Indicators","Realtime Typing Updates"],
+    sockets:["typing:start","typing:stop","typing:update"]
+  },
+  {
+    num:"14", icon:"🎙️", color:"rgba(249,115,22,0.12)",
+    title:"Voice System",
+    features:["Voice Channels","Join / Leave Voice","Mute / Unmute","Deafen","Voice Activity","Voice Rooms"],
+    apis:[{m:"POST",p:"/voice/join/:channelId"},{m:"POST",p:"/voice/leave/:channelId"}],
+    sockets:["voice:join","voice:leave","voice:mute","voice:deafen","voice:speaking"]
+  },
+  {
+    num:"15", icon:"📹", color:"rgba(234,179,8,0.12)",
+    title:"Video Call System",
+    features:["Video Calls","Screen Sharing","Camera Toggle","Participant Management"],
+    sockets:["video:join","video:leave","video:offer","video:answer","video:ice-candidate","screen:share"]
+  },
+  {
+    num:"16", icon:"🖼️", color:"rgba(0,212,255,0.12)",
+    title:"Media System",
+    features:["Image / Video / Audio Upload","File Sharing","Media Compression","CDN Optimization"],
+    apis:[
+      {m:"POST",p:"/media/upload"},{m:"DELETE",p:"/media/:mediaId"},{m:"GET",p:"/media/:mediaId"}
+    ]
+  },
+  {
+    num:"17", icon:"🎭", color:"rgba(124,58,237,0.12)",
+    title:"Role System (RBAC)",
+    features:["Create Roles","Assign Roles","Permission Hierarchy","Admin / Moderator Roles","Role Colors"],
+    apis:[
+      {m:"POST",p:"/roles"},{m:"GET",p:"/roles/server/:serverId"},
+      {m:"PATCH",p:"/roles/:roleId"},{m:"DELETE",p:"/roles/:roleId"},
+      {m:"PATCH",p:"/roles/:roleId/permissions"}
+    ]
+  },
+  {
+    num:"18", icon:"🔑", color:"rgba(34,197,94,0.12)",
+    title:"Permission Override System",
+    features:["Channel-Level Permissions","Allow / Deny Permissions","Role Overrides"],
+    apis:[
+      {m:"POST",p:"/permissions/override"},
+      {m:"PATCH",p:"/permissions/override/:overrideId"},
+      {m:"DELETE",p:"/permissions/override/:overrideId"}
+    ]
+  },
+  {
+    num:"19", icon:"🔗", color:"rgba(249,115,22,0.12)",
+    title:"Invite System",
+    features:["Invite Links","Invite Expiration","Usage Limits","Revoke Invites"],
+    apis:[
+      {m:"POST",p:"/invites"},{m:"GET",p:"/invites/:inviteCode"},{m:"DELETE",p:"/invites/:inviteId"}
+    ]
+  },
+  {
+    num:"20", icon:"🔍", color:"rgba(234,179,8,0.12)",
+    title:"Search System",
+    features:["User Search","Message Search","Channel Search","Server Search","Semantic Search"],
+    apis:[
+      {m:"GET",p:"/search/users"},{m:"GET",p:"/search/messages"},
+      {m:"GET",p:"/search/channels"},{m:"GET",p:"/search/servers"}
+    ]
+  },
+  {
+    num:"21", icon:"🤖", color:"rgba(0,212,255,0.12)",
+    title:"AI System",
+    features:["AI Assistant","Semantic Search","AI Moderation","Conversation Summaries","Smart Replies","AI Recommendations"],
+    apis:[
+      {m:"POST",p:"/ai/chat"},{m:"POST",p:"/ai/summarize"},
+      {m:"POST",p:"/ai/moderate"},{m:"POST",p:"/ai/embeddings"}
+    ]
+  },
+  {
+    num:"22", icon:"🛡️", color:"rgba(124,58,237,0.12)",
+    title:"Moderation System",
+    features:["Ban / Unban Users","Mute / Unmute Users","Warning System","Report System","Moderation Logs","Audit Logs"],
+    apis:[
+      {m:"POST",p:"/moderation/ban/:userId"},{m:"DELETE",p:"/moderation/ban/:userId"},
+      {m:"POST",p:"/moderation/mute/:userId"},{m:"DELETE",p:"/moderation/mute/:userId"},
+      {m:"POST",p:"/moderation/warn/:userId"},{m:"POST",p:"/moderation/report"},
+      {m:"GET",p:"/moderation/logs"}
+    ]
+  },
+  {
+    num:"23", icon:"📋", color:"rgba(34,197,94,0.12)",
+    title:"Audit Log System",
+    features:["Track Admin Actions","Moderation History","Role Changes","Message Deletion Logs"],
+    apis:[{m:"GET",p:"/audit-logs/:serverId"}]
+  },
+  {
+    num:"24", icon:"📊", color:"rgba(249,115,22,0.12)",
+    title:"Analytics System",
+    features:["DAU / MAU Metrics","Message Analytics","Active Server Analytics","Engagement Tracking"],
+    apis:[{m:"GET",p:"/analytics/server/:serverId"},{m:"GET",p:"/analytics/global"}]
+  },
+  {
+    num:"25", icon:"⚡", color:"rgba(234,179,8,0.12)",
+    title:"Realtime Socket Gateway",
+    features:["WebSocket Connection","Realtime Message Delivery","Room Management","Event Broadcasting","Socket Authentication"],
+    sockets:["connection","disconnect","join:server","leave:server","join:channel","leave:channel","message:send","message:receive","notification:new","presence:update"]
+  },
+  {
+    num:"26", icon:"🔴", color:"rgba(239,68,68,0.12)",
+    title:"Redis Cache System",
+    features:["Presence Cache","Socket Mapping","Unread Counters","Rate Limiting","Pub/Sub Scaling"]
+  },
+  {
+    num:"27", icon:"📬", color:"rgba(0,212,255,0.12)",
+    title:"Queue System",
+    features:["Email Queue","Notification Queue","AI Processing Queue","Moderation Queue","Analytics Queue"]
+  },
+  {
+    num:"28", icon:"⚙️", color:"rgba(124,58,237,0.12)",
+    title:"Settings System",
+    features:["Account Settings","Notification Settings","Privacy Settings","Theme Preferences"],
+    apis:[{m:"GET",p:"/settings"},{m:"PATCH",p:"/settings"}]
+  },
+  {
+    num:"29", icon:"🚩", color:"rgba(34,197,94,0.12)",
+    title:"Report System",
+    features:["Report User","Report Message","Report Server","Admin Review Queue"],
+    apis:[
+      {m:"POST",p:"/reports"},{m:"GET",p:"/reports"},
+      {m:"PATCH",p:"/reports/:reportId/review"}
+    ]
+  },
+  {
+    num:"30", icon:"🔖", color:"rgba(249,115,22,0.12)",
+    title:"Bookmark / Pin System",
+    features:["Bookmark Messages","Pinned Channels","Saved Items"],
+    apis:[
+      {m:"POST",p:"/bookmarks"},{m:"GET",p:"/bookmarks"},{m:"DELETE",p:"/bookmarks/:bookmarkId"}
+    ]
+  }
+];
+
+function parseApiPath(path) {
+  return path.replace(/(:[a-zA-Z]+)/g, '<span>$1</span>');
+}
+
+function buildCard(m) {
+  const featureCount = m.features.length + (m.apis ? m.apis.length : 0) + (m.sockets ? m.sockets.length : 0);
+
+  let apisHtml = '';
+  if (m.apis && m.apis.length) {
+    apisHtml = `<div class="api-section">
+      <div class="feat-label" style="padding:0 0 8px">Endpoints</div>
+      <table class="api-table">
+        ${m.apis.map(a=>`<tr><td><span class="method ${a.m}">${a.m}</span></td><td class="api-path">${parseApiPath(a.p)}</td></tr>`).join('')}
+      </table>
+    </div>`;
+  }
+
+  let socketsHtml = '';
+  if (m.sockets && m.sockets.length) {
+    socketsHtml = `<div class="socket-section">
+      <div class="feat-label" style="padding:0 0 8px">Socket Events</div>
+      <div class="socket-events">
+        ${m.sockets.map(s=>`<span class="socket-event">${s}</span>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  return `
+  <div class="module-card reveal" onclick="this.classList.toggle('open')">
+    <div class="module-head">
+      <span class="module-num">${m.num}</span>
+      <div class="module-icon" style="background:${m.color}">${m.icon}</div>
+      <span class="module-title">${m.title}</span>
+      <span class="module-feat-count">${m.features.length} features</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="module-body">
+      <div class="feat-section">
+        <div class="feat-label">Features</div>
+        <div class="feat-pills">
+          ${m.features.map(f=>`<span class="feat-pill">${f}</span>`).join('')}
+        </div>
+      </div>
+      ${apisHtml}
+      ${socketsHtml}
+    </div>
+  </div>`;
+}
+
+document.getElementById('modulesGrid').innerHTML = modules.map(buildCard).join('');
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 40);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.05 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
