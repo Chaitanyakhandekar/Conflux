@@ -2,6 +2,7 @@ class ApiError extends Error {
 
     statusCode: number
     success: boolean
+    errorCode: string
     data: any
 
     constructor(
@@ -9,6 +10,9 @@ class ApiError extends Error {
         statusCode: number,
 
         message: string,
+
+        errorCode: string,
+
 
         data: any = null
 
@@ -22,6 +26,8 @@ class ApiError extends Error {
         this.success =
             false
 
+        this.errorCode = errorCode
+
         this.data =
             data
 
@@ -33,6 +39,37 @@ class ApiError extends Error {
     }
 }
 
+
+class ApiResponse {
+
+    statusCode: number
+    success: boolean
+    data: any
+
+    constructor(
+
+        statusCode: number,
+
+        message: string,
+
+        data: any = null
+
+    ) {
+
+
+        this.statusCode =
+            statusCode
+
+        this.success =
+            true
+
+        this.data =
+            data
+
+    }
+}
+
 export {
-    ApiError
+    ApiError,
+    ApiResponse
 }

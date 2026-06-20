@@ -1,9 +1,16 @@
-import mongoose, { Schema } from "mongoose"
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
-import { env } from "../config/env.config.ts"
+import mongoose, { Schema } from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { env } from "../config/env.config.ts";
 
-const userSchema = new Schema({
+import {
+    IUser,
+    IUserMethods,
+    UserModel
+}
+    from "../types/user.type.ts";
+
+const userSchema = new Schema<IUser, UserModel, IUserMethods>({
 
     username: {
         type: String,
@@ -51,6 +58,9 @@ const userSchema = new Schema({
     },
     verificationOTP: {
         type: String
+    },
+    OTPGeneratedAt: {
+        type: Date
     }
 
 
@@ -114,14 +124,16 @@ userSchema.methods.generateRefreshToken = function (): any {
  * @returns object
  */
 userSchema.methods.toSafeObject = function (): any {
-    const user = this.toObject()
 
-    delete user.password
-    delete user.refreshToken
-    delete user.verificationToken
-    delete user.verificationOTP
+    const {
+        password,
+        refreshToken,
+        verificationToken,
+        verificationOTP,
+        ...safeUser
+    } = this.toObject()
 
-    return user;
+    return safeUser;
 }
 
 /**

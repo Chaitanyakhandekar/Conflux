@@ -6,10 +6,11 @@ import { addEmailJob } from "./producers/email.producer.ts";
 import "./workers/email.worker.ts"
 
 
-    ; connectDB()
-        .then(async (): Promise<void> => {
+    ; import { User } from "./models/user.model.ts";
+connectDB()
+    .then(async (): Promise<void> => {
 
-            httpServer.listen(env.PORT, async () => {               // running server on port
-                console.log('Server Running on Port ', env.PORT);
-            })
+        httpServer.listen(env.PORT, async () => {               // running server on port
+            console.log('Server Running on Port ', env.PORT);
         })
+    })

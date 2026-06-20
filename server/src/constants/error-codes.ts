@@ -1,0 +1,84 @@
+export const ERROR_CODES = {
+
+    // Auth
+    INVALID_CREDENTIALS:
+        "INVALID_CREDENTIALS",
+
+    EMAIL_ALREADY_EXISTS:
+        "EMAIL_ALREADY_EXISTS",
+
+    USERNAME_ALREADY_EXISTS:
+        "USERNAME_ALREADY_EXISTS",
+
+    INVALID_TOKEN:
+        "INVALID_TOKEN",
+
+    TOKEN_EXPIRED:
+        "TOKEN_EXPIRED",
+
+    OTP_INVALID:
+        "OTP_INVALID",
+
+    OTP_EXPIRED:
+        "OTP_EXPIRED",
+
+    ACCOUNT_NOT_VERIFIED:
+        "ACCOUNT_NOT_VERIFIED",
+
+
+    // Request / Validation
+    BAD_REQUEST:
+        "BAD_REQUEST",
+
+    VALIDATION_ERROR:
+        "VALIDATION_ERROR",
+
+    REQUIRED_FIELDS_MISSING:
+        "REQUIRED_FIELDS_MISSING",
+
+
+    // Access / Permission
+    UNAUTHORIZED:
+        "UNAUTHORIZED",
+
+    FORBIDDEN:
+        "FORBIDDEN",
+
+    PERMISSION_DENIED:
+        "PERMISSION_DENIED",
+
+
+    // Resource (server/channel/message/user etc)
+    NOT_FOUND:
+        "NOT_FOUND",
+
+    ALREADY_EXISTS:
+        "ALREADY_EXISTS",
+
+    CREATE_FAILED:
+        "CREATE_FAILED",
+
+    UPDATE_FAILED:
+        "UPDATE_FAILED",
+
+    DELETE_FAILED:
+        "DELETE_FAILED",
+
+
+    // System
+    DATABASE_ERROR:
+        "DATABASE_ERROR",
+
+    EMAIL_SEND_FAILED:
+        "EMAIL_SEND_FAILED",
+
+    QUEUE_FAILED:
+        "QUEUE_FAILED",
+
+    TOO_MANY_REQUESTS:
+        "TOO_MANY_REQUESTS",
+
+    INTERNAL_SERVER_ERROR:
+        "INTERNAL_SERVER_ERROR"
+
+} as const;

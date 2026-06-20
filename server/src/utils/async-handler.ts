@@ -17,13 +17,14 @@ export const asyncHandler = (requestHandler: AsyncHandlerType) => {
                     success: error.success,
                     data: error.data,
                     message: error.message,
+                    errorCode: error.errorCode
                 })
             }
-            return {
+            return res.status(500).json({
                 success: false,
                 message: "Internal Server Error",
                 data: null
-            }
+            })
         })
     }
 }
