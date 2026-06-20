@@ -3,7 +3,7 @@ import type { emailJobType } from "../types/job.type.ts";
 
 const addEmailJob = async (job: emailJobType): Promise<any> => {
     emailQueue.add(
-        "send-email",
+        "email-queue",
         job,
         {
             attempts: 3,        // retry 3 times 
@@ -15,4 +15,9 @@ const addEmailJob = async (job: emailJobType): Promise<any> => {
             removeOnFail: false
         }
     )
+    console.log('Job Added to Queue');
+}
+
+export {
+    addEmailJob
 }

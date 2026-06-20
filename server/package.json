@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "start": "node src/index.ts"
+    "worker": "tsx watch src/workers.ts"
   },
   "keywords": [],
   "author": "",

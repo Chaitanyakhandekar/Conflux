@@ -1,5 +1,8 @@
 type emailJobType = {
-    to: string
+    to: {
+        email: string,
+        name?: string
+    }
     subject: string
     html: string
 }
