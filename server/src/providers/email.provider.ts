@@ -17,7 +17,7 @@ export const sendEmail = async (email: emailJobType) => {
         const result = await brevo.transactionalEmails.sendTransacEmail({
             subject: email.subject,
             htmlContent: email.html,
-            sender: { name: 'Chaitanya from Conflux', email: 'bytecoder95@gmail.com' },
+            sender: { name: env.BREVO_SENDER_NAME, email: env.BREVO_SENDER_EMAIL },
             to: [{ email: email.to.email, name: email.to.name || "" }],
         });
 

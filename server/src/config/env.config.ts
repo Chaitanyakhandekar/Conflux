@@ -21,6 +21,8 @@ type EnvConfig = {
     CLOUDINARY_API_SECRET: string
     CLOUDINARY_URL: string
     BREVO_API_KEY: string
+    BREVO_SENDER_NAME: string
+    BREVO_SENDER_EMAIL: string
 }
 
 export const env: EnvConfig = {
@@ -39,5 +41,7 @@ export const env: EnvConfig = {
     CLOUDINARY_API_KEY: (process.env.CLOUDINARY_API_KEY as string),
     CLOUDINARY_API_SECRET: (process.env.CLOUDINARY_API_SECRET as string),
     CLOUDINARY_URL: (process.env.CLOUDINARY_URL as string),
-    BREVO_API_KEY: (process.env.BREVO_API_KEY as string)
+    BREVO_API_KEY: (process.env.BREVO_API_KEY as string),
+    BREVO_SENDER_EMAIL: (process.env.BREVO_SENDER_EMAIL as string),
+    BREVO_SENDER_NAME: (process.env.BREVO_SENDER_SENDER as string)
 }
