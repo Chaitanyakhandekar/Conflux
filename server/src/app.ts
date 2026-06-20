@@ -40,4 +40,26 @@ app.use(express.urlencoded({
 app.use(express.static("public"))
 
 
+import userRouter from "./routes/user.route.ts"
+import authRouter from "./routes/auth.route.ts"
+import serverRouter from "./routes/server.route.ts"
+import serverMemberRouter from "./routes/server-members.route.ts"
+import roleRouter from "./routes/role.route.ts"
+import permissionOverrideRouter from "./routes/permisson-override.route.ts"
+import channelRouter from "./routes/channel.route.ts"
+import conversationRouter from "./routes/conversation.route.ts"
+import messageRouter from "./routes/message.route.ts"
+
+
+app.use("/api/v1/users", userRouter)
+app.use("/api/v1/auth", authRouter)
+app.use("/api/v1/servers", serverRouter)
+app.use("/api/v1/server-members", serverMemberRouter)
+app.use("/api/v1/roles", roleRouter)
+app.use("/api/v1/permission-overrides", permissionOverrideRouter)
+app.use("/api/v1/channels", channelRouter)
+app.use("/api/v1/conversations", conversationRouter)
+app.use("/api/v1/messages", messageRouter)
+
+
 export { httpServer }
