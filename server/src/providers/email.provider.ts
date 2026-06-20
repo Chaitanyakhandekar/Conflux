@@ -1,7 +1,8 @@
 import { BrevoClient } from '@getbrevo/brevo';
 import { emailJobType } from '../types/job.type.ts';
+import { env } from '../config/env.config.ts';
 
-const brevo = new BrevoClient({ apiKey: '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' });
+const brevo = new BrevoClient({ apiKey: env.BREVO_API_KEY });
 
 /**
  * @description Service for sending mail
