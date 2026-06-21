@@ -28,7 +28,8 @@ class AuthApi {
 
             return {
                 success: false,
-                error: error
+                error: error,
+                message: error?.message
             }
 
         }
