@@ -1,6 +1,11 @@
 import mongoose, { Schema } from "mongoose";
+import {
+    IRole,
+    IRoleMethods,
+    RoleModel
+} from "../types/role.type.ts";
 
-const roleSchema = new Schema({
+const roleSchema = new Schema<IRole, RoleModel, IRoleMethods>({
 
     name: {
         type: String,
@@ -48,6 +53,11 @@ const roleSchema = new Schema({
 }, { timestamps: true })
 
 
+/**
+ * @description Schema method to check if the role has a specific permission.
+ * @param permission
+ * @returns boolean
+ */
 roleSchema.methods.hasPermission =
     function (permission: string): boolean {
 
@@ -59,4 +69,4 @@ roleSchema.methods.hasPermission =
 
 
 export const Role =
-    mongoose.model("Role", roleSchema)
+    mongoose.model<IRole, RoleModel>("Role", roleSchema)

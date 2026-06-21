@@ -71,7 +71,37 @@ const registerUserService = async (payload: RegisterUserType): Promise<any> => {
     return user.toSafeObject()
 }
 
+/**
+ * @description Service for resending verification OTP via Email 
+ * @param email 
+ */
+const resendOTPEmail = async (email: string): Promise<any> => {
+
+    const user = await User.findOne({
+        email
+    })
+
+    if (!user) {
+        throw new ApiError(404, "User with this email doesnt exists.", ERROR_CODES.NOT_FOUND)
+    }
+
+    const otp = gnerateOTP(6)
+
+    addEmailJob({
+        to: {
+            email: email,
+            name: user.username
+        },
+        subject: "Complete your Conflux signup with this verification code",
+        html: getEmailVerificationHtml(otp)
+    })
+
+    return user.toSafeObject()
+
+}
+
 
 export {
-    registerUserService
+    registerUserService,
+    resendOTPEmail
 }

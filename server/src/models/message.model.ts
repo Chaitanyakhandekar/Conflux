@@ -1,6 +1,11 @@
 import mongoose, { Schema } from "mongoose";
+import {
+    IMessage,
+    IMessageMethods,
+    MessageModel
+} from "../types/message.type.ts";
 
-const messageSchema = new Schema({
+const messageSchema = new Schema<IMessage, MessageModel, IMessageMethods>({
 
     message: {
         type: String,
@@ -72,13 +77,17 @@ const messageSchema = new Schema({
 }, { timestamps: true })
 
 
+/**
+ * @description Schema method to mark a message as seen by a user.
+ * @param userId
+ */
 messageSchema.methods.markSeen =
     async function (userId: string) {
 
         this.isSeen = true
         this.seenAt = new Date()
 
-        this.seenBy.push(userId)
+        this.seenBy.push(new mongoose.Types.ObjectId(userId))
 
         await this.save({
             validateBeforeSave: false
@@ -86,6 +95,11 @@ messageSchema.methods.markSeen =
     }
 
 
+/**
+ * @description Schema method to add a reaction to a message.
+ * @param userId
+ * @param emoji
+ */
 messageSchema.methods.addReaction =
     async function (
         userId: string,
@@ -93,7 +107,7 @@ messageSchema.methods.addReaction =
     ) {
 
         this.reactions.push({
-            userId,
+            userId: new mongoose.Types.ObjectId(userId),
             emoji
         })
 
@@ -104,6 +118,10 @@ messageSchema.methods.addReaction =
     }
 
 
+/**
+ * @description Schema method to edit the message content.
+ * @param content
+ */
 messageSchema.methods.editMessage =
     async function (
         content: string
@@ -124,4 +142,4 @@ messageSchema.index({
 })
 
 export const Message =
-    mongoose.model("Message", messageSchema)
+    mongoose.model<IMessage, MessageModel>("Message", messageSchema)

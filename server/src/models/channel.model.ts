@@ -1,6 +1,11 @@
 import mongoose, { Schema } from "mongoose";
+import {
+    IChannel,
+    IChannelMethods,
+    ChannelModel
+} from "../types/channel.type.ts";
 
-const channelSchema = new Schema({
+const channelSchema = new Schema<IChannel, ChannelModel, IChannelMethods>({
 
     name: {
         type: String,
@@ -37,6 +42,10 @@ const channelSchema = new Schema({
 }, { timestamps: true })
 
 
+/**
+ * @description Schema method to check if this channel is a voice channel.
+ * @returns boolean
+ */
 channelSchema.methods.isVoiceChannel =
     function (): boolean {
 
@@ -46,4 +55,4 @@ channelSchema.methods.isVoiceChannel =
 
 
 export const Channel =
-    mongoose.model("Channel", channelSchema)
+    mongoose.model<IChannel, ChannelModel>("Channel", channelSchema)

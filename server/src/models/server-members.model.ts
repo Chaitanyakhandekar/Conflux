@@ -1,6 +1,11 @@
 import mongoose, { Schema } from "mongoose";
+import {
+    IServerMember,
+    IServerMemberMethods,
+    ServerMemberModel
+} from "../types/server-members.type.ts";
 
-const serverMemberSchema = new Schema({
+const serverMemberSchema = new Schema<IServerMember, ServerMemberModel, IServerMemberMethods>({
 
     userId: {
         type: Schema.Types.ObjectId,
@@ -41,6 +46,11 @@ const serverMemberSchema = new Schema({
 }, { timestamps: true })
 
 
+/**
+ * @description Schema method to check if the member has a specific role.
+ * @param roleId
+ * @returns boolean
+ */
 serverMemberSchema.methods.hasRole =
     function (roleId: string): boolean {
 
@@ -51,6 +61,9 @@ serverMemberSchema.methods.hasRole =
     }
 
 
+/**
+ * @description Schema method to ban the member from the server.
+ */
 serverMemberSchema.methods.banMember =
     async function () {
 
@@ -63,7 +76,7 @@ serverMemberSchema.methods.banMember =
 
 
 export const ServerMember =
-    mongoose.model(
+    mongoose.model<IServerMember, ServerMemberModel>(
         "ServerMember",
         serverMemberSchema
     )

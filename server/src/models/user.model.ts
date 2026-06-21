@@ -146,4 +146,4 @@ userSchema.methods.updateLastActive = async function () {
     })
 }
 
-export const User = mongoose.model("User", userSchema);
+export const User = mongoose.model<IUser, UserModel>("User", userSchema);

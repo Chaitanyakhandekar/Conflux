@@ -1,7 +1,12 @@
 import mongoose, { Schema } from "mongoose";
+import {
+    IPermissionOverride,
+    IPermissionOverrideMethods,
+    PermissionOverrideModel
+} from "../types/permission-override.type.ts";
 
 const permissionOverrideSchema =
-    new Schema({
+    new Schema<IPermissionOverride, PermissionOverrideModel, IPermissionOverrideMethods>({
 
         channelId: {
             type: Schema.Types.ObjectId,
@@ -22,6 +27,11 @@ const permissionOverrideSchema =
     }, { timestamps: true })
 
 
+/**
+ * @description Schema method to check if a permission is denied.
+ * @param permission
+ * @returns boolean
+ */
 permissionOverrideSchema.methods.hasDenied =
     function (
         permission: string
@@ -34,7 +44,7 @@ permissionOverrideSchema.methods.hasDenied =
 
 
 export const PermissionOverride =
-    mongoose.model(
+    mongoose.model<IPermissionOverride, PermissionOverrideModel>(
         "PermissionOverride",
         permissionOverrideSchema
     )

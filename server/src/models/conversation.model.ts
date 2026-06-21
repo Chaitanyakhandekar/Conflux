@@ -1,7 +1,12 @@
 import mongoose, { Schema } from "mongoose";
+import {
+    IConversation,
+    IConversationMethods,
+    ConversationModel
+} from "../types/conversation.type.ts";
 
 const conversationSchema =
-    new Schema({
+    new Schema<IConversation, ConversationModel, IConversationMethods>({
 
         participants: [{
             type: Schema.Types.ObjectId,
@@ -16,6 +21,11 @@ const conversationSchema =
     }, { timestamps: true })
 
 
+/**
+ * @description Schema method to check if a user is a participant of this conversation.
+ * @param userId
+ * @returns boolean
+ */
 conversationSchema.methods.hasParticipant =
     function (userId: string): boolean {
 
@@ -32,7 +42,7 @@ conversationSchema.index({
 
 
 export const Conversation =
-    mongoose.model(
+    mongoose.model<IConversation, ConversationModel>(
         "Conversation",
         conversationSchema
     )

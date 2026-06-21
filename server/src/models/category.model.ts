@@ -1,6 +1,11 @@
 import mongoose, { Schema } from "mongoose";
+import {
+    ICategory,
+    ICategoryMethods,
+    CategoryModel
+} from "../types/category.type.ts";
 
-const categorySchema = new Schema({
+const categorySchema = new Schema<ICategory, CategoryModel, ICategoryMethods>({
 
     name: {
         type: String,
@@ -26,6 +31,10 @@ const categorySchema = new Schema({
 }, { timestamps: true })
 
 
+/**
+ * @description Schema method to update the position of the category.
+ * @param position
+ */
 categorySchema.methods.updatePosition =
     async function (position: number) {
 
@@ -39,4 +48,4 @@ categorySchema.methods.updatePosition =
 
 
 export const Category =
-    mongoose.model("Category", categorySchema)
+    mongoose.model<ICategory, CategoryModel>("Category", categorySchema)

@@ -1,7 +1,12 @@
 import mongoose, { Schema } from "mongoose";
+import {
+    INotification,
+    INotificationMethods,
+    NotificationModel
+} from "../types/notification.type.ts";
 
 const notificationSchema =
-    new Schema({
+    new Schema<INotification, NotificationModel, INotificationMethods>({
 
         userId: {
             type: Schema.Types.ObjectId,
@@ -52,6 +57,9 @@ const notificationSchema =
     }, { timestamps: true })
 
 
+/**
+ * @description Schema method to mark the notification as read.
+ */
 notificationSchema.methods.markRead =
     async function () {
 
@@ -65,7 +73,7 @@ notificationSchema.methods.markRead =
 
 
 export const Notification =
-    mongoose.model(
+    mongoose.model<INotification, NotificationModel>(
         "Notification",
         notificationSchema
     )
