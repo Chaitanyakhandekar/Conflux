@@ -15,7 +15,7 @@ import { isUserExists } from "../utils/existance.ts";
  * @param otp 
  * @returns Boolean (true/false)
  */
-const verifyOTP = async (email: string, otp: string): Promise<any> => {
+const verifyOTPService = async (email: string, otp: string): Promise<any> => {
 
     if (!otp || !email || (otp && otp.trim() === "") || (email && email.trim() === "")) {
         throw new ApiError(400, "All Fields Are required", ERROR_CODES.REQUIRED_FIELDS_MISSING)
@@ -47,5 +47,5 @@ const verifyOTP = async (email: string, otp: string): Promise<any> => {
 
 
 export {
-    verifyOTP
+    verifyOTPService
 }

@@ -3,13 +3,14 @@ import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
 import { useAuthStore } from "../../store/auth-store";
 
+
 const OTP_LENGTH = 6;
 
 const VerifyOtp = () => {
-    const { verifyOtp, resendOtp, otpLoading, resendLoading } =
+    const { verifyOTP, resendOTP, otpStatus, resendLoading } =
         useAuth();
 
-    const { pendingVerificationEmail } = useAuthStore();
+    const { pendingVerificationEmail, setPendingVerificationEmail } = useAuthStore();
 
     const [otp, setOtp] = useState<string[]>(
         new Array(OTP_LENGTH).fill("")
@@ -32,6 +33,8 @@ const VerifyOtp = () => {
 
         return () => clearInterval(interval);
     }, [timer]);
+
+    // Toast is already fired inside verifyOTP in useAuth; no duplicate effect needed.
 
     /*
         OTP Change
@@ -106,10 +109,10 @@ const VerifyOtp = () => {
 
         if (otpCode.length !== OTP_LENGTH) return;
 
-        await verifyOtp({
-            email: pendingVerificationEmail!,
-            otp: otpCode,
-        });
+        await verifyOTP(
+            pendingVerificationEmail,
+            otpCode,
+        );
     };
 
     /*
@@ -119,7 +122,7 @@ const VerifyOtp = () => {
     const handleResend = async () => {
         if (timer > 0) return;
 
-        await resendOtp(pendingVerificationEmail!);
+        await resendOTP(pendingVerificationEmail!);
 
         setTimer(30);
     };
@@ -152,8 +155,8 @@ const VerifyOtp = () => {
 
                 <div className="border border-white/10 rounded-2xl p-6 bg-white/5 backdrop-blur-xl">
                     <p className="text-slate-300 leading-7">
-                        “Fast onboarding, instant verification,
-                        seamless communication.”
+                        "Fast onboarding, instant verification,
+                        seamless communication."
                     </p>
 
                     <p className="mt-4 text-sm text-slate-500">
@@ -164,7 +167,7 @@ const VerifyOtp = () => {
 
             {/* RIGHT PANEL */}
 
-            <div className="flex items-center justify-center px-6 py-10">
+            <div className="flex items-center justify-center px-4 sm:px-6 py-10 min-h-screen lg:min-h-0">
 
                 <motion.div
                     initial={{ opacity: 0, y: 25 }}
@@ -172,6 +175,12 @@ const VerifyOtp = () => {
                     transition={{ duration: 0.35 }}
                     className="w-full max-w-md"
                 >
+                    {/* MOBILE BRAND HEADER — only shown on small screens */}
+                    <div className="lg:hidden mb-8">
+                        <h2 className="text-xl font-bold tracking-wide text-purple-400">
+                            Conflux
+                        </h2>
+                    </div>
 
                     {/* PROGRESS */}
 
@@ -181,21 +190,21 @@ const VerifyOtp = () => {
                         <div className="h-1 flex-1 rounded bg-white/10"></div>
                     </div>
 
-                    <h2 className="text-3xl font-bold">
+                    <h2 className="text-2xl sm:text-3xl font-bold">
                         Verify Your Email
                     </h2>
 
-                    <p className="text-slate-400 mt-2">
-                        We’ve sent a verification code to:
+                    <p className="text-slate-400 mt-2 text-sm sm:text-base">
+                        We've sent a verification code to:
                     </p>
 
-                    <p className="text-purple-400 mt-2 mb-10">
+                    <p className="text-purple-400 mt-2 mb-8 sm:mb-10 text-sm sm:text-base break-all">
                         {pendingVerificationEmail}
                     </p>
 
                     {/* OTP BOXES */}
 
-                    <div className="flex justify-between gap-3 mb-8">
+                    <div className="flex justify-between gap-2 sm:gap-3 mb-8">
 
                         {otp.map((digit, index) => (
                             <motion.input
@@ -206,6 +215,7 @@ const VerifyOtp = () => {
                                 }}
                                 value={digit}
                                 maxLength={1}
+                                inputMode="numeric"
                                 onPaste={handlePaste}
                                 onChange={(e) =>
                                     handleChange(e.target.value, index)
@@ -213,21 +223,25 @@ const VerifyOtp = () => {
                                 onKeyDown={(e) =>
                                     handleKeyDown(e, index)
                                 }
-                                className="w-14 h-14 rounded-xl bg-white/5 border border-white/10 text-center text-xl outline-none focus:border-purple-500 transition"
+                                className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl bg-white/5 border border-white/10 text-center text-lg sm:text-xl outline-none focus:border-purple-500 transition"
                             />
                         ))}
+
                     </div>
+                    {
+                        otpStatus === "invalid" && <p className="text-red-500 text-sm mb-10 text-center">Invalid OTP</p>
+                    }
 
                     {/* VERIFY BUTTON */}
 
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        disabled={otpLoading}
+                        disabled={otpStatus === "verifying"}
                         onClick={handleVerify}
-                        className="w-full bg-purple-500 hover:bg-purple-600 transition rounded-xl py-3 font-medium disabled:opacity-60"
+                        className="w-full bg-purple-500 hover:bg-purple-600 transition rounded-xl py-3 font-medium disabled:opacity-60 text-sm sm:text-base"
                     >
-                        {otpLoading
+                        {otpStatus === "verifying"
                             ? "Verifying..."
                             : "Verify OTP"}
                     </motion.button>

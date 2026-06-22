@@ -75,7 +75,7 @@ const registerUserService = async (payload: RegisterUserType): Promise<any> => {
  * @description Service for resending verification OTP via Email 
  * @param email 
  */
-const resendOTPEmail = async (email: string): Promise<any> => {
+const resendOTPEmailService = async (email: string): Promise<any> => {
 
     const user = await User.findOne({
         email
@@ -103,5 +103,5 @@ const resendOTPEmail = async (email: string): Promise<any> => {
 
 export {
     registerUserService,
-    resendOTPEmail
+    resendOTPEmailService
 }

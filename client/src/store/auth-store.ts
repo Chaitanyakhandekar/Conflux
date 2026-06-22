@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { devtools } from "zustand/middleware"
+import { devtools, persist } from "zustand/middleware"
 
 
 type AuthStoreType = {
@@ -13,16 +13,43 @@ type AuthStoreType = {
     logout?: () => void;
 };
 
-export const useAuthStore = create<AuthStoreType>(
+export const useAuthStore = create<AuthStoreType>()(
 
-    (set) => ({
-        user: null,
+    persist(
+        (set) => ({
+            user: null,
+            pendingVerificationEmail: null,
+            isAuthenticated: false,
 
-        setUser: (user: object) => {
-            set({
-                user
-            })
+            setUser: (user: object) => {
+                set({
+                    user
+                })
+            },
+
+            setPendingVerificationEmail: (email: string) => {
+                set({
+                    pendingVerificationEmail: email
+                })
+            },
+
+            clearPendingVerificationEmail: () => {
+                set({
+                    pendingVerificationEmail: null
+                })
+            },
+
+            logout: () => {
+                set({
+                    user: null,
+                    pendingVerificationEmail: null,
+                    isAuthenticated: false
+                })
+            }
+        }),
+
+        {
+            name: "auth-store"
         }
-    }),
-
+    )
 )

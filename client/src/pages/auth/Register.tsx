@@ -96,6 +96,7 @@ const Register = () => {
 
         if (!isValid) return;
 
+
         await register(formData);
     };
 
