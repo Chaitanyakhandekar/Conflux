@@ -13,8 +13,8 @@ type AsyncHandlerType = (
 export const asyncHandler = (requestHandler: AsyncHandlerType) => {
     return (req: Request, res: Response, next: NextFunction) => {
         Promise.resolve(requestHandler(req, res, next)).catch((error: any) => {
-            return res.status(error.statusCode).json({
-                success: error.success,
+            return res.status(200).json({
+                success: false,
                 data: error.data || null,
                 message: error.message || "somthing went wrong",
                 errorCode: error.errorCode || ERROR_CODES.INTERNAL_SERVER_ERROR

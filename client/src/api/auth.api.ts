@@ -18,6 +18,16 @@ class AuthApi {
                 user,
             )
 
+            console.log('register data : ', response.data);
+
+            if (!response.data.success) {
+                return {
+                    success: false,
+                    error: response.data.errorCode,
+                    message: response.data?.message
+                }
+            }
+
             return {
                 success: true,
                 statusCode: response.status,
@@ -25,6 +35,7 @@ class AuthApi {
             }
 
         } catch (error: any) {
+            console.log('register error : ', error);
 
             return {
                 success: false,

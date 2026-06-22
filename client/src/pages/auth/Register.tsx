@@ -12,7 +12,8 @@ type FormDataType = {
 type FormErrorsType = Partial<FormDataType>;
 
 const Register = () => {
-    const { register, loading } = useAuth();
+    const { register, loading, errorType,
+        setErrorType } = useAuth();
 
     const [formData, setFormData] = useState<FormDataType>({
         fullName: "",
@@ -209,11 +210,9 @@ const Register = () => {
                                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-purple-500 transition"
                             />
 
-                            {errors.username && (
-                                <p className="text-red-400 text-sm mt-1">
-                                    {errors.username}
-                                </p>
-                            )}
+                            {
+                                errorType === "USERNAME_ALREADY_EXISTS" && <p className="text-red-400 text-sm p-2">This username is taken</p>
+                            }
                         </div>
 
                         {/* EMAIL */}
@@ -233,6 +232,10 @@ const Register = () => {
                                     {errors.email}
                                 </p>
                             )}
+
+                            {
+                                errorType === "EMAIL_ALREADY_EXISTS" && <p className="text-red-400 text-sm p-2">This email is taken</p>
+                            }
                         </div>
 
                         {/* PASSWORD */}

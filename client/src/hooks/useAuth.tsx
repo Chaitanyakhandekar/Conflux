@@ -11,6 +11,7 @@ export const useAuth = (): any => {
 
     const [loading, setLoading] = useState<boolean>(false)
     const [otpStatus, setOtpStatus] = useState<OTPStatus>("sent")
+    const [errorType, setErrorType] = useState<string | null>(null)
     const navigate = useNavigate()
     const {
         user,
@@ -32,6 +33,9 @@ export const useAuth = (): any => {
             localStorage.setItem("email", res.data.email)
             setPendingVerificationEmail(res.data.email)
             navigate("/verify-otp")
+        }
+        else {
+            setErrorType(res.error)
         }
     }
 
@@ -94,7 +98,9 @@ export const useAuth = (): any => {
         otpStatus,
         setOtpStatus,
         resendOTP,
-        verifyOTP
+        verifyOTP,
+        errorType,
+        setErrorType
     }
 
 }
