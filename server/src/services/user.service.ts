@@ -86,6 +86,10 @@ const resendOTPEmailService = async (email: string): Promise<any> => {
     }
 
     const otp = gnerateOTP(6)
+    user.verificationOTP = otp
+    user.OTPGeneratedAt = new Date()
+
+    await user.save({ validateBeforeSave: false })
 
     addEmailJob({
         to: {

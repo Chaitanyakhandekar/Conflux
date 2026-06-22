@@ -29,19 +29,25 @@ export const useAuth = (): any => {
 
         if (res.success) {
             setUser(res.data)
+            localStorage.setItem("email", res.data.email)
             setPendingVerificationEmail(res.data.email)
             navigate("/verify-otp")
         }
     }
 
     const resendOTP = async (email: string): Promise<void> => {
+        console.log("EMAIL : ", email)
         setOtpStatus("sending")
         setLoading(true)
         const res = await authApi.resendOTP(email)
+
         setLoading(false)
 
         if (res.success) {
             setOtpStatus("sent")
+            toast.success(
+                "Verification code resent to your email."
+            )
         }
 
     }

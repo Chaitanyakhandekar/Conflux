@@ -122,7 +122,7 @@ const VerifyOtp = () => {
     const handleResend = async () => {
         if (timer > 0) return;
 
-        await resendOTP(pendingVerificationEmail!);
+        await resendOTP(pendingVerificationEmail || localStorage.getItem("email"));
 
         setTimer(30);
     };
