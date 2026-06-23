@@ -17,11 +17,12 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #050816;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.08) transparent;
+  scrollbar-color: rgba(139, 125, 255, 0.12) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -33,14 +34,22 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.08);
+  background: rgba(139, 125, 255, 0.12);
   border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.12);
+  background: rgba(139, 125, 255, 0.2);
 }
 
 ::selection {
-  background: rgba(124, 107, 255, 0.3);
+  background: rgba(139, 125, 255, 0.25);
+}
+
+@layer base {
+  input,
+  textarea,
+  button {
+    @apply transition-all duration-200;
+  }
 }

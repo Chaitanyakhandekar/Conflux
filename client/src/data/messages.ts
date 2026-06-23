@@ -1,57 +1,52 @@
 export interface Message {
   id: string
   username: string
+  displayName: string
   timestamp: string
   text: string
   avatar: string
+  role: string
   codeSnippet?: {
     filename: string
     language: string
     code: string
   }
   reactions?: { emoji: string; count: number }[]
-  pipelineCard?: {
-    title: string
-    status: string
-    progress: number
-  }
+  replyCount?: number
+  attachment?: boolean
 }
 
 export const messages: Message[] = [
   {
     id: "1",
-    username: "sarah_dev",
-    timestamp: "10:42 AM",
-    text: "Hey team, I've just pushed the new refactor for the auth middleware. It uses the new session strategy we discussed in the sync. Here is a snippet of the core logic:",
+    username: "Sarah",
+    displayName: "Sarah",
+    timestamp: "Today at 10:42 AM",
+    text: "Anyone solved Redis pub/sub issue? My subscriber keeps dropping after the connection timeout. Using ioredis with cluster mode.",
     avatar: "",
+    role: "Admin",
     codeSnippet: {
-      filename: "auth_middleware.rs",
-      language: "rust",
-      code: `pub async fn validate_token(req: Request) -> Result<User, Error> {
-    // Extract Bearer token from headers
-    let auth_header = req.headers().get("Authorization")?;
-    let claims = decode_jwt(auth_header.to_str()?)?;
-    match claims.status {
-        ClaimStatus::Active => Ok(claims.user),
-        _ => Err(Error::Unauthorized),
-    }
-}`,
+      filename: "pubsub.ts",
+      language: "typescript",
+      code: `const subscriber = new Redis(clusterNodes);\nawait subscriber.subscribe("events");\n\nsubscriber.on("message", (channel, message) => {\n  const parsed = JSON.parse(message);\n  // Handles timeout in cluster mode\n  if (parsed.type === "heartbeat") {\n    await subscriber.ping();\n  }\n});`,
     },
     reactions: [
-      { emoji: "⚡", count: 4 },
-      { emoji: "♡", count: 2 },
+      { emoji: "🔥", count: 3 },
+      { emoji: "💡", count: 5 },
     ],
+    replyCount: 4,
   },
   {
     id: "2",
-    username: "alex_ops",
-    timestamp: "10:45 AM",
-    text: "Looks solid Sarah! Running the CI/CD pipeline now to check for any regression on the staging environment.",
+    username: "Alex",
+    displayName: "Alex",
+    timestamp: "Today at 10:48 AM",
+    text: "Check subscriber cleanup logic. You might have dangling listeners. Try wrapping the handler in a try/catch and reconnect on error.",
     avatar: "",
-    pipelineCard: {
-      title: "CI Pipeline #2401",
-      status: "In Progress (92%)",
-      progress: 92,
-    },
+    role: "Moderator",
+    reactions: [
+      { emoji: "✅", count: 2 },
+    ],
+    replyCount: 1,
   },
 ]

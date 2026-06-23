@@ -1,32 +1,54 @@
-import { Search, Bell, Pin, Users } from "lucide-react"
+import { Search, Phone, Videotape, Pin, Users, Menu, Hash } from "lucide-react"
 
-function ChatHeader() {
+interface ChatHeaderProps {
+  onMenuClick?: () => void
+}
+
+function ChatHeader({ onMenuClick }: ChatHeaderProps) {
   return (
-    <header className="h-[70px] flex items-center justify-between px-6 border-b border-[rgba(255,255,255,0.06)] bg-[#0C1322] flex-shrink-0">
-      <div className="flex flex-col">
-        <h2 className="text-white text-[17px] font-bold leading-tight"># general-arch</h2>
-        <p className="text-[13px] text-[#94A3B8] leading-tight mt-[2px]">
-          Discussions about system architecture and scalability.
-        </p>
-      </div>
-
-      <div className="relative w-[240px]">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full h-[38px] bg-[#0A1020] rounded-[10px] pl-9 pr-4 text-sm text-white placeholder-[#94A3B8] outline-none border border-[rgba(255,255,255,0.06)] focus:border-[#7C6BFF]/50 transition-colors"
-        />
-      </div>
-
-      <div className="flex items-center gap-[18px] text-[#94A3B8]">
-        <button className="hover:text-white transition-colors">
-          <Bell size={18} />
+    <header className="h-[48px] flex items-center justify-between px-4 shadow-[0_1px_0_rgba(255,255,255,0.04)] bg-[#091223] flex-shrink-0">
+      <div className="flex items-center gap-3 min-w-0">
+        <button
+          className="lg:hidden text-[#94A3B8] hover:text-white transition-colors flex-shrink-0"
+          onClick={onMenuClick}
+        >
+          <Menu size={20} />
         </button>
-        <button className="hover:text-white transition-colors">
+        <div className="flex items-center gap-2 min-w-0">
+          <Hash size={22} className="text-[#94A3B8] flex-shrink-0" />
+          <h2 className="text-white text-[15px] font-semibold truncate">backend-help</h2>
+        </div>
+      </div>
+
+      <div className="hidden md:flex items-center gap-4 text-[#94A3B8]">
+        <button className="hover:text-[#8B7DFF] transition-colors">
+          <Phone size={20} />
+        </button>
+        <button className="hover:text-[#8B7DFF] transition-colors">
+          <Videotape size={20} />
+        </button>
+        <button className="hover:text-[#8B7DFF] transition-colors">
           <Pin size={18} />
         </button>
-        <button className="hover:text-white transition-colors">
+        <button className="hover:text-[#8B7DFF] transition-colors">
+          <Users size={20} />
+        </button>
+        <div className="w-[1px] h-6 bg-[rgba(255,255,255,0.06)]" />
+        <div className="relative">
+          <Search size={16} className="absolute left-2 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+          <input
+            type="text"
+            placeholder="Search"
+            className="w-[144px] h-[28px] bg-[rgba(255,255,255,0.03)] rounded-[6px] pl-7 pr-2 text-sm text-white placeholder-[#64748B] outline-none border border-[rgba(255,255,255,0.06)] focus:border-[#8B7DFF] focus:shadow-[0_0_12px_rgba(139,125,255,0.12)] transition-all"
+          />
+        </div>
+      </div>
+
+      <div className="flex md:hidden items-center gap-2 text-[#94A3B8]">
+        <button className="hover:text-white transition-colors p-1">
+          <Search size={18} />
+        </button>
+        <button className="hover:text-white transition-colors p-1">
           <Users size={18} />
         </button>
       </div>

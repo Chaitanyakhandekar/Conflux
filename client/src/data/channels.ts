@@ -1,41 +1,42 @@
 export interface Channel {
   id: string
   name: string
-  section: string
-  hasNotification?: boolean
+  type: "text" | "voice" | "dm"
+  users?: string[]
   isActive?: boolean
+  hasNotification?: boolean
 }
 
 export interface ChannelSection {
   label: string
-  type: "channel" | "dm"
   items: Channel[]
 }
 
 export const channelSections: ChannelSection[] = [
   {
-    label: "ENGINEERING",
-    type: "channel",
+    label: "TEXT CHANNELS",
     items: [
-      { id: "1", name: "general-arch", section: "ENGINEERING", isActive: true },
-      { id: "2", name: "deploy-logs", section: "ENGINEERING", hasNotification: true },
-      { id: "3", name: "rust-refactor", section: "ENGINEERING" },
+      { id: "t1", name: "general", type: "text" },
+      { id: "t2", name: "memes", type: "text", hasNotification: true },
+      { id: "t3", name: "backend-help", type: "text", isActive: true },
+      { id: "t4", name: "frontend-help", type: "text" },
+      { id: "t5", name: "announcements", type: "text" },
     ],
   },
   {
-    label: "DESIGN",
-    type: "channel",
+    label: "VOICE CHANNELS",
     items: [
-      { id: "4", name: "ui-kit-tokens", section: "DESIGN" },
-      { id: "5", name: "brand-motion", section: "DESIGN" },
+      { id: "v1", name: "General Voice", type: "voice", users: ["Alex", "Rohan"] },
+      { id: "v2", name: "Coding Room", type: "voice", users: ["Sarah"] },
+      { id: "v3", name: "Chill Zone", type: "voice", users: [] },
     ],
   },
   {
-    label: "MESSAGES",
-    type: "dm",
+    label: "DIRECT MESSAGES",
     items: [
-      { id: "6", name: "sarah_dev", section: "MESSAGES" },
-      { id: "7", name: "alex_ops", section: "MESSAGES" },
+      { id: "d1", name: "Sarah", type: "dm" },
+      { id: "d2", name: "Alex", type: "dm" },
+      { id: "d3", name: "Mike", type: "dm" },
     ],
   },
 ]
