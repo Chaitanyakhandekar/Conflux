@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 type FormDataType = {
     fullName: string;
@@ -23,6 +24,7 @@ const Register = () => {
     });
 
     const [errors, setErrors] = useState<FormErrorsType>({});
+    const navigate = useNavigate()
 
     const validateForm = (): boolean => {
         const newErrors: FormErrorsType = {};
@@ -162,7 +164,11 @@ const Register = () => {
 
                     <div className="text-right text-sm text-slate-400 mb-6">
                         Already have an account?{" "}
-                        <span className="text-purple-400 cursor-pointer hover:underline">
+                        <span
+                            onClick={() => {
+                                navigate("/login")
+                            }}
+                            className="text-purple-400 cursor-pointer hover:underline">
                             Sign In
                         </span>
                     </div>

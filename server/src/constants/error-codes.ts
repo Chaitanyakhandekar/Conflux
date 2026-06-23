@@ -79,6 +79,9 @@ export const ERROR_CODES = {
         "TOO_MANY_REQUESTS",
 
     INTERNAL_SERVER_ERROR:
-        "INTERNAL_SERVER_ERROR"
+        "INTERNAL_SERVER_ERROR",
+    
+    VERIFICATION_REQUIRED:
+        "VERIFICATION_REQUIRED"
 
 } as const;

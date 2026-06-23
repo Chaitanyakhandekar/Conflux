@@ -1,5 +1,5 @@
 import { env } from "../config/env.config"
-import type { RegisterUserType } from "../types/user.type"
+import type { LoginUserType, RegisterUserType } from "../types/user.type"
 import axios from "axios"
 
 class AuthApi {
@@ -19,6 +19,45 @@ class AuthApi {
             )
 
             console.log('register data : ', response.data);
+
+            if (!response.data.success) {
+                return {
+                    success: false,
+                    error: response.data.errorCode,
+                    message: response.data?.message
+                }
+            }
+
+            return {
+                success: true,
+                statusCode: response.status,
+                data: response.data.data
+            }
+
+        } catch (error: any) {
+            console.log('register error : ', error);
+
+            return {
+                success: false,
+                error: error,
+                message: error?.message
+            }
+
+        }
+    }
+
+    loginUser = async (user: LoginUserType): Promise<any> => {
+        try {
+
+            const response = await axios.post(
+                `${this.baseUrl}/login`,
+                user,
+                {
+                    withCredentials: true
+                }
+            )
+
+            console.log('Login data : ', response.data);
 
             if (!response.data.success) {
                 return {

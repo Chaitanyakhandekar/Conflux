@@ -1,7 +1,7 @@
 import { authApi } from "../api/auth.api";
 import { useAuthStore } from "../store/auth-store";
 import { useState } from "react";
-import type { RegisterUserType } from "../types/user.type";
+import type { LoginUserType, RegisterUserType } from "../types/user.type";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -17,7 +17,8 @@ export const useAuth = (): any => {
         user,
         setUser,
         setPendingVerificationEmail,
-        pendingVerificationEmail
+        pendingVerificationEmail,
+        logout
     } = useAuthStore()
 
 
@@ -37,6 +38,24 @@ export const useAuth = (): any => {
         else {
             setErrorType(res.error)
         }
+    }
+
+    const login = async (userData: LoginUserType): Promise<any> => {
+        setLoading(true)
+        const res = await authApi.loginUser(userData)
+        setLoading(false)
+
+        if (res.success) {
+            setUser(res.data)
+            toast.success(
+                "Login Successfull."
+            )
+            navigate("/")
+        }
+        else {
+            setErrorType(res.error)
+        }
+
     }
 
     const resendOTP = async (email: string): Promise<void> => {
@@ -91,6 +110,7 @@ export const useAuth = (): any => {
 
     return {
         register,
+        login,
         loading,
         setLoading,
         user,
