@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom"
 import Register from './pages/auth/Register'
 import VerifyOtp from './pages/auth/VerifyOtp'
 import ProfileSetup from './pages/user/ProfileSetup'
-import Home from "./pages/user/Home"
+import Workspace from "./pages/workspace/Workspace"
 import Login from "./pages/auth/Login"
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
       />
       <Routes>
 
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Workspace />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
