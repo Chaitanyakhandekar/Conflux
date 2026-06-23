@@ -5,6 +5,7 @@ import VerifyOtp from './pages/auth/VerifyOtp'
 import ProfileSetup from './pages/user/ProfileSetup'
 import Workspace from "./pages/workspace/Workspace"
 import Login from "./pages/auth/Login"
+import { UIProvider } from "./contexts/UIContext"
 
 function App() {
   return (
@@ -25,15 +26,17 @@ function App() {
           },
         }}
       />
-      <Routes>
+      <UIProvider>
+        <Routes>
 
-        <Route path="/" element={<Workspace />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/verify-otp" element={<VerifyOtp />} />
-        <Route path="/profile-setup" element={<ProfileSetup />} />
+          <Route path="/" element={<Workspace />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/profile-setup" element={<ProfileSetup />} />
 
-      </Routes>
+        </Routes>
+      </UIProvider>
     </>
   )
 }

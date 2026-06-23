@@ -1,10 +1,13 @@
 import { Search, Phone, Videotape, Pin, Users, Menu, Hash } from "lucide-react"
+import { useUI } from "../../contexts/UIContext"
 
 interface ChatHeaderProps {
   onMenuClick?: () => void
 }
 
 function ChatHeader({ onMenuClick }: ChatHeaderProps) {
+  const { setShowSearch, setShowNotifications } = useUI()
+
   return (
     <header className="h-[48px] flex items-center justify-between px-4 shadow-[0_1px_0_rgba(255,255,255,0.04)] bg-[#091223] flex-shrink-0">
       <div className="flex items-center gap-3 min-w-0">
@@ -30,25 +33,26 @@ function ChatHeader({ onMenuClick }: ChatHeaderProps) {
         <button className="hover:text-[#8B7DFF] transition-colors">
           <Pin size={18} />
         </button>
-        <button className="hover:text-[#8B7DFF] transition-colors">
+        <button onClick={() => setShowNotifications(true)} className="hover:text-[#8B7DFF] transition-colors relative">
           <Users size={20} />
         </button>
         <div className="w-[1px] h-6 bg-[rgba(255,255,255,0.06)]" />
-        <div className="relative">
+        <div className="relative" onClick={() => setShowSearch(true)}>
           <Search size={16} className="absolute left-2 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
           <input
             type="text"
             placeholder="Search"
-            className="w-[144px] h-[28px] bg-[rgba(255,255,255,0.03)] rounded-[6px] pl-7 pr-2 text-sm text-white placeholder-[#64748B] outline-none border border-[rgba(255,255,255,0.06)] focus:border-[#8B7DFF] focus:shadow-[0_0_12px_rgba(139,125,255,0.12)] transition-all"
+            readOnly
+            className="w-[144px] h-[28px] bg-[rgba(255,255,255,0.03)] rounded-[6px] pl-7 pr-2 text-sm text-white placeholder-[#64748B] outline-none border border-[rgba(255,255,255,0.06)] cursor-pointer"
           />
         </div>
       </div>
 
       <div className="flex md:hidden items-center gap-2 text-[#94A3B8]">
-        <button className="hover:text-white transition-colors p-1">
+        <button onClick={() => setShowSearch(true)} className="hover:text-white transition-colors p-1">
           <Search size={18} />
         </button>
-        <button className="hover:text-white transition-colors p-1">
+        <button onClick={() => setShowNotifications(true)} className="hover:text-white transition-colors p-1">
           <Users size={18} />
         </button>
       </div>

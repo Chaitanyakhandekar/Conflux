@@ -1,8 +1,11 @@
 import { users } from "../../data/users"
+import { useUI } from "../../contexts/UIContext"
 
 const roleOrder = ["Admin", "Moderator", "Member"] as const
 
 function MembersSidebar() {
+  const { setShowMemberProfile } = useUI()
+
   const getInitials = (name: string) => name[0].toUpperCase()
 
   const getAvatarColor = (name: string) => {
@@ -64,6 +67,7 @@ function MembersSidebar() {
                 {roleUsers.map((user) => (
                   <div
                     key={user.id}
+                    onClick={() => setShowMemberProfile(user.username)}
                     className="flex items-center gap-3 px-2 py-1.5 rounded-[6px] hover:bg-[rgba(255,255,255,0.03)] cursor-pointer transition-colors group"
                   >
                     <div className="relative flex-shrink-0">

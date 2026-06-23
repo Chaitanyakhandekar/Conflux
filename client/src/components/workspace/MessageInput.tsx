@@ -1,6 +1,9 @@
 import { Plus, Gift, Sticker, Paperclip, Smile, Send } from "lucide-react"
+import { useUI } from "../../contexts/UIContext"
 
 function MessageInput() {
+  const { setShowEmojiPicker, setShowAttachmentMenu } = useUI()
+
   return (
     <div className="px-4 pb-4 pt-1 flex-shrink-0">
       <div className="flex items-end gap-2 bg-[rgba(255,255,255,0.03)] backdrop-blur-[12px] rounded-[10px] px-4 py-[10px] border border-[rgba(255,255,255,0.06)]">
@@ -19,10 +22,16 @@ function MessageInput() {
           <button className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#94A3B8] hover:text-white hover:bg-[rgba(139,125,255,0.1)] transition-colors">
             <Sticker size={20} />
           </button>
-          <button className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#94A3B8] hover:text-white hover:bg-[rgba(139,125,255,0.1)] transition-colors">
+          <button
+            onClick={() => setShowAttachmentMenu(true)}
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#94A3B8] hover:text-white hover:bg-[rgba(139,125,255,0.1)] transition-colors"
+          >
             <Paperclip size={20} />
           </button>
-          <button className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#94A3B8] hover:text-white hover:bg-[rgba(139,125,255,0.1)] transition-colors">
+          <button
+            onClick={() => setShowEmojiPicker("input")}
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#94A3B8] hover:text-white hover:bg-[rgba(139,125,255,0.1)] transition-colors"
+          >
             <Smile size={20} />
           </button>
           <div className="w-[1px] h-6 bg-[rgba(255,255,255,0.06)] mx-1" />

@@ -1,7 +1,10 @@
 import { ChevronDown, Hash, Volume2, Plus, Headphones } from "lucide-react"
 import { channelSections } from "../../data/channels"
+import { useUI } from "../../contexts/UIContext"
 
 function ChannelList() {
+  const { setShowCreateChannel, setShowVoiceJoin, setShowDMPopup } = useUI()
+
   return (
     <div className="flex-1 overflow-y-auto px-2 space-y-4">
       {channelSections.map((section) => (
@@ -14,7 +17,10 @@ function ChannelList() {
               </span>
             </div>
             {section.label !== "DIRECT MESSAGES" && (
-              <button className="opacity-0 group-hover:opacity-100 text-[#94A3B8] hover:text-white transition-all">
+              <button
+                onClick={() => setShowCreateChannel(true)}
+                className="opacity-0 group-hover:opacity-100 text-[#94A3B8] hover:text-white transition-all"
+              >
                 <Plus size={14} />
               </button>
             )}
@@ -29,6 +35,10 @@ function ChannelList() {
               return (
                 <div
                   key={channel.id}
+                  onClick={() => {
+                    if (isVoice) setShowVoiceJoin(channel.name)
+                    if (isDM) setShowDMPopup(channel.name)
+                  }}
                   className={`flex items-center gap-1.5 px-2 h-[34px] rounded-[6px] cursor-pointer text-sm transition-all duration-200 group ${
                     isActive
                       ? "bg-[rgba(139,125,255,0.14)] text-white shadow-[0_0_12px_rgba(139,125,255,0.06)]"

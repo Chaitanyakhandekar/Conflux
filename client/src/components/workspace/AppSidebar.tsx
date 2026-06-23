@@ -1,12 +1,22 @@
 import { Plus, Compass } from "lucide-react"
 import { servers } from "../../data/servers"
+import { useUI } from "../../contexts/UIContext"
 
 function AppSidebar() {
+  const { setShowCreateServer, setShowProfileCard, setShowContextServer, setContextMenuPos } = useUI()
+
+  const handleContext = (e: React.MouseEvent, serverId: string) => {
+    e.preventDefault()
+    setContextMenuPos({ x: e.clientX, y: e.clientY })
+    setShowContextServer(serverId)
+  }
+
   return (
     <aside className="w-[72px] h-full bg-[#08101F] flex flex-col items-center py-3 flex-shrink-0 gap-2">
       {servers.slice(0, 4).map((server) => (
         <button
           key={server.id}
+          onContextMenu={(e) => handleContext(e, server.id)}
           className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${server.gradient} flex items-center justify-center text-white text-xs font-bold flex-shrink-0 hover:rounded-[14px] transition-all duration-200 relative ${
             server.id === "1" ? "rounded-[14px]" : ""
           }`}
@@ -22,6 +32,7 @@ function AppSidebar() {
       <div className="w-8 h-[2px] rounded-full bg-[rgba(255,255,255,0.06)] my-1" />
 
       <button
+        onClick={() => setShowCreateServer(true)}
         className="w-12 h-12 rounded-2xl bg-[rgba(255,255,255,0.03)] flex items-center justify-center text-[#22C55E] hover:bg-[#22C55E] hover:text-white hover:shadow-[0_0_20px_rgba(34,197,94,0.2)] transition-all duration-200 flex-shrink-0"
         title="Add Server"
       >
@@ -38,7 +49,7 @@ function AppSidebar() {
       <div className="flex-1" />
 
       <div className="flex flex-col items-center gap-2 pb-1">
-        <div className="relative group cursor-pointer">
+        <div className="relative group cursor-pointer" onClick={() => setShowProfileCard(true)}>
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B7DFF] to-[#6B5CE7] shadow-[0_0_16px_rgba(139,125,255,0.2)] flex items-center justify-center text-white text-xs font-semibold">
             Y
           </div>

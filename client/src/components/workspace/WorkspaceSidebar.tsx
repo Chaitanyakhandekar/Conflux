@@ -1,10 +1,16 @@
 import { ChevronDown, Phone, Headphones } from "lucide-react"
 import ChannelList from "./ChannelList"
+import { useUI } from "../../contexts/UIContext"
 
 function WorkspaceSidebar() {
+  const { setShowServerDropdown, setShowProfileCard } = useUI()
+
   return (
     <aside className="w-[240px] h-full bg-[#0C1322] flex flex-col flex-shrink-0">
-      <div className="h-[48px] flex items-center justify-between px-4 shadow-[0_1px_0_rgba(255,255,255,0.04)] flex-shrink-0 cursor-pointer hover:bg-[rgba(255,255,255,0.03)] transition-colors">
+      <div
+        className="h-[48px] flex items-center justify-between px-4 shadow-[0_1px_0_rgba(255,255,255,0.04)] flex-shrink-0 cursor-pointer hover:bg-[rgba(255,255,255,0.03)] transition-colors"
+        onClick={() => setShowServerDropdown(true)}
+      >
         <h1 className="text-white text-[15px] font-semibold">Conflux Community</h1>
         <ChevronDown size={16} className="text-[#94A3B8]" />
       </div>
@@ -14,7 +20,7 @@ function WorkspaceSidebar() {
       </div>
 
       <div className="h-[52px] flex items-center gap-2 px-3 bg-[#0C1322] border-t border-[rgba(255,255,255,0.04)] flex-shrink-0">
-        <div className="relative group cursor-pointer">
+        <div className="relative group cursor-pointer" onClick={() => setShowProfileCard(true)}>
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8B7DFF] to-[#6B5CE7] shadow-[0_0_12px_rgba(139,125,255,0.15)] flex items-center justify-center text-white text-[11px] font-semibold">
             Y
           </div>

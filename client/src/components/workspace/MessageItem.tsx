@@ -1,6 +1,7 @@
 import { MessageSquare } from "lucide-react"
 import type { Message } from "../../data/messages"
 import CodeSnippet from "./CodeSnippet"
+import MessageActions from "../modals/MessageActions"
 
 interface MessageItemProps {
   message: Message
@@ -29,7 +30,8 @@ function MessageItem({ message, isFirst = true, sameUser = false }: MessageItemP
 
   if (!isFirst && sameUser) {
     return (
-      <div className="group hover:bg-[rgba(255,255,255,0.015)] px-4 py-[2px] -mx-4">
+      <div className="group relative hover:bg-[rgba(255,255,255,0.015)] px-4 py-[2px] -mx-4 transition-colors duration-200">
+        <MessageActions />
         <div className="flex gap-4">
           <div className="w-10 flex-shrink-0 invisible" />
           <div className="flex-1 min-w-0">
@@ -72,7 +74,8 @@ function MessageItem({ message, isFirst = true, sameUser = false }: MessageItemP
   }
 
   return (
-    <div className="group hover:bg-[rgba(255,255,255,0.015)] px-4 py-[2px] -mx-4 transition-colors duration-200">
+    <div className="group relative hover:bg-[rgba(255,255,255,0.015)] px-4 py-[2px] -mx-4 transition-colors duration-200">
+      <MessageActions />
       <div className="flex gap-4">
         <div className={`w-10 h-10 rounded-full ${getAvatarColor(message.username)} flex-shrink-0 flex items-center justify-center text-white text-sm font-semibold mt-[2px] shadow-[0_0_12px_rgba(139,125,255,0.08)]`}>
           {getInitials(message.username)}
