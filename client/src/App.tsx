@@ -1,12 +1,39 @@
-import { useState } from 'react'
-
+import { Toaster } from "react-hot-toast"
+import { Routes, Route } from "react-router-dom"
+import Register from './pages/auth/Register'
+import VerifyOtp from './pages/auth/VerifyOtp'
+import ProfileSetup from './pages/user/ProfileSetup'
+import Home from "./pages/user/Home"
+import Login from "./pages/auth/Login"
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <h1 className="bg-green-400 text-white text-2xl font-bold p-3 text-center">Welcome to Conflux</h1>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: "#1e1b4b",
+            color: "#fff",
+            border: "1px solid rgba(255,255,255,0.1)",
+          },
+          success: {
+            iconTheme: { primary: "#a855f7", secondary: "#fff" },
+          },
+          error: {
+            iconTheme: { primary: "#ef4444", secondary: "#fff" },
+          },
+        }}
+      />
+      <Routes>
+
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/profile-setup" element={<ProfileSetup />} />
+
+      </Routes>
     </>
   )
 }

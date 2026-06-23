@@ -6,6 +6,7 @@ dotenv.config({
 
 type EnvConfig = {
     PORT: number
+    NODE_ENV: "development" | "production"
     ALLOW_ORIGIN: string
     MONGODB_ATLAS_URL: string
     JWT_ACCESS_SECRET: string
@@ -27,6 +28,7 @@ type EnvConfig = {
 
 export const env: EnvConfig = {
     PORT: Number(process.env.PORT),
+    NODE_ENV: (process.env.NODE_ENV as "development" | "production"),
     ALLOW_ORIGIN: (process.env.ALLOW_ORIGIN as string),
     MONGODB_ATLAS_URL: (process.env.MONGODB_ATLAS_URL as string),
     JWT_ACCESS_SECRET: (process.env.JWT_ACCESS_SECRET as string),
