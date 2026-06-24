@@ -86,7 +86,7 @@ class AuthApi {
                 }
             )
 
-            console.log('Login data : ', response);
+            console.log('Login data : ', response.data.errorCode);
 
             if (!response.data.success) {
                 return {

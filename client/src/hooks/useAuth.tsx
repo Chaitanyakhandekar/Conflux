@@ -45,15 +45,19 @@ export const useAuth = (): any => {
         const res = await authApi.loginUser(userData)
         setLoading(false)
 
-        if (res.success) {
+        console.log("Login Auth : ", res);
+
+
+        if (!res.success) {
+
+            setErrorType(res.error)
+        }
+        else {
             setUser(res.data)
             toast.success(
                 "Login Successfull."
             )
             navigate("/")
-        }
-        else {
-            setErrorType(res.error)
         }
 
     }

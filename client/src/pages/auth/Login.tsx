@@ -172,7 +172,7 @@ const Login = () => {
                                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-purple-500 transition"
                             />
 
-                            {errorType === "INVALID_emailS" && (
+                            {errorType === "INVALID_CREDENTIALS" || errorType === "NOT_FOUND" && (
                                 <p className="text-red-400 text-sm mt-1">
                                     invalid email or password.
                                 </p>

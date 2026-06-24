@@ -94,7 +94,7 @@ const loginUserService = async (userData: LoginUserType): Promise<LoginServiceRe
         throw new ApiError(401, "User Not Verified", ERROR_CODES.VERIFICATION_REQUIRED)
     }
 
-    if (!user.isCorrectPassword(userData.password)) {
+    if (! await user.isCorrectPassword(userData.password)) {
         throw new ApiError(401, "Invalid Credentials", ERROR_CODES.INVALID_CREDENTIALS)
     }
 
