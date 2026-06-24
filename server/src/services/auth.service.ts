@@ -1,4 +1,4 @@
-import { asyncHandler, gnerateOTP } from "../utils/index.ts";
+import { asyncHandler, decodeJWT, gnerateOTP } from "../utils/index.ts";
 import { Request, Response, NextFunction } from "express";
 import type { IUser, LoginUserType, RegisterUserType } from "../types/user.type.ts";
 import { ApiError } from "../types/error.type.ts";
@@ -10,6 +10,8 @@ import { ERROR_CODES } from "../constants/error-codes.ts";
 import { isUserExists } from "../utils/existance.ts";
 import { generateAccessAndRefreshTokens } from "../utils/generateARTokens.ts";
 import { LoginServiceReturnType } from "../types/auth.type.ts";
+import { env } from "../config/env.config.ts";
+
 
 
 /**
@@ -178,9 +180,80 @@ const verifyOTPService = async (email: string, otp: string): Promise<any> => {
 }
 
 
+// Type for AuthMe service Return type
+type AuthMeRType = {
+    user: object,
+    tokens?: {
+        accessToken: string,
+        refreshToken: string
+    } | null
+}
+
+/**
+ * @description Service for Auth me
+ * @param accessToken 
+ * @param refreshToken 
+ * @returns 
+ */
+const authMeService = async (accessToken: string, refreshToken: string): Promise<AuthMeRType> => {
+
+    try {
+
+        if (!accessToken) {
+            throw new Error()
+        }
+
+        const decodeJWTData = decodeJWT(accessToken, env.JWT_ACCESS_SECRET)
+
+        if (decodeJWTData.isExpired) {
+            throw new Error()
+        }
+
+
+        const user = await isUserExists(decodeJWTData.decodedToken._id)
+
+        return {
+            user,
+            tokens: null
+        }
+
+    } catch (error) {
+
+        if (!refreshToken) {
+            throw new ApiError(401, "Unauthorize User", ERROR_CODES.UNAUTHORIZED)
+        }
+
+        const decodeJWTData = decodeJWT(refreshToken, env.JWT_REFRESH_SECRET)
+
+        if (decodeJWTData.isExpired) {
+            throw new ApiError(401, "Unauthorized User", ERROR_CODES.UNAUTHORIZED)
+        }
+
+        const user = await isUserExists(decodeJWTData.decodedToken._id)
+
+        if (user.refreshToken !== refreshToken) {
+            throw new ApiError(401, "Unauthorized User", ERROR_CODES.UNAUTHORIZED)
+        }
+
+        const tokens = generateAccessAndRefreshTokens(user)
+
+        user.refreshToken = tokens.refreshToken
+
+        await user.save({ validateBeforeSave: false })
+
+        return {
+            user: user.toSafeObject(),
+            tokens
+        }
+
+    }
+}
+
+
 export {
     registerUserService,
     loginUserService,
     resendOTPEmailService,
-    verifyOTPService
+    verifyOTPService,
+    authMeService
 }

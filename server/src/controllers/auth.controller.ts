@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/index.ts";
 import { Request, Response, NextFunction } from "express";
 import type { LoginUserType, RegisterUserType } from "../types/user.type.ts";
-import { loginUserService, registerUserService, resendOTPEmailService } from "../services/auth.service.ts";
+import { authMeService, loginUserService, registerUserService, resendOTPEmailService } from "../services/auth.service.ts";
 import { ApiResponse } from "../types/error.type.ts";
 import { verifyOTPService } from "../services/auth.service.ts";
 import { env } from "../config/env.config.ts";
@@ -45,7 +45,7 @@ const loginUser = asyncHandler(async (req: Request<{}, {}, LoginUserType>, res: 
             sameSite: env.NODE_ENV === "production" ? "none" : "lax"
         })
         .json(
-            new ApiResponse(200, "User Login Successful.")
+            new ApiResponse(200, "User Login Successful.", userData.user)
         )
 
 })
@@ -83,9 +83,41 @@ const verifyOTP = asyncHandler(async (req: Request<{}, {}, { email: string, otp:
         )
 })
 
+const authMe = asyncHandler(async (req: Request, res: Response) => {
+
+    const { accessToken, refreshToken } = req.cookies
+
+    const { user, tokens } = await authMeService(accessToken, refreshToken)
+
+    if (!tokens) {
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, "User Authorize.", user)
+            )
+    }
+
+    return res
+        .status(200)
+        .cookie("accessToken", tokens.accessToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax"
+        })
+        .cookie("refreshToken", tokens.refreshToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax"
+        })
+        .json(
+            new ApiResponse(200, "User Authorized", user)
+        )
+})
+
 export {
     registerUser,
     loginUser,
     resendOTPEmail,
-    verifyOTP
+    verifyOTP,
+    authMe
 }

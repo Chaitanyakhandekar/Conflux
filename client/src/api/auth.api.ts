@@ -10,6 +10,35 @@ class AuthApi {
         this.baseUrl = `${env.VITE_ENV === "production" ? env.VITE_SERVER_URL_PRODUCTION : env.VITE_SERVER_URL_LOCAL}/api/v1/auth`
     }
 
+    authMe = async (): Promise<any> => {
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}/auth-me`,
+                {
+                    withCredentials: true
+                }
+            )
+
+            console.log('AUth Me :: ', response.data);
+
+
+            if (response.data.success) {
+                return {
+                    success: true,
+                    data: response.data.data
+                }
+            }
+            else {
+                return {
+                    success: false
+                }
+            }
+        } catch (error) {
+            console.log('AUth Me :: ', error);
+
+        }
+    }
+
     registerUser = async (user: RegisterUserType): Promise<any> => {
         try {
 
@@ -57,7 +86,7 @@ class AuthApi {
                 }
             )
 
-            console.log('Login data : ', response.data);
+            console.log('Login data : ', response);
 
             if (!response.data.success) {
                 return {

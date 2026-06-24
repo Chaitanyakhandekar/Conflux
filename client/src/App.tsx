@@ -6,8 +6,24 @@ import ProfileSetup from './pages/user/ProfileSetup'
 import Workspace from "./pages/workspace/Workspace"
 import Login from "./pages/auth/Login"
 import { UIProvider } from "./contexts/UIContext"
+import ProtectedRoute from "./routes/ProtectedRoute"
+import ProtectedRouteReverese from "./routes/ProtectedRouteReverese"
+import { useEffect } from "react"
+import { useAuth } from "./hooks/useAuth"
+import { useAuthStore } from "./store/auth-store"
 
 function App() {
+
+  const { authMe } = useAuth()
+
+  const authMeP = async () => {
+    await authMe()
+  }
+
+  useEffect(() => {
+    authMeP()
+  }, [])
+
   return (
     <>
       <Toaster
@@ -29,10 +45,10 @@ function App() {
       <UIProvider>
         <Routes>
 
-          <Route path="/" element={<Workspace />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/" element={<ProtectedRoute><Workspace /></ProtectedRoute>} />
+          <Route path="/register" element={<ProtectedRouteReverese><Register /></ProtectedRouteReverese>} />
+          <Route path="/login" element={<ProtectedRouteReverese><Login /></ProtectedRouteReverese>} />
+          <Route path="/verify-otp" element={<ProtectedRouteReverese><VerifyOtp /></ProtectedRouteReverese>} />
           <Route path="/profile-setup" element={<ProfileSetup />} />
 
         </Routes>

@@ -106,6 +106,19 @@ export const useAuth = (): any => {
 
     }
 
+    const authMe = async () => {
+        setLoading(true)
+        const res = await authApi.authMe()
+        setLoading(false)
+
+        if (!res.success) {
+            logout()
+        }
+        else {
+            setUser(res.data)
+        }
+    }
+
 
 
     return {
@@ -120,7 +133,8 @@ export const useAuth = (): any => {
         resendOTP,
         verifyOTP,
         errorType,
-        setErrorType
+        setErrorType,
+        authMe
     }
 
 }
