@@ -12,6 +12,7 @@ import { useEffect } from "react"
 import { useAuth } from "./hooks/useAuth"
 import { useAuthStore } from "./store/auth-store"
 import SendVerificationOtp from "./pages/auth/SendVerificationOtp"
+import ProfileSetupRestriction from "./routes/ProfileSetupRestriction"
 
 function App() {
 
@@ -46,12 +47,12 @@ function App() {
       <UIProvider>
         <Routes>
 
-          <Route path="/" element={<ProtectedRoute><Workspace /></ProtectedRoute>} />
+          <Route path="/" element={<ProfileSetupRestriction><Workspace /></ProfileSetupRestriction>} />
           <Route path="/register" element={<ProtectedRouteReverese><Register /></ProtectedRouteReverese>} />
           <Route path="/login" element={<ProtectedRouteReverese><Login /></ProtectedRouteReverese>} />
           <Route path="/verify-otp" element={<ProtectedRouteReverese><VerifyOtp /></ProtectedRouteReverese>} />
           <Route path="/send-otp" element={<ProtectedRouteReverese><SendVerificationOtp /></ProtectedRouteReverese>} />
-          <Route path="/profile-setup" element={<ProfileSetup />} />
+          <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
 
         </Routes>
       </UIProvider>

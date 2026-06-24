@@ -17,4 +17,4 @@ function ProtectedRouteReverese({ children }) {
     return children
 }
 
-export default ProtectedRouteReverese 
+export default ProtectedRouteReverese

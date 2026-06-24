@@ -32,6 +32,13 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
         type: String,
         trim: true
     },
+    setupProfile: {
+        type: Boolean,
+        default: false
+    },
+    displayName: {
+        type: String
+    },
     avatar: {
         secure_url: {
             type: String
