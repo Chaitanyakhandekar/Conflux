@@ -11,6 +11,7 @@ import ProtectedRouteReverese from "./routes/ProtectedRouteReverese"
 import { useEffect } from "react"
 import { useAuth } from "./hooks/useAuth"
 import { useAuthStore } from "./store/auth-store"
+import SendVerificationOtp from "./pages/auth/SendVerificationOtp"
 
 function App() {
 
@@ -49,6 +50,7 @@ function App() {
           <Route path="/register" element={<ProtectedRouteReverese><Register /></ProtectedRouteReverese>} />
           <Route path="/login" element={<ProtectedRouteReverese><Login /></ProtectedRouteReverese>} />
           <Route path="/verify-otp" element={<ProtectedRouteReverese><VerifyOtp /></ProtectedRouteReverese>} />
+          <Route path="/send-otp" element={<ProtectedRouteReverese><SendVerificationOtp /></ProtectedRouteReverese>} />
           <Route path="/profile-setup" element={<ProfileSetup />} />
 
         </Routes>

@@ -30,7 +30,6 @@ export const useAuth = (): any => {
         console.log("register user data: ", res.data)
 
         if (res.success) {
-            setUser(res.data)
             localStorage.setItem("email", res.data.email)
             setPendingVerificationEmail(res.data.email)
             navigate("/verify-otp")
@@ -51,6 +50,10 @@ export const useAuth = (): any => {
         if (!res.success) {
 
             setErrorType(res.error)
+
+            if (res.error === "VERIFICATION_REQUIRED") {
+                navigate("/send-otp")
+            }
         }
         else {
             setUser(res.data)
