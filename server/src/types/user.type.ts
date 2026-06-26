@@ -1,6 +1,7 @@
-import { Document, Model } from "mongoose";
+import { Document, Model, Types } from "mongoose";
 
 export interface IUser extends Document {
+    _id: Types.ObjectId;
     username: string;
     email: string;
     password: string;
@@ -58,7 +59,15 @@ type LoginUserType = {
     password: string
 }
 
+type SetupProfileType = {
+    _id: Types.ObjectId | string
+    displayName: string
+    bio?: string
+    avatar?: string
+}
+
 export {
     RegisterUserType,
-    LoginUserType
+    LoginUserType,
+    SetupProfileType
 }

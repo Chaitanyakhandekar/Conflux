@@ -29,6 +29,8 @@ interface UIContextType {
   setShowContextServer: (v: string | null) => void
   contextMenuPos: { x: number; y: number }
   setContextMenuPos: (v: { x: number; y: number }) => void
+  showDMHub: boolean
+  setShowDMHub: (v: boolean) => void
   closeAll: () => void
 }
 
@@ -49,6 +51,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
   const [showDMPopup, setShowDMPopup] = useState<string | null>(null)
   const [showContextServer, setShowContextServer] = useState<string | null>(null)
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 })
+  const [showDMHub, setShowDMHub] = useState(true)
 
   const closeAll = useCallback(() => {
     setShowCreateServer(false)
@@ -83,6 +86,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
         showDMPopup, setShowDMPopup,
         showContextServer, setShowContextServer,
         contextMenuPos, setContextMenuPos,
+        showDMHub, setShowDMHub,
         closeAll,
       }}
     >

@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react"
 import { X } from "lucide-react"
 import AppSidebar from "../components/workspace/AppSidebar"
 import WorkspaceSidebar from "../components/workspace/WorkspaceSidebar"
+import DMSidebar from "../components/dm/DMSidebar"
+import DMHub from "../components/dm/DMHub"
 import ChatHeader from "../components/workspace/ChatHeader"
 import MessageList from "../components/workspace/MessageList"
 import MessageInput from "../components/workspace/MessageInput"
@@ -41,6 +43,7 @@ function WorkspaceLayout() {
     showDMPopup, setShowDMPopup,
     showContextServer, setShowContextServer,
     contextMenuPos,
+    showDMHub,
     closeAll,
   } = useUI()
 
@@ -82,9 +85,15 @@ function WorkspaceLayout() {
         <AppSidebar />
       </div>
 
-      <div className="hidden lg:flex">
-        <WorkspaceSidebar />
-      </div>
+      {showDMHub ? (
+        <div className="hidden lg:flex">
+          <DMSidebar />
+        </div>
+      ) : (
+        <div className="hidden lg:flex">
+          <WorkspaceSidebar />
+        </div>
+      )}
 
       {mobileSidebarOpen && (
         <>
@@ -94,7 +103,7 @@ function WorkspaceLayout() {
           />
           <div className="fixed left-0 top-0 bottom-0 z-50 flex lg:hidden">
             <AppSidebar />
-            <WorkspaceSidebar />
+            {showDMHub ? <DMSidebar /> : <WorkspaceSidebar />}
             <button
               className="absolute -right-10 top-4 w-9 h-9 rounded-full bg-[#0C1322] border border-[rgba(255,255,255,0.06)] flex items-center justify-center text-[#94A3B8]"
               onClick={() => setMobileSidebarOpen(false)}
@@ -105,15 +114,20 @@ function WorkspaceLayout() {
         </>
       )}
 
-      <main className="flex-1 flex flex-col min-w-0 bg-[#091223]">
-        <ChatHeader onMenuClick={() => setMobileSidebarOpen(true)} />
-        <MessageList />
-        <MessageInput />
-      </main>
-
-      <div className="hidden xl:flex">
-        <MembersSidebar />
-      </div>
+      {showDMHub ? (
+        <DMHub />
+      ) : (
+        <>
+          <main className="flex-1 flex flex-col min-w-0 bg-[#091223]">
+            <ChatHeader onMenuClick={() => setMobileSidebarOpen(true)} />
+            <MessageList />
+            <MessageInput />
+          </main>
+          <div className="hidden xl:flex">
+            <MembersSidebar />
+          </div>
+        </>
+      )}
 
       <CreateServerModal open={showCreateServer} onClose={() => setShowCreateServer(false)} />
 

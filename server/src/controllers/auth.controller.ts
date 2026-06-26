@@ -37,12 +37,14 @@ const loginUser = asyncHandler(async (req: Request<{}, {}, LoginUserType>, res: 
         .cookie("accessToken", userData.tokens.accessToken, {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
-            sameSite: env.NODE_ENV === "production" ? "none" : "lax"
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
         })
         .cookie("refreshToken", userData.tokens.refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
-            sameSite: env.NODE_ENV === "production" ? "none" : "lax"
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
         })
         .json(
             new ApiResponse(200, "User Login Successful.", userData.user)
@@ -102,12 +104,15 @@ const authMe = asyncHandler(async (req: Request, res: Response) => {
         .cookie("accessToken", tokens.accessToken, {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
-            sameSite: env.NODE_ENV === "production" ? "none" : "lax"
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
         })
         .cookie("refreshToken", tokens.refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
-            sameSite: env.NODE_ENV === "production" ? "none" : "lax"
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+
         })
         .json(
             new ApiResponse(200, "User Authorized", user)

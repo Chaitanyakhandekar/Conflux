@@ -1,9 +1,9 @@
-import { Plus, Compass } from "lucide-react"
+import { Plus, Compass, MessageSquare } from "lucide-react"
 import { servers } from "../../data/servers"
 import { useUI } from "../../contexts/UIContext"
 
 function AppSidebar() {
-  const { setShowCreateServer, setShowProfileCard, setShowContextServer, setContextMenuPos } = useUI()
+  const { setShowCreateServer, setShowProfileCard, setShowContextServer, setContextMenuPos, showDMHub, setShowDMHub } = useUI()
 
   const handleContext = (e: React.MouseEvent, serverId: string) => {
     e.preventDefault()
@@ -13,10 +13,28 @@ function AppSidebar() {
 
   return (
     <aside className="w-[72px] h-full bg-[#08101F] flex flex-col items-center py-3 flex-shrink-0 gap-2">
+      <button
+        onClick={() => setShowDMHub(true)}
+        className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 relative ${
+          showDMHub
+            ? "bg-[#8B7DFF] text-white shadow-[0_0_20px_rgba(139,125,255,0.18)]"
+            : "bg-[rgba(255,255,255,0.03)] text-[#94A3B8] hover:bg-[#8B7DFF] hover:text-white hover:shadow-[0_0_20px_rgba(139,125,255,0.25)]"
+        }`}
+        title="Direct Messages"
+      >
+        <MessageSquare size={20} />
+        {showDMHub && (
+          <span className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-[4px] h-8 rounded-r-full bg-white shadow-[0_0_12px_rgba(139,125,255,0.4)]" />
+        )}
+      </button>
+
+      <div className="w-8 h-[2px] rounded-full bg-[rgba(255,255,255,0.06)] my-1" />
+
       {servers.slice(0, 4).map((server) => (
         <button
           key={server.id}
           onContextMenu={(e) => handleContext(e, server.id)}
+          onClick={() => setShowDMHub(false)}
           className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${server.gradient} flex items-center justify-center text-white text-xs font-bold flex-shrink-0 hover:rounded-[14px] transition-all duration-200 relative ${
             server.id === "1" ? "rounded-[14px]" : ""
           }`}
@@ -32,7 +50,7 @@ function AppSidebar() {
       <div className="w-8 h-[2px] rounded-full bg-[rgba(255,255,255,0.06)] my-1" />
 
       <button
-        onClick={() => setShowCreateServer(true)}
+        onClick={() => { setShowCreateServer(true); setShowDMHub(false) }}
         className="w-12 h-12 rounded-2xl bg-[rgba(255,255,255,0.03)] flex items-center justify-center text-[#22C55E] hover:bg-[#22C55E] hover:text-white hover:shadow-[0_0_20px_rgba(34,197,94,0.2)] transition-all duration-200 flex-shrink-0"
         title="Add Server"
       >
@@ -40,6 +58,7 @@ function AppSidebar() {
       </button>
 
       <button
+        onClick={() => setShowDMHub(false)}
         className="w-12 h-12 rounded-2xl bg-[rgba(255,255,255,0.03)] flex items-center justify-center text-[#94A3B8] hover:bg-[#8B7DFF] hover:text-white hover:shadow-[0_0_20px_rgba(139,125,255,0.25)] transition-all duration-200 flex-shrink-0"
         title="Explore Public Servers"
       >

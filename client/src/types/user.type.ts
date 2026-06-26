@@ -11,6 +11,26 @@ type LoginUserType = {
     password: string
 }
 
+
+export type User = {
+    _id: string;
+    username: string;
+    email: string;
+    fullName?: string;
+    displayName?: string;
+    setupProfile: boolean;
+
+    avatar?: {
+        secure_url?: string;
+        public_id?: string;
+    };
+
+    bio?: string;
+    isVerified: boolean;
+    lastActive?: Date;
+
+    OTPGeneratedAt?: Date;
+}
 export type {
     RegisterUserType,
     LoginUserType

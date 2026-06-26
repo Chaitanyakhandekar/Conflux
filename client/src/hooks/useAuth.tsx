@@ -4,8 +4,15 @@ import { useState } from "react";
 import type { LoginUserType, RegisterUserType } from "../types/user.type";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { userApi } from "../api/user.api";
 
 type OTPStatus = 'sending' | "sent" | "verified" | "invalid" | "verifying"
+type ProfileFormType = {
+    displayName: string;
+    bio?: string;
+    avatar?: File | null;
+};
+
 
 export const useAuth = (): any => {
 
@@ -126,6 +133,19 @@ export const useAuth = (): any => {
         }
     }
 
+    const setupProfile = async (data: ProfileFormType) => {
+        setLoading(true)
+        const res = await userApi.setupProfile(data)
+        setLoading(false)
+
+        if (res.success) {
+            toast.success(
+                "Profile Setup Done."
+            )
+            navigate("/")
+        }
+    }
+
 
 
     return {
@@ -141,7 +161,8 @@ export const useAuth = (): any => {
         verifyOTP,
         errorType,
         setErrorType,
-        authMe
+        authMe,
+        setupProfile
     }
 
 }

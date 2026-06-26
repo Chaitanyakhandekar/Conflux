@@ -1,9 +1,10 @@
 import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
+import type { User } from "../types/user.type";
 
 
 type AuthStoreType = {
-    user: object | null;
+    user: User | null;
     pendingVerificationEmail?: string | null;
     isAuthenticated?: boolean;
 
@@ -21,7 +22,7 @@ export const useAuthStore = create<AuthStoreType>()(
             pendingVerificationEmail: null,
             isAuthenticated: false,
 
-            setUser: (user: object) => {
+            setUser: (user: User) => {
                 set({
                     user
                 })
