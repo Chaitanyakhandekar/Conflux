@@ -30,7 +30,7 @@ const channelSchema = new Schema<IChannel, ChannelModel, IChannelMethods>({
 
     type: {
         type: String,
-        enum: ["TEXT", "VOICE"],
+        enum: ["TEXT", "VOICE", "ANNOUNCEMENT"],
         default: "TEXT"
     },
 
