@@ -10,4 +10,8 @@ export interface IServerMethods {
     isOwner: (userId: string) => boolean
 }
 
+export type ServerInfoType = {
+
+}
+
 export interface ServerModel extends Model<IServer, {}, IServerMethods> { }
