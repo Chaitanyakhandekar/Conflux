@@ -32,7 +32,7 @@ const userAuth = asyncHandler(async (req: Request, res: Response, next: NextFunc
 
     // console.log("Decoded Token in Auth Middleware : ",decodedToken);
 
-    const user = await isUserExists(decodedToken.decodedToken._id)
+    const user = await isUserExists(decodedToken.decodedToken?._id)
 
     req.user = user
 

@@ -13,8 +13,21 @@ import { LoginServiceReturnType } from "../types/auth.type.ts";
 import { env } from "../config/env.config.ts";
 import { uploadFileOnCloudinary } from "../providers/cloudinary.provider.ts";
 import { ServerInfoType } from "../types/server.type.ts";
+import { Server } from "../models/server.model.ts";
 
 
 const createServerService = async (serverInfo: ServerInfoType): Promise<any> => {
 
+    const server = await Server.create(serverInfo)
+
+    if (!server) {
+        throw new ApiError(500, "Server Creation Error.", ERROR_CODES.CREATE_FAILED)
+    }
+
+    return server;
+
+}
+
+export {
+    createServerService
 }

@@ -31,3 +31,7 @@ const createChannelService = async (channelData: ChannelDataType): Promise<IChan
     return channel;
 
 }
+
+export {
+    createChannelService
+}
