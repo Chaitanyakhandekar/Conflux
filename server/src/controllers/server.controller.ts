@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/index.ts";
 import { Request, Response, NextFunction } from "express";
-import type { LoginUserType, RegisterUserType } from "../types/user.type.ts";
+import type { IUser, LoginUserType, RegisterUserType } from "../types/user.type.ts";
 import { authMeService, loginUserService, registerUserService, resendOTPEmailService } from "../services/auth.service.ts";
 import { ApiResponse } from "../types/error.type.ts";
 import { verifyOTPService } from "../services/auth.service.ts";
@@ -16,7 +16,7 @@ const createServerController = asyncHandler(async (req: Request<{}, {}, ServerIn
 
     const server = createServerValidator(req.body)
 
-    const newServer = await createServerService(server)
+    const newServer = await createServerService(server, req.user!)
 
     return res
         .status(201)

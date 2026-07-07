@@ -14,15 +14,14 @@ import { env } from "../config/env.config.ts";
 import { uploadFileOnCloudinary } from "../providers/cloudinary.provider.ts";
 import { ChannelDataType, IChannel } from "../types/channel.type.ts";
 import { Channel } from "../models/channel.model.ts";
+import { createChannelValidator } from "../validators/channel.validator.ts";
 
 
 const createChannelService = async (channelData: ChannelDataType): Promise<IChannel> => {
 
-    if (!channelData.name.trim()) {
-        throw new ApiError(400, "Name is required Field", ERROR_CODES.REQUIRED_FIELDS_MISSING)
-    }
+    const data = createChannelValidator(channelData)
 
-    const channel = await Channel.create(channelData)
+    const channel = await Channel.create(data)
 
     if (!channel) {
         throw new ApiError(500, "Server Error While Creating Channel", ERROR_CODES.CREATE_FAILED)

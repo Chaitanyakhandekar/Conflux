@@ -16,12 +16,7 @@ import { ChannelDataType, IChannel } from "../types/channel.type.ts";
  */
 const createChannelController = asyncHandler(async (req: Request<{}, {}, ChannelDataType>, res: Response): Promise<any> => {
 
-    console.log('Data ', req.body);
-
-
-    const data = createChannelValidator(req.body)
-
-    const channel = await createChannelService(data)
+    const channel = await createChannelService(req.body)
 
     return res
         .status(201)
