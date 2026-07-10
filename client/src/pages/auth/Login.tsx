@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 
 type LoginFormType = {
     email: string;
@@ -68,6 +69,14 @@ const Login = () => {
         if (!validateForm()) return;
 
         await login(formData);
+    };
+
+    const handleGoogleLogin = (credentialResponse: CredentialResponse) => {
+        console.log(credentialResponse);    // API call here to login/register
+    };
+
+    const handleGoogleError = () => {
+        console.log("Google Authentication Error");
     };
 
     return (
@@ -191,6 +200,13 @@ const Login = () => {
                         </div>
 
                         {/* BUTTON */}
+
+                        <GoogleLogin
+                         onSuccess={handleGoogleLogin}
+                          onError={handleGoogleError}
+                           text="continue_with" 
+                           shape="circle"
+                           />
 
                         <motion.button
                             whileHover={{ scale: 1.02 }}
