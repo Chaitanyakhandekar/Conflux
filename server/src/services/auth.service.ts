@@ -151,7 +151,15 @@ const continueWithGoogleServer = async (googleId:string) : Promise<any> =>{
         }
 
         const user = await User.create(payload)
+
+        if(!user){
+            throw new ApiError(500,"Server Error While Registering.",ERROR_CODES.CREATE_FAILED)
+        }
+
+        return user;
     }
+
+    return userAlreadyExists;
 }
 
 /**
@@ -299,5 +307,6 @@ export {
     loginUserService,
     resendOTPEmailService,
     verifyOTPService,
-    authMeService
+    authMeService,
+    continueWithGoogleServer
 }
