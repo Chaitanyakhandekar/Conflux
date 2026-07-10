@@ -114,6 +114,33 @@ class AuthApi {
         }
     }
 
+    continueWithGoogle = async (googleId: string):Promise<any> =>{
+        try {
+            const response = await axios.post(`${this.baseUrl}/google`,
+                {
+                    googleId
+                },
+                {
+                    withCredentials: true
+                })
+
+            console.log('Continue with Google response : ', response.data);
+
+            return {
+                success: true,
+                statusCode: response.status,
+                data: response.data.data
+            }
+        } catch (error: any) {
+            console.log('Continue with Google error : ', error);
+            return {
+                success: false,
+                error: error,
+                message: error?.message || "Something went wrong"
+            }
+        }
+    }
+
     resendOTP = async (email: string): Promise<any> => {
         try {
 

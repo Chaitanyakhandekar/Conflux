@@ -206,6 +206,8 @@ const Login = () => {
                           onError={handleGoogleError}
                            text="continue_with" 
                            shape="circle"
+                           size="large"
+                           useOneTap={true}
                            />
 
                         <motion.button

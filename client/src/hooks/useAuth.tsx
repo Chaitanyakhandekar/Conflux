@@ -46,6 +46,23 @@ export const useAuth = (): any => {
         }
     }
 
+    const continueWithGoogle = async (googleId: string): Promise<any> => {
+        setLoading(true)
+        const res = await authApi.continueWithGoogle(googleId)
+        setLoading(false)
+    
+        if (!res.success) {
+            setErrorType(res.error)
+        }
+        else {
+            setUser(res.data)
+            toast.success(
+                "Login Successfull."
+            )
+            navigate("/")
+        }
+    }
+
     const login = async (userData: LoginUserType): Promise<any> => {
         setLoading(true)
         const res = await authApi.loginUser(userData)
@@ -162,7 +179,8 @@ export const useAuth = (): any => {
         errorType,
         setErrorType,
         authMe,
-        setupProfile
+        setupProfile,
+        continueWithGoogle
     }
 
 }

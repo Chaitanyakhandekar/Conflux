@@ -11,6 +11,9 @@ import { isUserExists } from "../utils/existance.ts";
 import { generateAccessAndRefreshTokens } from "../utils/generateARTokens.ts";
 import { LoginServiceReturnType } from "../types/auth.type.ts";
 import { env } from "../config/env.config.ts";
+import { verifyGoogleToken } from "../providers/google.provider.ts";
+import { continueWithGoogleValidator } from "../validators/auth.validator.ts";
+import { TokenPayload } from "google-auth-library";
 
 
 
@@ -108,6 +111,21 @@ const loginUserService = async (userData: LoginUserType): Promise<LoginServiceRe
         user: user.toSafeObject(),
         tokens
     }
+}
+
+/**
+ * @description Service for Register/Login with Google OAuth
+ * @param googleId 
+ */
+const continueWithGoogleServer = async (googleId:string) : Promise<any> =>{
+
+    if(!googleId || (googleId && googleId.trim()==="")){
+        throw new ApiError(400,"Valid Google Credential is Required.",ERROR_CODES.REQUIRED_FIELDS_MISSING)
+    }
+
+    const googleAuthPayload = await verifyGoogleToken(googleId)
+
+    continueWithGoogleValidator(googleAuthPayload as TokenPayload)
 }
 
 /**
