@@ -121,7 +121,7 @@ const loginUserService = async (userData: LoginUserType): Promise<LoginServiceRe
  * @description Service for Register/Login with Google OAuth
  * @param googleId 
  */
-const continueWithGoogleServer = async (googleId:string) : Promise<any> =>{
+const continueWithGoogleService = async (googleId:string) : Promise<any> =>{
 
     if(!googleId || (googleId && googleId.trim()==="")){
         throw new ApiError(400,"Valid Google Credential is Required.",ERROR_CODES.REQUIRED_FIELDS_MISSING)
@@ -156,10 +156,28 @@ const continueWithGoogleServer = async (googleId:string) : Promise<any> =>{
             throw new ApiError(500,"Server Error While Registering.",ERROR_CODES.CREATE_FAILED)
         }
 
-        return user;
+        const tokens = generateAccessAndRefreshTokens(user)
+
+        user.refreshToken = tokens.refreshToken
+    
+        await user.save({ validateBeforeSave: false })
+
+        return {
+            user: user.toSafeObject(),
+            tokens
+        }
     }
 
-    return userAlreadyExists;
+    const tokens = generateAccessAndRefreshTokens(userAlreadyExists)
+
+    userAlreadyExists.refreshToken = tokens.refreshToken
+
+    await userAlreadyExists.save({ validateBeforeSave: false })
+
+    return {
+        user: userAlreadyExists.toSafeObject(),
+        tokens
+    }
 }
 
 /**
@@ -308,5 +326,5 @@ export {
     resendOTPEmailService,
     verifyOTPService,
     authMeService,
-    continueWithGoogleServer
+    continueWithGoogleService
 }

@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/index.ts";
 import { Request, Response, NextFunction } from "express";
 import type { LoginUserType, RegisterUserType } from "../types/user.type.ts";
-import { authMeService, loginUserService, registerUserService, resendOTPEmailService } from "../services/auth.service.ts";
+import { authMeService, continueWithGoogleService, loginUserService, registerUserService, resendOTPEmailService } from "../services/auth.service.ts";
 import { ApiResponse } from "../types/error.type.ts";
 import { verifyOTPService } from "../services/auth.service.ts";
 import { env } from "../config/env.config.ts";
@@ -50,6 +50,29 @@ const loginUser = asyncHandler(async (req: Request<{}, {}, LoginUserType>, res: 
             new ApiResponse(200, "User Login Successful.", userData.user)
         )
 
+})
+
+const continueWithGoogleController = asyncHandler(async (req:Request, res:Response):Promise<any> =>{
+
+    const user = await continueWithGoogleService(req.body.googleId)
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200,"Google Auth Done",user)
+        )
+        .cookie("accessToken", user.tokens.accessToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
+        .cookie("refreshToken", user.tokens.refreshToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
 })
 
 /**
