@@ -23,7 +23,7 @@ import { TokenPayload } from "google-auth-library";
  */
 const registerUserService = async (payload: RegisterUserType): Promise<any> => {
 
-    if (payload.email.trim() === "" || payload.fullName.trim() === "" || payload.username.trim() === "" || payload.password.trim() === "") {
+    if (payload.email.trim() === "" || payload.fullName.trim() === "" || payload.username.trim() === "" || payload.password?.trim() === "") {
         throw new ApiError(400, "Empty Fields Not Allowed", ERROR_CODES.REQUIRED_FIELDS_MISSING)
     }
 
@@ -87,7 +87,7 @@ const registerUserService = async (payload: RegisterUserType): Promise<any> => {
  */
 const loginUserService = async (userData: LoginUserType): Promise<LoginServiceReturnType> => {
 
-    if (userData.email.trim() === "" || userData.password.trim() === "") {
+    if (userData.email.trim() === "" || userData.password?.trim() === "") {
         throw new ApiError(400, "Email and Password are Required and Should be non-empty.", ERROR_CODES.REQUIRED_FIELDS_MISSING)
     }
 
@@ -95,6 +95,10 @@ const loginUserService = async (userData: LoginUserType): Promise<LoginServiceRe
 
     if (!user.isVerified) {
         throw new ApiError(401, "User Not Verified", ERROR_CODES.VERIFICATION_REQUIRED)
+    }
+
+    if(!user.password){
+        throw new ApiError(400,"User may had registered with Google so try to log in with Google.",ERROR_CODES.BAD_REQUEST)
     }
 
     if (! await user.isCorrectPassword(userData.password)) {
@@ -126,6 +130,28 @@ const continueWithGoogleServer = async (googleId:string) : Promise<any> =>{
     const googleAuthPayload = await verifyGoogleToken(googleId)
 
     continueWithGoogleValidator(googleAuthPayload as TokenPayload)
+
+    const userAlreadyExists = await User.findOne({
+        email:googleAuthPayload?.email
+    })
+
+    if(!userAlreadyExists){
+
+        const payload = {
+            username:`googleAuthPayload?.given_name + "_" + ${Date.now()}`, // it should be unique so by default its best option
+            email:googleAuthPayload?.email,
+            password:null,
+            fullName:googleAuthPayload?.given_name + " " + googleAuthPayload?.family_name,
+            avatar: {
+                secure_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Date.now()}`,
+                public_id: ""
+            },
+            googleId,
+            isVerified:true
+        }
+
+        const user = await User.create(payload)
+    }
 }
 
 /**

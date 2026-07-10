@@ -4,7 +4,7 @@ export interface IUser extends Document {
     _id: Types.ObjectId;
     username: string;
     email: string;
-    password: string;
+    password: string | null;
     fullName?: string;
     displayName?: string;
     setupProfile: boolean;
@@ -50,7 +50,7 @@ export interface UserModel
 type RegisterUserType = {
     username: string
     email: string
-    password: string
+    password: string | null
     fullName: string
     avatar?: string
     googleId?:string
@@ -58,7 +58,7 @@ type RegisterUserType = {
 
 type LoginUserType = {
     email: string
-    password: string
+    password: string | null
     googleId?:string
 }
 

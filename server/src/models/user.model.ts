@@ -26,7 +26,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
     },
     password: {
         type: String,
-        required: true
+
     },
     fullName: {
         type: String,
@@ -68,6 +68,11 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
     },
     OTPGeneratedAt: {
         type: Date
+    },
+    googleId:{
+        type:String,
+        unique:true,
+        sparse:true
     }
 
 
