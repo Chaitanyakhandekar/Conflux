@@ -12,7 +12,7 @@ type LoginFormType = {
 type LoginErrorType = Partial<LoginFormType>;
 
 const Login = () => {
-    const { login, loading, errorType, setErrorType } = useAuth();
+    const { login, loading, errorType, setErrorType ,continueWithGoogle} = useAuth();
 
     const [formData, setFormData] =
         useState<LoginFormType>({
@@ -71,8 +71,9 @@ const Login = () => {
         await login(formData);
     };
 
-    const handleGoogleLogin = (credentialResponse: CredentialResponse) => {
+    const handleGoogleLogin = async(credentialResponse: CredentialResponse) => {
         console.log(credentialResponse);    // API call here to login/register
+        await continueWithGoogle(credentialResponse.credential)
     };
 
     const handleGoogleError = () => {

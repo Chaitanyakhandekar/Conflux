@@ -55,7 +55,7 @@ export const useAuth = (): any => {
             setErrorType(res.error)
         }
         else {
-            setUser(res.data)
+            setUser(res.data.user)
             toast.success(
                 "Login Successfull."
             )
