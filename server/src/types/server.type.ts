@@ -12,10 +12,10 @@ export interface IServerMethods {
 }
 
 export type ServerInfoType = {
-    name?: string
+    name?: string | undefined
     description?: string
     serverType?: "GAMING" | "DEVELOPER" | "STARTUP" | "STUDY" | "CUSTOM"
-    ownerId?: mongoose.Types.ObjectId | null
+    ownerId?: mongoose.Types.ObjectId
 }
 
 export interface ServerModel extends Model<IServer, {}, IServerMethods> { }
