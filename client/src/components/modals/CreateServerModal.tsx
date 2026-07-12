@@ -1,8 +1,9 @@
+import { useServer } from "../../hooks/useServer";
 import Modal from "../ui/Modal"
 import { Server, Users, GraduationCap, Code, Heart, Plus, X,Computer } from "lucide-react"
 
-const serverTemplates :serverType[] = [
-  { icon: <Gamepad2 size={28} />, label: "Gaming Community", desc: "Play and chat with gamers" , type:"GAMING" },
+const serverTemplates :ServerType[] = [
+  { icon: <Gamepad2 size={28} />, label: "Gaming Community", desc: "Play and chat with gamers" , type:"GAMING"},
   { icon: <GraduationCap size={28} />, label: "Study Group", desc: "Learn and collaborate" ,type:"STUDY" },
   { icon: <Code size={28} />, label: "Developer Community", desc: "Code and build together" ,type:"DEVELOPER"},
   { icon: <Computer size={28} />, label: "Startup", desc: "Where ideas become products" ,type:"STARTUP"},
@@ -33,7 +34,7 @@ interface Props {
   onClose: () => void
 }
 
-type serverType={
+type ServerType={
   icon:React.JSX.Element | "<></>",
   label:string,
   desc:string,
@@ -42,8 +43,18 @@ type serverType={
 
 function CreateServerModal({ open, onClose }: Props) {
 
-  const handleCreateServer = async (t:serverType) : Promise<any> =>{
-      console.log("Server Selected : ",t);
+  const {loading,createServer,serverError,setServerError} = useServer()
+
+  const handleCreateServer = async (t:ServerType) : Promise<any> =>{
+      const server = {
+        name:"server",
+        description: t.desc,
+        serverType: t.type,
+        ownerId:undefined
+      }
+      console.log("Server Selected : ",server);
+      
+      await createServer(server)
       
   }
 

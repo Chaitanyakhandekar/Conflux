@@ -9,12 +9,12 @@ import { createServerValidator } from "../validators/server.validator.ts";
 import { createServerService } from "../services/server.service.ts";
 import { ServerInfoType } from "../types/server.type.ts";
 
-const createServerController = asyncHandler(async (req: Request<{}, {}, ServerInfoType>, res: Response) => {
+const createServerController = asyncHandler(async (req: Request<{}, {}, any>, res: Response) => {
 
     console.log('Data ', req.body);
 
 
-    const server = createServerValidator(req.body)
+    const server = createServerValidator(req.body,req.user)
 
     const newServer = await createServerService(server, req.user!)
 
