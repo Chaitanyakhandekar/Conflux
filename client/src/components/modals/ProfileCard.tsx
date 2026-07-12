@@ -1,6 +1,7 @@
 import Popover from "../ui/Popover"
 import { useUI } from "../../contexts/UIContext"
 import { Pencil, Settings, LogOut } from "lucide-react"
+import { useAuth } from "../../hooks/useAuth"
 
 interface Props {
   open: boolean
@@ -9,6 +10,13 @@ interface Props {
 
 function ProfileCard({ open, onClose }: Props) {
   const { setShowSettings } = useUI()
+  const {logoutUser} = useAuth()
+
+  const handleLogout = async ()=>{
+    console.log("Logout button clicked");
+    
+    await logoutUser();
+  }
 
   return (
     <Popover open={open} onClose={onClose} className="w-[340px]" bottom="80px" left="12px">
@@ -44,7 +52,9 @@ function ProfileCard({ open, onClose }: Props) {
             <Settings size={16} />
             Settings
           </button>
-          <button className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm text-[#ED4245] hover:bg-[rgba(237,66,69,0.08)] transition-colors">
+          <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm text-[#ED4245] hover:bg-[rgba(237,66,69,0.08)] transition-colors">
             <LogOut size={16} />
             Logout
           </button>

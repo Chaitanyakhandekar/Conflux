@@ -5,6 +5,7 @@ import { authMeService, continueWithGoogleService, loginUserService, registerUse
 import { ApiResponse } from "../types/error.type.ts";
 import { verifyOTPService } from "../services/auth.service.ts";
 import { env } from "../config/env.config.ts";
+import { User } from "../models/user.model.ts";
 
 /**
  * @description Controller for register user
@@ -48,6 +49,43 @@ const loginUser = asyncHandler(async (req: Request<{}, {}, LoginUserType>, res: 
         })
         .json(
             new ApiResponse(200, "User Login Successful.", userData.user)
+        )
+
+})
+
+
+/**
+ * @description Controller for Logout User
+ * @method GET
+ * @access USER
+ */
+const logoutUser = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+
+   const user = await User.findByIdAndUpdate(
+    req?.user?._id,
+    {
+        $set:{
+            refreshToken:null
+        }
+    }
+   )
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
+        .clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
+        .json(
+            new ApiResponse(200, "User Login Successful.", [])
         )
 
 })
@@ -151,5 +189,6 @@ export {
     resendOTPEmail,
     verifyOTP,
     authMe,
+    logoutUser
     // continueWithGoogleController
 }

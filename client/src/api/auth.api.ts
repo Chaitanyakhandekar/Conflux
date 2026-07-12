@@ -103,7 +103,45 @@ class AuthApi {
             }
 
         } catch (error: any) {
-            console.log('register error : ', error);
+            console.log('Login error : ', error);
+
+            return {
+                success: false,
+                error: error,
+                message: error?.message
+            }
+
+        }
+    }
+
+    logoutUser = async (): Promise<any> => {
+        try {
+
+            const response = await axios.get(
+                `${this.baseUrl}/logout`,
+                {
+                    withCredentials: true
+                }
+            )
+
+            console.log('logout data : ', response.data);
+
+            if (!response.data.success) {
+                return {
+                    success: false,
+                    error: response.data.errorCode,
+                    message: response.data?.message
+                }
+            }
+
+            return {
+                success: true,
+                statusCode: response.status,
+                data: response.data.data
+            }
+
+        } catch (error: any) {
+            console.log('Logout error : ', error);
 
             return {
                 success: false,

@@ -89,6 +89,32 @@ export const useAuth = (): any => {
 
     }
 
+    const logoutUser = async (): Promise<any> => {
+        setLoading(true)
+        const res = await authApi.logoutUser()
+        setLoading(false)
+
+        console.log("Logout Auth : ", res);
+
+
+        setUser(null)
+        if (res.success) {
+
+            toast.success(
+                "Logout Successfull."
+            )
+            navigate("/")
+        }
+        else {
+            setUser(null)
+            toast.success(
+                "Logout Successfull."
+            )
+            navigate("/login")
+        }
+
+    }
+
     const resendOTP = async (email: string): Promise<void> => {
         console.log("EMAIL : ", email)
         setOtpStatus("sending")
@@ -180,7 +206,8 @@ export const useAuth = (): any => {
         setErrorType,
         authMe,
         setupProfile,
-        continueWithGoogle
+        continueWithGoogle,
+        logoutUser
     }
 
 }
