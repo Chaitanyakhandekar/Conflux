@@ -1,5 +1,6 @@
 import { env } from "../config/env.config"
 import { messages } from "../data/messages";
+import type { CreateServerType } from "../types/server.type";
 import type { LoginUserType, RegisterUserType } from "../types/user.type"
 import axios from "axios"
 
@@ -24,7 +25,7 @@ class ServerApi {
         this.baseUrl = `${env.VITE_ENV === "production" ? env.VITE_SERVER_URL_PRODUCTION : env.VITE_SERVER_URL_LOCAL}/api/v1/servers`
     }
 
-    createServer = async (server:ServerType) : Promise<any> =>{
+    createServer = async (server:CreateServerType) : Promise<any> =>{
         try {
             const response = await axios.post(
                 `${this.baseUrl}/`,
@@ -41,7 +42,7 @@ class ServerApi {
                 data:response.data,
                 message:"Server Created."
             }
-        } catch (error) {
+        } catch (error:any) {
             console.log('Create Server :: Error : ',error);
             return {
                 success:false,

@@ -22,6 +22,7 @@ import { Category } from "../models/category.model.ts";
 import { CategoryTemplate, ChannelTemplate } from "../constants/templates/template.types.ts";
 import { ChannelType } from "../types/channel.type.ts";
 import { Channel } from "../models/channel.model.ts";
+import mongoose from "mongoose";
 
 /**
  * @description Service for creating server (custom , featured)
@@ -91,6 +92,50 @@ const createServerService = async (serverInfo: ServerInfoType, user: IUser): Pro
 
 }
 
+/**
+ * @description Service for fetching all servers created by user
+ * @param user 
+ */
+const getUserServersService = async (user:IUser, page:number=1, limit:number=10) : Promise<any> =>{
+
+    const isUser = await isUserExists(user)
+
+    const totalServers = await Server.countDocuments({ownerId:user._id})
+
+    if(totalServers==0){
+        return [];
+    }
+    
+    const skip = (page * limit ) - 1;
+
+    const servers = await Server.aggregate([
+        {
+            $match:{
+                ownerId:new mongoose.Types.ObjectId(user._id)
+            }
+        },
+        {
+            $skip:skip
+        },
+        {
+            $limit:limit
+        },
+        {
+            $project:{
+                ownerId:0
+            }
+        }
+    ])
+
+    if(!servers.length){
+        throw new ApiError(500,"Server Error While Fetching Servers",ERROR_CODES.INTERNAL_SERVER_ERROR)
+    }
+
+    return servers;
+
+}
+
 export {
-    createServerService
+    createServerService,
+    getUserServersService
 }
