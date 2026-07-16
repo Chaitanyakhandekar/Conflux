@@ -53,6 +53,36 @@ class ServerApi {
         }
     }
 
+    getMyCreatedServers = async (page:number=1,limit:number=10) : Promise<any> =>{
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}/my/?page=${page}?limit=${limit}`,
+                {
+                    withCredentials:true
+                }
+            )
+
+            if(!response || !response.data.success){
+                throw {
+                    success:false,
+                    errorCode:response.data.errorCode
+                }
+            }
+
+            console.log('Servers Res : ',response.data);
+            
+
+            return {
+                success:true,
+                data:response.data.data
+            }
+
+        } catch (error) {
+            console.log('Get my Servers :: Error :: ',error);
+            return error
+        }
+    }
+
 }
 
 export const serverApi = new ServerApi();

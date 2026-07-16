@@ -23,6 +23,7 @@ import { CategoryTemplate, ChannelTemplate } from "../constants/templates/templa
 import { ChannelType } from "../types/channel.type.ts";
 import { Channel } from "../models/channel.model.ts";
 import mongoose from "mongoose";
+import { log } from "console";
 
 /**
  * @description Service for creating server (custom , featured)
@@ -96,7 +97,7 @@ const createServerService = async (serverInfo: ServerInfoType, user: IUser): Pro
  * @description Service for fetching all servers created by user
  * @param user 
  */
-const getUserServersService = async (user:IUser, page:number=1, limit:number=10) : Promise<any> =>{
+const getUserServersService = async (user:IUser, page:number=2, limit:number=10) : Promise<any> =>{
 
     const isUser = await isUserExists(user)
 
@@ -106,7 +107,7 @@ const getUserServersService = async (user:IUser, page:number=1, limit:number=10)
         return [];
     }
     
-    const skip = (page * limit ) - 1;
+    const skip = (page - 1) * limit;
 
     const servers = await Server.aggregate([
         {
@@ -126,6 +127,8 @@ const getUserServersService = async (user:IUser, page:number=1, limit:number=10)
             }
         }
     ])
+    
+    console.log("Server : ",servers)
 
     if(!servers.length){
         throw new ApiError(500,"Server Error While Fetching Servers",ERROR_CODES.INTERNAL_SERVER_ERROR)

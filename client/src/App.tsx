@@ -13,10 +13,12 @@ import { useAuth } from "./hooks/useAuth"
 import { useAuthStore } from "./store/auth-store"
 import SendVerificationOtp from "./pages/auth/SendVerificationOtp"
 import ProfileSetupRestriction from "./routes/ProfileSetupRestriction"
+import { useServer } from "./hooks/useServer"
 
 function App() {
 
   const { authMe } = useAuth()
+  const {getMyCreatedServers} = useServer()
 
   const authMeP = async () => {
     await authMe()
@@ -24,6 +26,7 @@ function App() {
 
   useEffect(() => {
     authMeP()
+    getMyCreatedServers()
   }, [])
 
   return (

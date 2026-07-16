@@ -1,9 +1,12 @@
 import { Plus, Compass, MessageSquare } from "lucide-react"
-import { servers } from "../../data/servers"
+// import { servers } from "../../data/servers"
 import { useUI } from "../../contexts/UIContext"
+import { useServer } from "../../hooks/useServer"
+import type { IdealServerType } from "../../types/server.type"
 
 function AppSidebar() {
   const { setShowCreateServer, setShowProfileCard, setShowContextServer, setContextMenuPos, showDMHub, setShowDMHub } = useUI()
+  const { getMyCreatedServers, servers } = useServer()
 
   const handleContext = (e: React.MouseEvent, serverId: string) => {
     e.preventDefault()
@@ -15,11 +18,10 @@ function AppSidebar() {
     <aside className="w-[72px] h-full bg-[#08101F] flex flex-col items-center py-3 flex-shrink-0 gap-2">
       <button
         onClick={() => setShowDMHub(true)}
-        className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 relative ${
-          showDMHub
+        className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 relative ${showDMHub
             ? "bg-[#8B7DFF] text-white shadow-[0_0_20px_rgba(139,125,255,0.18)]"
             : "bg-[rgba(255,255,255,0.03)] text-[#94A3B8] hover:bg-[#8B7DFF] hover:text-white hover:shadow-[0_0_20px_rgba(139,125,255,0.25)]"
-        }`}
+          }`}
         title="Direct Messages"
       >
         <MessageSquare size={20} />
@@ -30,20 +32,35 @@ function AppSidebar() {
 
       <div className="w-8 h-[2px] rounded-full bg-[rgba(255,255,255,0.06)] my-1" />
 
-      {servers.slice(0, 4).map((server) => (
+      {servers.slice(0, 4).map((server: IdealServerType) => (
         <button
-          key={server.id}
-          onContextMenu={(e) => handleContext(e, server.id)}
+          key={server._id}
+          onContextMenu={(e) => handleContext(e, server._id)}
           onClick={() => setShowDMHub(false)}
-          className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${server.gradient} flex items-center justify-center text-white text-xs font-bold flex-shrink-0 hover:rounded-[14px] transition-all duration-200 relative ${
-            server.id === "1" ? "rounded-[14px]" : ""
-          }`}
           title={server.name}
+          className={`group relative flex-shrink-0 w-12 h-12 flex items-center justify-center
+      rounded-2xl hover:rounded-[14px] transition-all duration-300 ease-out
+      bg-gradient-to-br ${server?.gradient || "from-indigo-500 to-purple-600"}
+      text-white text-xs font-bold
+      ring-1 ring-white/5
+      shadow-[0_2px_8px_rgba(0,0,0,0.4)]
+      hover:shadow-[0_4px_16px_rgba(139,92,246,0.35)]
+      hover:scale-105 active:scale-95
+      ${server._id ? "rounded-[14px]" : ""}
+    `}
         >
-          {server.initials}
-          {server.id === "1" && (
-            <span className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-[4px] h-8 rounded-r-full bg-white shadow-[0_0_12px_rgba(139,125,255,0.4)]" />
-          )}
+          {server.name.charAt(0).toUpperCase()}
+
+          {/* left indicator pill — active vs hover */}
+          <span
+            className={`absolute -left-[10px] top-1/2 -translate-y-1/2 rounded-r-full bg-white
+        transition-all duration-300 ease-out
+        ${server._id === "1"
+                ? "w-[4px] h-8 opacity-100 shadow-[0_0_12px_rgba(139,125,255,0.5)]"
+                : "w-[4px] h-2 opacity-0 group-hover:opacity-100 group-hover:h-5"
+              }
+      `}
+          />
         </button>
       ))}
 

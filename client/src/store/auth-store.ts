@@ -9,8 +9,8 @@ type AuthStoreType = {
     isAuthenticated?: boolean;
 
     setUser: (user: object | null) => void;
-    setPendingVerificationEmail?: (email: string | null) => void;
-    clearPendingVerificationEmail?: () => void;
+    setPendingVerificationEmail: (email: string | null) => void;
+    clearPendingVerificationEmail: () => void;
     logout?: () => void;
 };
 
