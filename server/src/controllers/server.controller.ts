@@ -14,7 +14,7 @@ const createServerController = asyncHandler(async (req: Request<{}, {}, ServerIn
     console.log('Data ', req.body);
 
 
-    const server = createServerValidator(req.body,req.user)
+    const server = createServerValidator(req.body, req.user)
 
     const newServer = await createServerService(server, req.user!)
 
@@ -26,22 +26,37 @@ const createServerController = asyncHandler(async (req: Request<{}, {}, ServerIn
 
 })
 
-const getUserServersController = asyncHandler(async (req:Request,res:Response):Promise<any>=>{
-  
+const getUserServersController = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+
     const user = req.user
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || 10
 
-    const servers = await getUserServersService(user!,page,limit)
+    const servers = await getUserServersService(user!, page, limit)
 
     return res
         .status(200)
         .json(
-            new ApiResponse(200,`${!servers.length ? "You Havent created servers yet." : "Servers Fetched."}`,servers)
+            new ApiResponse(200, `${!servers.length ? "You Havent created servers yet." : "Servers Fetched."}`, servers)
+        )
+})
+
+const getServerCategoriesController = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+    const categories = await getServerCategoriesService(req.params.id.toString())
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                `${!categories.length ? "No categories in server yet" : "categories with channels fetahced"}`,
+                categories,
+            )
         )
 })
 
 export {
     createServerController,
-    getUserServersController
+    getUserServersController,
+    getServerCategoriesController
 }

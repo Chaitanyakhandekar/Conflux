@@ -7,7 +7,8 @@ import { verifyOTPService } from "../services/auth.service.ts";
 import { env } from "../config/env.config.ts";
 import { CategoryDataType } from "../types/category.type.ts";
 import { createCategoryValidator } from "../validators/category.validator.ts";
-import { createCategoryService } from "../services/category.service.ts";
+import { createCategoryService, getServerCategoriesService } from "../services/category.service.ts";
+
 
 const createCategoryController = asyncHandler(async (req: Request<{}, {}, CategoryDataType>, res: Response): Promise<any> => {
 
@@ -21,6 +22,21 @@ const createCategoryController = asyncHandler(async (req: Request<{}, {}, Catego
 
 })
 
+const getServerCategoriesController = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+    const categories = await getServerCategoriesService(req.params.id.toString())
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                `${!categories.length ? "No categories in server yet" : "categories with channels fetahced"}`,
+                categories,
+            )
+        )
+})
+
 export {
-    createCategoryController
+    createCategoryController,
+    getServerCategoriesController
 }

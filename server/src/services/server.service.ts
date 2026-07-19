@@ -1,7 +1,7 @@
 import { asyncHandler, decodeJWT, gnerateOTP } from "../utils/index.ts";
 import { Request, Response, NextFunction } from "express";
 import type { IUser, LoginUserType, RegisterUserType, SetupProfileType } from "../types/user.type.ts";
-import { ApiError } from "../types/error.type.ts";
+import { ApiError, ApiResponse } from "../types/error.type.ts";
 import { User } from "../models/user.model.ts";
 import { addEmailJob } from "../producers/email.producer.ts";
 import type { emailJobType } from "../types/job.type.ts";
@@ -24,6 +24,7 @@ import { ChannelType } from "../types/channel.type.ts";
 import { Channel } from "../models/channel.model.ts";
 import mongoose from "mongoose";
 import { log } from "console";
+import { isServerExistsValidator } from "../validators/server.validator.ts";
 
 /**
  * @description Service for creating server (custom , featured)
@@ -97,46 +98,48 @@ const createServerService = async (serverInfo: ServerInfoType, user: IUser): Pro
  * @description Service for fetching all servers created by user
  * @param user 
  */
-const getUserServersService = async (user:IUser, page:number=2, limit:number=10) : Promise<any> =>{
+const getUserServersService = async (user: IUser, page: number = 2, limit: number = 10): Promise<any> => {
 
     const isUser = await isUserExists(user)
 
-    const totalServers = await Server.countDocuments({ownerId:user._id})
+    const totalServers = await Server.countDocuments({ ownerId: user._id })
 
-    if(totalServers==0){
+    if (totalServers == 0) {
         return [];
     }
-    
+
     const skip = (page - 1) * limit;
 
     const servers = await Server.aggregate([
         {
-            $match:{
-                ownerId:new mongoose.Types.ObjectId(user._id)
+            $match: {
+                ownerId: new mongoose.Types.ObjectId(user._id)
             }
         },
         {
-            $skip:skip
+            $skip: skip
         },
         {
-            $limit:limit
+            $limit: limit
         },
         {
-            $project:{
-                ownerId:0
+            $project: {
+                ownerId: 0
             }
         }
     ])
-    
-    console.log("Server : ",servers)
 
-    if(!servers.length){
-        throw new ApiError(500,"Server Error While Fetching Servers",ERROR_CODES.INTERNAL_SERVER_ERROR)
+    console.log("Server : ", servers)
+
+    if (!servers.length) {
+        throw new ApiError(500, "Server Error While Fetching Servers", ERROR_CODES.INTERNAL_SERVER_ERROR)
     }
 
     return servers;
 
 }
+
+
 
 export {
     createServerService,

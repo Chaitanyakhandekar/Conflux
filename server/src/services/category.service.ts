@@ -14,6 +14,8 @@ import { env } from "../config/env.config.ts";
 import { CategoryDataType } from "../types/category.type.ts";
 import { Category } from "../models/category.model.ts";
 import { createCategoryValidator } from "../validators/category.validator.ts";
+import mongoose from "mongoose";
+import { isServerExistsValidator } from "../validators/server.validator.ts";
 
 
 const createCategoryService = async (categoryData: CategoryDataType): Promise<any> => {
@@ -29,6 +31,36 @@ const createCategoryService = async (categoryData: CategoryDataType): Promise<an
     return category;
 }
 
+/**
+ * @description Service for fetching categories and channel of specific server
+ * @param serverId 
+ * @returns 
+ */
+const getServerCategoriesService = async (serverId: mongoose.Types.ObjectId | string): Promise<any> => {
+
+    const server = await isServerExistsValidator(new mongoose.Types.ObjectId(serverId))
+
+    const categories = await Category.aggregate([
+        {
+            $match: {
+                serverId: new mongoose.Types.ObjectId(server._id)
+            }
+        },
+        {
+            $lookup: {
+                from: "channels",
+                localField: "_id",
+                foreignField: "categoryId",
+                as: "channels"
+            }
+        }
+    ])
+
+    return categories
+
+}
+
 export {
-    createCategoryService
+    createCategoryService,
+    getServerCategoriesService
 }
