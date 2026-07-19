@@ -7,48 +7,69 @@ import { useServerStore } from '../store/server-store.';
 
 export function useServer() {
 
-    const [loading,setLoading] = useState<boolean>(false);
-    const [serverError,setServerError] = useState<string | null | undefined>(null)
-    const {servers,setServers,selectedServer,setSelectedServer} = useServerStore()
-    
-    const createServer = async (server:CreateServerType) : Promise<any> =>{
-       try {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [serverError, setServerError] = useState<string | null | undefined>(null)
+    const { servers, setServers, selectedServer, setSelectedServer } = useServerStore()
+
+    const createServer = async (server: CreateServerType): Promise<any> => {
+        try {
             const res = await serverApi.createServer(server)
-            
-            if(res.success){
+
+            if (res.success) {
                 toast.success(
                     "Server Created."
                 )
             }
 
-       } catch (error:any) {
+        } catch (error: any) {
             setServerError(error.message)
-       }
-       finally{
-        setLoading(false)
-        return;
-       }
+        }
+        finally {
+            setLoading(false)
+            return;
+        }
 
     }
 
-    const getMyCreatedServers = async (page:number=1,limit:number=10) : Promise<any> =>{
-       try {
-            const res = await serverApi.getMyCreatedServers(page,limit)
-            
-            if(res.success){
+    const getMyCreatedServers = async (page: number = 1, limit: number = 10): Promise<any> => {
+        try {
+            const res = await serverApi.getMyCreatedServers(page, limit)
+
+            if (res.success) {
                 setServers(res.data)
                 toast.success(
                     "Servers Fetched."
                 )
             }
 
-       } catch (error:any) {
+        } catch (error: any) {
             setServerError(error.message)
-       }
-       finally{
-        setLoading(false)
-        return;
-       }
+        }
+        finally {
+            setLoading(false)
+            return;
+        }
+
+    }
+
+    const getServerCategories = async (serverId: string) => {
+        try {
+            const res = await serverApi.getServerCategories(serverId)
+
+            if (res.success) {
+
+                toast.success(
+                    "Categories and Channels Fetched."
+                )
+            }
+
+        } catch (error: any) {
+            setServerError(error.message)
+        }
+        finally {
+            setLoading(false)
+            return;
+        }
 
     }
 
@@ -59,7 +80,8 @@ export function useServer() {
         serverError,
         setServerError,
         getMyCreatedServers,
-        servers
+        servers,
+        getServerCategories
     }
 
 }

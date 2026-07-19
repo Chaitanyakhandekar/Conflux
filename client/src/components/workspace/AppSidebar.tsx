@@ -3,10 +3,16 @@ import { Plus, Compass, MessageSquare } from "lucide-react"
 import { useUI } from "../../contexts/UIContext"
 import { useServer } from "../../hooks/useServer"
 import type { IdealServerType } from "../../types/server.type"
+import { useCategory } from "../../hooks/useCategory"
 
 function AppSidebar() {
   const { setShowCreateServer, setShowProfileCard, setShowContextServer, setContextMenuPos, showDMHub, setShowDMHub } = useUI()
   const { getMyCreatedServers, servers } = useServer()
+  const { loading,
+    setLoading,
+    categoryError,
+    setCategoryError,
+    getServerCategories } = useCategory()
 
   const handleContext = (e: React.MouseEvent, serverId: string) => {
     e.preventDefault()
@@ -14,13 +20,17 @@ function AppSidebar() {
     setShowContextServer(serverId)
   }
 
+  const getCategories = async (serverId) => {
+    await getServerCategories(serverId)
+  }
+
   return (
     <aside className="w-[72px] h-full bg-[#08101F] flex flex-col items-center py-3 flex-shrink-0 gap-2">
       <button
         onClick={() => setShowDMHub(true)}
         className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 relative ${showDMHub
-            ? "bg-[#8B7DFF] text-white shadow-[0_0_20px_rgba(139,125,255,0.18)]"
-            : "bg-[rgba(255,255,255,0.03)] text-[#94A3B8] hover:bg-[#8B7DFF] hover:text-white hover:shadow-[0_0_20px_rgba(139,125,255,0.25)]"
+          ? "bg-[#8B7DFF] text-white shadow-[0_0_20px_rgba(139,125,255,0.18)]"
+          : "bg-[rgba(255,255,255,0.03)] text-[#94A3B8] hover:bg-[#8B7DFF] hover:text-white hover:shadow-[0_0_20px_rgba(139,125,255,0.25)]"
           }`}
         title="Direct Messages"
       >
@@ -36,7 +46,7 @@ function AppSidebar() {
         <button
           key={server._id}
           onContextMenu={(e) => handleContext(e, server._id)}
-          onClick={() => setShowDMHub(false)}
+          onClick={() => { getCategories(server._id) }}
           title={server.name}
           className={`group relative flex-shrink-0 w-12 h-12 flex items-center justify-center
       rounded-2xl hover:rounded-[14px] transition-all duration-300 ease-out
