@@ -7,7 +7,7 @@ import { useCategory } from "../../hooks/useCategory"
 
 function AppSidebar() {
   const { setShowCreateServer, setShowProfileCard, setShowContextServer, setContextMenuPos, showDMHub, setShowDMHub } = useUI()
-  const { getMyCreatedServers, servers } = useServer()
+  const { getMyCreatedServers, servers, selectedServer, setSelectedServer } = useServer()
   const { loading,
     setLoading,
     categoryError,
@@ -20,8 +20,10 @@ function AppSidebar() {
     setShowContextServer(serverId)
   }
 
-  const getCategories = async (serverId) => {
-    await getServerCategories(serverId)
+  const getCategories = async (server: IdealServerType) => {
+    setShowDMHub(false)
+    setSelectedServer(server)
+    await getServerCategories(server._id)
   }
 
   return (
@@ -46,7 +48,7 @@ function AppSidebar() {
         <button
           key={server._id}
           onContextMenu={(e) => handleContext(e, server._id)}
-          onClick={() => { getCategories(server._id) }}
+          onClick={() => { getCategories(server) }}
           title={server.name}
           className={`group relative flex-shrink-0 w-12 h-12 flex items-center justify-center
       rounded-2xl hover:rounded-[14px] transition-all duration-300 ease-out
@@ -65,7 +67,7 @@ function AppSidebar() {
           <span
             className={`absolute -left-[10px] top-1/2 -translate-y-1/2 rounded-r-full bg-white
         transition-all duration-300 ease-out
-        ${server._id === "1"
+        ${server._id === selectedServer?._id
                 ? "w-[4px] h-8 opacity-100 shadow-[0_0_12px_rgba(139,125,255,0.5)]"
                 : "w-[4px] h-2 opacity-0 group-hover:opacity-100 group-hover:h-5"
               }

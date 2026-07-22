@@ -2,10 +2,13 @@ import { useState } from "react"
 import { ChevronDown, Hash, Volume2, Plus, Headphones } from "lucide-react"
 import { channelSections } from "../../data/channels"
 import { useUI } from "../../contexts/UIContext"
+import { useServerStore } from "../../store/server-store."
+import type { CategoryType, ChannelType } from "../../types/server.type"
 
 function ChannelList() {
   const { setShowCreateChannel, setShowVoiceJoin, setShowDMPopup } = useUI()
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
+  const { categories, currentChannel, setCurrentChannel } = useServerStore()
 
   const toggleSection = (label: string) => {
     setCollapsed((prev) => ({ ...prev, [label]: !prev[label] }))
@@ -13,27 +16,26 @@ function ChannelList() {
 
   return (
     <div className="flex-1 overflow-y-auto px-2 space-y-4">
-      {channelSections.map((section) => {
-        const isCollapsed = collapsed[section.label]
+      {categories.map((section: CategoryType) => {
+        const isCollapsed = collapsed[section.name]
 
         return (
-          <div key={section.label}>
+          <div key={section.name}>
             <div className="flex items-center justify-between group px-2 mb-1">
               <button
-                onClick={() => toggleSection(section.label)}
+                onClick={() => toggleSection(section.name)}
                 className="flex items-center gap-1 flex-1 min-w-0"
               >
                 <ChevronDown
                   size={10}
-                  className={`text-[#94A3B8] flex-shrink-0 transition-transform duration-200 ${
-                    isCollapsed ? "-rotate-90" : ""
-                  }`}
+                  className={`text-[#94A3B8] flex-shrink-0 transition-transform duration-200 ${isCollapsed ? "-rotate-90" : ""
+                    }`}
                 />
                 <span className="text-[12px] font-semibold tracking-wide text-[#6B7280] uppercase truncate">
-                  {section.label}
+                  {section.name}
                 </span>
               </button>
-              {section.label !== "DIRECT MESSAGES" && (
+              {section.name !== "DIRECT MESSAGES" && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
@@ -47,28 +49,30 @@ function ChannelList() {
             </div>
 
             <div
-              className={`overflow-hidden transition-all duration-200 ${
-                isCollapsed ? "max-h-0 opacity-0" : "max-h-[500px] opacity-100"
-              }`}
+              className={`overflow-hidden transition-all duration-200 ${isCollapsed ? "max-h-0 opacity-0" : "max-h-[500px] opacity-100"
+                }`}
             >
               <div className="space-y-[1px]">
-                {section.items.map((channel) => {
-                  const isActive = channel.isActive
-                  const isVoice = channel.type === "voice"
-                  const isDM = channel.type === "dm"
+                {section.channels.map((channel: ChannelType) => {
+                  const isActive = false //channel.isActive
+                  const isVoice = channel.type === "VOICE"
+                  const isDM = false
+                  // const isDM = channel.type === "TEXT"
 
                   return (
                     <div
-                      key={channel.id}
+                      key={channel._id}
                       onClick={() => {
+                        setCurrentChannel(channel)
                         if (isVoice) setShowVoiceJoin(channel.name)
                         if (isDM) setShowDMPopup(channel.name)
+
                       }}
-                      className={`flex items-center gap-1.5 px-2 h-[34px] rounded-[6px] cursor-pointer text-sm transition-all duration-200 group ${
-                        isActive
-                          ? "bg-[rgba(139,125,255,0.14)] text-white shadow-[0_0_12px_rgba(139,125,255,0.06)]"
-                          : "text-[#94A3B8] hover:bg-[rgba(255,255,255,0.03)] hover:text-white"
-                      }`}
+                      className={`flex items-center gap-1.5 px-2 h-[34px] rounded-[6px] cursor-pointer text-sm transition-all duration-200 group ${isActive
+                        ? "bg-[rgba(139,125,255,0.14)] text-white shadow-[0_0_12px_rgba(139,125,255,0.06)]"
+                        : "text-[#94A3B8] hover:bg-[rgba(255,255,255,0.03)] hover:text-white"
+
+                        }`}
                     >
                       {isVoice ? (
                         <Volume2 size={16} className="flex-shrink-0 text-[#94A3B8]" />
@@ -78,13 +82,13 @@ function ChannelList() {
                         <Hash size={18} className="flex-shrink-0 opacity-70" />
                       )}
                       <span className="truncate flex-1 text-[15px]">{channel.name}</span>
-
+                      {/* 
                       {isVoice && (
-                        <span className="hidden group-hover:flex items-center text-[12px] text-[#22C55E] gap-1 flex-shrink-0">
-                          {channel.users && channel.users.length > 0 && (
-                            <>{channel.users.length}</>
-                          )}
-                        </span>
+                        // <span className="hidden group-hover:flex items-center text-[12px] text-[#22C55E] gap-1 flex-shrink-0">
+                        //   {channel.users && channel.users.length > 0 && (
+                        //     <>{channel.users.length}</>
+                        //   )}
+                        // </span>
                       )}
 
                       {isVoice && channel.users && channel.users.length > 0 && (
@@ -95,7 +99,7 @@ function ChannelList() {
 
                       {channel.hasNotification && (
                         <span className="w-2 h-2 rounded-full bg-[#8B7DFF] flex-shrink-0 shadow-[0_0_6px_rgba(139,125,255,0.4)]" />
-                      )}
+                      )} */}
 
                       <button
                         onClick={(e) => e.stopPropagation()}

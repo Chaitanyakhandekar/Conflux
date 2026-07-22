@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { CreateServerType, ServerType } from '../types/server.type'
 import { serverApi } from '../api/server.api';
 import toast from "react-hot-toast";
@@ -10,6 +10,12 @@ export function useCategory() {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [categoryError, setCategoryError] = useState<string | null | undefined>(null)
+    const { categories, setCategories } = useServerStore()
+
+    useEffect(() => {
+        console.log("Categories :: ", categories);
+
+    }, [categories])
 
 
     const getServerCategories = async (serverId: string) => {
@@ -17,7 +23,7 @@ export function useCategory() {
             const res = await categoryApi.getServerCategories(serverId)
 
             if (res.success) {
-
+                setCategories(res.data)
                 toast.success(
                     "Categories and Channels Fetched."
                 )

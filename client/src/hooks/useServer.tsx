@@ -9,7 +9,7 @@ export function useServer() {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [serverError, setServerError] = useState<string | null | undefined>(null)
-    const { servers, setServers, selectedServer, setSelectedServer } = useServerStore()
+    const { servers, setServers, selectedServer, setSelectedServer, setCurrentChannel, currentChannel } = useServerStore()
 
     const createServer = async (server: CreateServerType): Promise<any> => {
         try {
@@ -81,7 +81,11 @@ export function useServer() {
         setServerError,
         getMyCreatedServers,
         servers,
-        getServerCategories
+        getServerCategories,
+        selectedServer,
+        setSelectedServer,
+        setCurrentChannel,
+        currentChannel
     }
 
 }

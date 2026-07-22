@@ -1,5 +1,6 @@
 import { Search, Phone, Videotape, Pin, Users, Menu, Hash } from "lucide-react"
 import { useUI } from "../../contexts/UIContext"
+import { useServer } from "../../hooks/useServer"
 
 interface ChatHeaderProps {
   onMenuClick?: () => void
@@ -7,6 +8,7 @@ interface ChatHeaderProps {
 
 function ChatHeader({ onMenuClick }: ChatHeaderProps) {
   const { setShowSearch, setShowNotifications } = useUI()
+  const { selectedServer, currentChannel, setCurrentChannel } = useServer()
 
   return (
     <header className="h-[48px] flex items-center justify-between px-4 shadow-[0_1px_0_rgba(255,255,255,0.04)] bg-[#091223] flex-shrink-0">
@@ -19,7 +21,7 @@ function ChatHeader({ onMenuClick }: ChatHeaderProps) {
         </button>
         <div className="flex items-center gap-2 min-w-0">
           <Hash size={22} className="text-[#94A3B8] flex-shrink-0" />
-          <h2 className="text-white text-[15px] font-semibold truncate">backend-help</h2>
+          <h2 className="text-white text-[15px] font-semibold truncate">{currentChannel?.name}</h2>
         </div>
       </div>
 
