@@ -16,7 +16,7 @@ type ServerStoreType = {
     addServer: (server: IdealServerType) => void
     setCurrentChannel: (channel: ChannelType) => void
     addChannel: (channel: ChannelType, categoryId: string) => void
-    serCurrentCategory: (category: CategoryType) => void
+    setCurrentCategory: (category: CategoryType) => void
 }
 
 
@@ -73,7 +73,7 @@ export const useServerStore = create<ServerStoreType>()(
             }))
         },
 
-        serCurrentCategory: (category: CategoryType) => {
+        setCurrentCategory: (category: CategoryType) => {
             set({
                 currentCategory: category
             })

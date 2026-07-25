@@ -8,7 +8,7 @@ import type { CategoryType, ChannelType } from "../../types/server.type"
 function ChannelList() {
   const { setShowCreateChannel, setShowVoiceJoin, setShowDMPopup } = useUI()
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
-  const { categories, currentChannel, setCurrentChannel } = useServerStore()
+  const { categories, currentChannel, setCurrentChannel, currentCategory, setCurrentCategory } = useServerStore()
 
   const toggleSection = (label: string) => {
     setCollapsed((prev) => ({ ...prev, [label]: !prev[label] }))
@@ -20,7 +20,7 @@ function ChannelList() {
         const isCollapsed = collapsed[section.name]
 
         return (
-          <div key={section.name}>
+          <div key={section._id}>
             <div className="flex items-center justify-between group px-2 mb-1">
               <button
                 onClick={() => toggleSection(section.name)}
@@ -40,6 +40,7 @@ function ChannelList() {
                   onClick={(e) => {
                     e.stopPropagation()
                     setShowCreateChannel(true)
+                    setCurrentCategory(section)
                   }}
                   className="opacity-0 group-hover:opacity-100 text-[#94A3B8] hover:text-white transition-all flex-shrink-0"
                 >

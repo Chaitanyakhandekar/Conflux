@@ -1,11 +1,25 @@
 import { useState } from "react"
 import Modal from "../ui/Modal"
-import { Hash, Volume2, Megaphone, Lock } from "lucide-react"
+import { Hash, Volume2, Megaphone, Lock, type LucideIcon } from "lucide-react"
+import { useServerStore } from "../../store/server-store."
+import { useAuthStore } from "../../store/auth-store"
+import type { ChannelDataType, ChannelType } from "../../types/channel.type"
+import { channelApi } from "../../api/channel.api"
+import { useChannel } from "../../hooks/useChannel"
+
+
+type TypesType = {
+  id: ChannelType,
+  icon: LucideIcon,
+  label: string,
+  desc: string
+
+}
 
 const channelTypes = [
-  { id: "text", icon: Hash, label: "Text Channel", desc: "Post text, images, and stickers" },
-  { id: "voice", icon: Volume2, label: "Voice Channel", desc: "Hang out with voice and video" },
-  { id: "announcement", icon: Megaphone, label: "Announcement Channel", desc: "Share important updates" },
+  { id: "TEXT", icon: Hash, label: "Text Channel", desc: "Post text, images, and stickers" },
+  { id: "VOICE", icon: Volume2, label: "Voice Channel", desc: "Hang out with voice and video" },
+  { id: "ANNOUNCEMENT", icon: Megaphone, label: "Announcement Channel", desc: "Share important updates" },
 ]
 
 interface Props {
@@ -14,9 +28,25 @@ interface Props {
 }
 
 function CreateChannelModal({ open, onClose }: Props) {
-  const [selectedType, setSelectedType] = useState("text")
+  const [selectedType, setSelectedType] = useState<ChannelType>("TEXT")
   const [channelName, setChannelName] = useState("")
   const [isPrivate, setIsPrivate] = useState(false)
+
+  const { currentCategory, setCurrentCategory, selectedServer } = useServerStore()
+  const { createChannel } = useChannel()
+  const { user } = useAuthStore()
+
+  const handleCreate = async () => {
+
+    const data: ChannelDataType = {
+      name: channelName,
+      serverId: selectedServer?._id,
+      categoryId: currentCategory?._id,
+      type: selectedType,
+      createdBy: user._id
+    }
+    await createChannel(data, data.categoryId)
+  }
 
   return (
     <Modal open={open} onClose={onClose} width="480px">
@@ -24,18 +54,17 @@ function CreateChannelModal({ open, onClose }: Props) {
         <h2 className="text-[20px] font-bold text-white">Create Channel</h2>
 
         <div className="flex gap-2 mt-5">
-          {channelTypes.map((t) => {
+          {channelTypes.map((t: TypesType) => {
             const Icon = t.icon
             const active = selectedType === t.id
             return (
               <button
                 key={t.id}
                 onClick={() => setSelectedType(t.id)}
-                className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-[8px] border transition-all duration-200 ${
-                  active
-                    ? "bg-[rgba(139,125,255,0.12)] border-[#8B7DFF]"
-                    : "bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.06)]"
-                }`}
+                className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-[8px] border transition-all duration-200 ${active
+                  ? "bg-[rgba(139,125,255,0.12)] border-[#8B7DFF]"
+                  : "bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.06)]"
+                  }`}
               >
                 <Icon size={22} className={active ? "text-[#8B7DFF]" : "text-[#94A3B8]"} />
                 <span className={`text-xs font-medium ${active ? "text-white" : "text-[#94A3B8]"}`}>{t.label}</span>
@@ -60,14 +89,12 @@ function CreateChannelModal({ open, onClose }: Props) {
         <label className="flex items-center gap-3 mt-4 cursor-pointer">
           <button
             onClick={() => setIsPrivate(!isPrivate)}
-            className={`w-[44px] h-[24px] rounded-full transition-colors relative ${
-              isPrivate ? "bg-[#8B7DFF]" : "bg-[rgba(255,255,255,0.08)]"
-            }`}
+            className={`w-[44px] h-[24px] rounded-full transition-colors relative ${isPrivate ? "bg-[#8B7DFF]" : "bg-[rgba(255,255,255,0.08)]"
+              }`}
           >
             <div
-              className={`w-[18px] h-[18px] rounded-full bg-white absolute top-[3px] transition-all duration-200 ${
-                isPrivate ? "left-[23px]" : "left-[3px]"
-              }`}
+              className={`w-[18px] h-[18px] rounded-full bg-white absolute top-[3px] transition-all duration-200 ${isPrivate ? "left-[23px]" : "left-[3px]"
+                }`}
             />
           </button>
           <div className="flex flex-col">
@@ -82,7 +109,11 @@ function CreateChannelModal({ open, onClose }: Props) {
           <button onClick={onClose} className="px-4 py-2 text-sm text-[#94A3B8] hover:text-white transition-colors">
             Cancel
           </button>
-          <button className="px-5 py-2 rounded-[8px] bg-[#8B7DFF] text-white text-sm font-semibold hover:bg-[#7C6BFF] shadow-[0_0_12px_rgba(139,125,255,0.15)] transition-all duration-200">
+          <button
+            onClick={() => {
+              handleCreate()
+            }}
+            className="px-5 py-2 rounded-[8px] bg-[#8B7DFF] text-white text-sm font-semibold hover:bg-[#7C6BFF] shadow-[0_0_12px_rgba(139,125,255,0.15)] transition-all duration-200">
             Create Channel
           </button>
         </div>

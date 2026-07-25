@@ -1,5 +1,5 @@
 
-export type ChannelType = "TEXT" | "VOICE";
+export type ChannelType = "TEXT" | "VOICE" | "ANNOUNCEMENT";
 
 export interface IChannel extends Document {
     name: string;
