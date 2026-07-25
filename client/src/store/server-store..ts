@@ -8,12 +8,15 @@ type ServerStoreType = {
     selectedServer: IdealServerType | null,
     categories: CategoryType[] | [],
     currentChannel: ChannelType | null,
+    currentCategory: CategoryType | null
 
     setCategories: (categories: CategoryType[]) => void,
     setServers: (servers: IdealServerType[]) => void,
     setSelectedServer: (server: IdealServerType) => void
     addServer: (server: IdealServerType) => void
     setCurrentChannel: (channel: ChannelType) => void
+    addChannel: (channel: ChannelType, categoryId: string) => void
+    serCurrentCategory: (category: CategoryType) => void
 }
 
 
@@ -31,6 +34,7 @@ export const useServerStore = create<ServerStoreType>()(
 
         categories: [],
         currentChannel: null,
+        currentCategory: null,
 
         addServer: (server: IdealServerType) => {
             set((prev) => ({
@@ -53,6 +57,25 @@ export const useServerStore = create<ServerStoreType>()(
         setCurrentChannel: (channel: ChannelType) => {
             set({
                 currentChannel: channel
+            })
+        },
+
+        addChannel: (channel: ChannelType, categoryId: string) => {
+            set((prev) => ({
+                categories: prev.categories.map((cat: CategoryType) => {
+                    if (cat._id !== categoryId) {
+                        return cat
+                    }
+
+                    cat.channels = [...cat.channels, channel]
+                    return cat
+                })
+            }))
+        },
+
+        serCurrentCategory: (category: CategoryType) => {
+            set({
+                currentCategory: category
             })
         }
 
