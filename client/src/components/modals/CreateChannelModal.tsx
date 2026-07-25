@@ -46,6 +46,7 @@ function CreateChannelModal({ open, onClose }: Props) {
       createdBy: user._id
     }
     await createChannel(data, data.categoryId)
+    onClose()
   }
 
   return (
