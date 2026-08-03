@@ -1,4 +1,5 @@
-import { Check, UserPlus, Settings, BellOff, LogOut } from "lucide-react"
+import { Check, UserPlus, Settings, BellOff, LogOut, Plus, FolderPlus } from "lucide-react"
+import { useUI } from "../../contexts/UIContext"
 
 interface Props {
   open: string | null
@@ -8,6 +9,16 @@ interface Props {
 }
 
 function ContextMenu({ open, onClose, x, y }: Props) {
+  const { setShowCreateCategory } = useUI()
+
+  const handleItemClick = (label: string) => {
+    if (label === "Create Category") {
+      setShowCreateCategory(true)
+    }
+    // Handle other actions here...
+    onClose()
+  }
+
   return (
     <>
       {open && (
@@ -23,6 +34,7 @@ function ContextMenu({ open, onClose, x, y }: Props) {
               { icon: Settings, label: "Server Settings" },
               { separator: true },
               { icon: BellOff, label: "Mute Server" },
+              { icon: FolderPlus, label: "Create Category" },
               { separator: true },
               { icon: LogOut, label: "Leave Server", danger: true },
             ].map((item: any, i) =>
@@ -31,12 +43,11 @@ function ContextMenu({ open, onClose, x, y }: Props) {
               ) : (
                 <button
                   key={i}
-                  onClick={onClose}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
-                    item.danger
-                      ? "text-[#ED4245] hover:bg-[rgba(237,66,69,0.08)]"
-                      : "text-[#94A3B8] hover:bg-[rgba(139,125,255,0.08)] hover:text-white"
-                  }`}
+                  onClick={() => handleItemClick(item.label)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors ${item.danger
+                    ? "text-[#ED4245] hover:bg-[rgba(237,66,69,0.08)]"
+                    : "text-[#94A3B8] hover:bg-[rgba(139,125,255,0.08)] hover:text-white"
+                    }`}
                 >
                   <item.icon size={16} />
                   {item.label}

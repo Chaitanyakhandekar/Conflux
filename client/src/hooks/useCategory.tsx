@@ -4,6 +4,7 @@ import { serverApi } from '../api/server.api';
 import toast from "react-hot-toast";
 import { useServerStore } from '../store/server-store.';
 import { categoryApi } from '../api/category.api';
+import type { CategoryDataType } from '../types/category.types';
 
 
 export function useCategory() {
@@ -39,12 +40,37 @@ export function useCategory() {
 
     }
 
+    const createCategory = async (data: CategoryDataType) => {
+        setLoading(true)
+        try {
+            const res = await categoryApi.createCategory(data)
+
+            if (res.success) {
+                toast.success("Category created successfully.")
+                // Refresh categories for the server
+                await getServerCategories(data.serverId)
+                return res.data;
+            } else {
+                toast.error(res.message || "Failed to create category")
+                setCategoryError(res.message)
+                return null;
+            }
+        } catch (error: any) {
+            setCategoryError(error.message)
+            toast.error(error.message || "Failed to create category")
+            return null;
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return {
         loading,
         setLoading,
         categoryError,
         setCategoryError,
-        getServerCategories
+        getServerCategories,
+        createCategory
     }
 
 }

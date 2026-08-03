@@ -16,41 +16,44 @@ type AuthStoreType = {
 
 export const useAuthStore = create<AuthStoreType>()(
 
-    persist(
-        (set) => ({
-            user: null,
-            pendingVerificationEmail: null,
-            isAuthenticated: false,
+    devtools(
+        persist(
+            (set) => ({
+                user: null,
+                pendingVerificationEmail: null,
+                isAuthenticated: false,
 
-            setUser: (user: User) => {
-                set({
-                    user
-                })
-            },
+                setUser: (user: User) => {
+                    set({
+                        user
+                    })
+                },
 
-            setPendingVerificationEmail: (email: string) => {
-                set({
-                    pendingVerificationEmail: email
-                })
-            },
+                setPendingVerificationEmail: (email: string) => {
+                    set({
+                        pendingVerificationEmail: email
+                    })
+                },
 
-            clearPendingVerificationEmail: () => {
-                set({
-                    pendingVerificationEmail: null
-                })
-            },
+                clearPendingVerificationEmail: () => {
+                    set({
+                        pendingVerificationEmail: null
+                    })
+                },
 
-            logout: () => {
-                set({
-                    user: null,
-                    pendingVerificationEmail: null,
-                    isAuthenticated: false
-                })
+                logout: () => {
+                    set({
+                        user: null,
+                        pendingVerificationEmail: null,
+                        isAuthenticated: false
+                    })
+                }
+            }),
+
+            {
+                name: "auth-store"
             }
-        }),
-
-        {
-            name: "auth-store"
-        }
+        )
     )
+
 )

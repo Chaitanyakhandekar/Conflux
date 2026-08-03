@@ -2,6 +2,7 @@ import Popover from "../ui/Popover"
 import {
   UserPlus, Settings, Hash, FolderPlus, BellOff, LogOut,
 } from "lucide-react"
+import { useUI } from "../../contexts/UIContext"
 
 const items = [
   { icon: UserPlus, label: "Invite People" },
@@ -20,6 +21,18 @@ interface Props {
 }
 
 function ServerDropdown({ open, onClose, anchorRect }: Props) {
+  const { setShowCreateChannel, setShowCreateCategory } = useUI()
+
+  const handleItemClick = (label: string) => {
+    if (label === "Create Channel") {
+      setShowCreateChannel(true)
+    } else if (label === "Create Category") {
+      setShowCreateCategory(true)
+    }
+    // Handle other actions here...
+    onClose()
+  }
+
   return (
     <Popover
       open={open}
@@ -34,7 +47,7 @@ function ServerDropdown({ open, onClose, anchorRect }: Props) {
         ) : (
           <button
             key={i}
-            onClick={onClose}
+            onClick={() => handleItemClick(item.label)}
             className={`w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
               item.danger
                 ? "text-[#ED4245] hover:bg-[rgba(237,66,69,0.08)]"

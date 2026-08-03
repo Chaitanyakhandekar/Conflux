@@ -11,6 +11,7 @@ import MembersSidebar from "../components/workspace/MembersSidebar"
 import CreateServerModal from "../components/modals/CreateServerModal"
 import ServerDropdown from "../components/modals/ServerDropdown"
 import CreateChannelModal from "../components/modals/CreateChannelModal"
+import CreateCategoryModal from "../components/modals/CreateCategoryModal"
 import ProfileCard from "../components/modals/ProfileCard"
 import SettingsModal from "../components/modals/SettingsModal"
 import VoiceJoinModal from "../components/modals/VoiceJoinModal"
@@ -32,6 +33,7 @@ function WorkspaceLayout() {
     showCreateServer, setShowCreateServer,
     showServerDropdown, setShowServerDropdown,
     showCreateChannel, setShowCreateChannel,
+    showCreateCategory, setShowCreateCategory,
     showProfileCard, setShowProfileCard,
     showSettings, setShowSettings,
     showVoiceJoin, setShowVoiceJoin,
@@ -140,6 +142,8 @@ function WorkspaceLayout() {
       </div>
 
       <CreateChannelModal open={showCreateChannel} onClose={() => setShowCreateChannel(false)} />
+      
+      <CreateCategoryModal open={showCreateCategory} onClose={() => setShowCreateCategory(false)} />
 
       <ProfileCard open={showProfileCard} onClose={() => setShowProfileCard(false)} />
 

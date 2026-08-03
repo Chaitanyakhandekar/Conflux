@@ -1,5 +1,6 @@
 import { env } from "../config/env.config"
 import { messages } from "../data/messages";
+import type { CategoryDataType } from "../types/category.types";
 import type { CreateServerType } from "../types/server.type";
 import type { LoginUserType, RegisterUserType } from "../types/user.type"
 import axios from "axios"
@@ -39,7 +40,38 @@ class CategoryApi {
                 data: data.data,
                 message: data.message
             }
-        } catch (error) {
+        } catch (error: any) {
+            return {
+                success: false,
+                error: error,
+                message: error.message
+            }
+        }
+    }
+
+    createCategory = async (categoryData: CategoryDataType): Promise<any> => {
+        try {
+            const { data } = await axios.post(
+                `${this.baseUrl}/`,
+                categoryData,
+                {
+                    withCredentials: true
+                }
+            )
+
+            if (!data.success) {
+                return {
+                    success: false,
+                    errorCode: data.errorCode
+                }
+            }
+
+            return {
+                success: true,
+                data: data.data,
+                message: data.message
+            }
+        } catch (error: any) {
             return {
                 success: false,
                 error: error,

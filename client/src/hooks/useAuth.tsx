@@ -50,7 +50,7 @@ export const useAuth = (): any => {
         setLoading(true)
         const res = await authApi.continueWithGoogle(googleId)
         setLoading(false)
-    
+
         if (!res.success) {
             setErrorType(res.error)
         }

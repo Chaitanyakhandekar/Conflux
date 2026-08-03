@@ -7,6 +7,8 @@ interface UIContextType {
   setShowServerDropdown: (v: boolean) => void
   showCreateChannel: boolean
   setShowCreateChannel: (v: boolean) => void
+  showCreateCategory: boolean
+  setShowCreateCategory: (v: boolean) => void
   showProfileCard: boolean
   setShowProfileCard: (v: boolean) => void
   showSettings: boolean
@@ -40,6 +42,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
   const [showCreateServer, setShowCreateServer] = useState(false)
   const [showServerDropdown, setShowServerDropdown] = useState(false)
   const [showCreateChannel, setShowCreateChannel] = useState(false)
+  const [showCreateCategory, setShowCreateCategory] = useState(false)
   const [showProfileCard, setShowProfileCard] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const [showVoiceJoin, setShowVoiceJoin] = useState<string | null>(null)
@@ -57,6 +60,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
     setShowCreateServer(false)
     setShowServerDropdown(false)
     setShowCreateChannel(false)
+    setShowCreateCategory(false)
     setShowProfileCard(false)
     setShowSettings(false)
     setShowVoiceJoin(null)
@@ -75,6 +79,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
         showCreateServer, setShowCreateServer,
         showServerDropdown, setShowServerDropdown,
         showCreateChannel, setShowCreateChannel,
+        showCreateCategory, setShowCreateCategory,
         showProfileCard, setShowProfileCard,
         showSettings, setShowSettings,
         showVoiceJoin, setShowVoiceJoin,
