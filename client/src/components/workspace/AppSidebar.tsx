@@ -52,27 +52,16 @@ function AppSidebar() {
           title={server.name}
           className={`group relative flex-shrink-0 w-12 h-12 flex items-center justify-center
       rounded-2xl hover:rounded-[14px] transition-all duration-300 ease-out
-      bg-gradient-to-br ${server?.gradient || "from-indigo-500 to-purple-600"}
       text-white text-xs font-bold
       ring-1 ring-white/5
-      shadow-[0_2px_8px_rgba(0,0,0,0.4)]
       hover:shadow-[0_4px_16px_rgba(139,92,246,0.35)]
       hover:scale-105 active:scale-95
       ${server._id ? "rounded-[14px]" : ""}
     `}
         >
-          {server.name.charAt(0).toUpperCase()}
-
-          {/* left indicator pill — active vs hover */}
-          <span
-            className={`absolute -left-[10px] top-1/2 -translate-y-1/2 rounded-r-full bg-white
-        transition-all duration-300 ease-out
-        ${server._id === selectedServer?._id
-                ? "w-[4px] h-8 opacity-100 shadow-[0_0_12px_rgba(139,125,255,0.5)]"
-                : "w-[4px] h-2 opacity-0 group-hover:opacity-100 group-hover:h-5"
-              }
-      `}
-          />
+          <img
+            className="w-full h-full object-fit rounded-2xl"
+            src={server?.serverIcon} alt={server?.name?.charAt(0)?.toLocaleUpperCase()} />
         </button>
       ))}
 

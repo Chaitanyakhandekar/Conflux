@@ -6,18 +6,16 @@ import { Server } from "../models/server.model.ts";
 
 const createServerValidator = (server: ServerInfoType, user: any): any => {
 
-    // if (!server?.name?.trim() || server?.name?.trim() === "") {
-    //     throw new ApiError(400, "Server Name is Required.", ERROR_CODES.REQUIRED_FIELDS_MISSING)
-    // }
+    if (!server?.name?.trim() || server?.name?.trim() === "") {
+        throw new ApiError(400, "Server Name is Required.", ERROR_CODES.REQUIRED_FIELDS_MISSING)
+    }
 
-    // if (!isValidObjectId(server.ownerId)) {
-    //     throw new ApiError(400, "Valid Owner Id is Required.", ERROR_CODES.REQUIRED_FIELDS_MISSING)
-    // }
     const serverInfo = {
-        name: `${user?.fullName}'s ${server.serverType} Server`,
+        name: server.name.trim(),
         description: server.description || "",
         serverType: server.serverType,
-        ownerId: new mongoose.Types.ObjectId(user._id)
+        ownerId: new mongoose.Types.ObjectId(user._id),
+        serverIcon: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(server.name.trim())}`
     }
 
     return serverInfo;

@@ -5,6 +5,7 @@ export interface IServer extends Document {
     description?: string
     serverType?: "GAMING" | "DEVELOPER" | "STARTUP" | "STUDY" | "CUSTOM"
     ownerId: mongoose.Types.ObjectId
+    serverIcon: string
 }
 
 export interface IServerMethods {
@@ -16,6 +17,7 @@ export type ServerInfoType = {
     description?: string
     serverType?: "GAMING" | "DEVELOPER" | "STARTUP" | "STUDY" | "CUSTOM"
     ownerId?: mongoose.Types.ObjectId
+    serverIcon?: string
 }
 
 export interface ServerModel extends Model<IServer, {}, IServerMethods> { }

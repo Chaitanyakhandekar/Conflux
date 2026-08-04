@@ -9,24 +9,28 @@ export function useServer() {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [serverError, setServerError] = useState<string | null | undefined>(null)
-    const { servers, setServers, selectedServer, setSelectedServer, setCurrentChannel, currentChannel } = useServerStore()
+    const { servers, setServers, addServer, selectedServer, setSelectedServer, setCurrentChannel, currentChannel } = useServerStore()
 
-    const createServer = async (server: CreateServerType): Promise<any> => {
+    const createServer = async (server: CreateServerType): Promise<boolean> => {
+        setLoading(true);
         try {
             const res = await serverApi.createServer(server)
 
             if (res.success) {
+                addServer(res.data)
                 toast.success(
                     "Server Created."
                 )
+                return true;
             }
+            return false;
 
         } catch (error: any) {
             setServerError(error.message)
+            return false;
         }
         finally {
             setLoading(false)
-            return;
         }
 
     }

@@ -1,6 +1,7 @@
 import { useServer } from "../../hooks/useServer";
 import Modal from "../ui/Modal"
 import { Server, Users, GraduationCap, Code, Heart, Plus, X,Computer } from "lucide-react"
+import { useState } from "react";
 
 const serverTemplates :ServerType[] = [
   { icon: <Gamepad2 size={28} />, label: "Gaming Community", desc: "Play and chat with gamers" , type:"GAMING"},
@@ -44,18 +45,25 @@ type ServerType={
 function CreateServerModal({ open, onClose }: Props) {
 
   const {loading,createServer,serverError,setServerError} = useServer()
+  const [serverName, setServerName] = useState("");
 
   const handleCreateServer = async (t:ServerType) : Promise<any> =>{
+      if (!serverName.trim()) {
+        return;
+      }
       const server = {
-        name:"server",
+        name: serverName,
         description: t.desc,
         serverType: t.type,
         ownerId:undefined
       }
       console.log("Server Selected : ",server);
       
-      await createServer(server)
-      
+      const success = await createServer(server);
+      if (success) {
+        setServerName("");
+        onClose();
+      }
   }
 
   return (
@@ -68,6 +76,19 @@ function CreateServerModal({ open, onClose }: Props) {
         <p className="text-[14px] text-[#94A3B8] text-center mt-1">
           Your server is where you and your community hang out.
         </p>
+
+        <div className="mt-5">
+          <label className="block text-[12px] font-semibold text-[#94A3B8] uppercase mb-2">
+            Server Name
+          </label>
+          <input
+            type="text"
+            value={serverName}
+            onChange={(e) => setServerName(e.target.value)}
+            placeholder="Enter server name"
+            className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] rounded-[8px] px-4 py-2.5 text-white text-sm outline-none focus:border-[#8B7DFF] transition-all"
+          />
+        </div>
 
         <div className="grid grid-cols-2 gap-3 mt-5">
           {serverTemplates.map((t) => (
@@ -82,6 +103,9 @@ function CreateServerModal({ open, onClose }: Props) {
             </button>
           ))}
         </div>
+        {serverName.trim().length === 0 && (
+          <p className="text-[12px] text-red-400 text-center mt-3">Please enter a server name to select a template.</p>
+        )}
 
         <div className="flex items-center gap-3 my-5">
           <div className="flex-1 h-[1px] bg-[rgba(255,255,255,0.06)]" />

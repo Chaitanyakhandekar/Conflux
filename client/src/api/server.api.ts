@@ -39,7 +39,7 @@ class ServerApi {
 
             return {
                 success: true,
-                data: response.data,
+                data: response.data.data.server,
                 message: "Server Created."
             }
         } catch (error: any) {

@@ -28,6 +28,9 @@ const serverSchema = new Schema<IServer, ServerModel, IServerMethods>({
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true
+    },
+    serverIcon:{
+        type:String,
     }
 
 }, { timestamps: true })
