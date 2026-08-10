@@ -22,7 +22,7 @@ export interface IUser extends Document {
     verificationToken?: string;
     verificationOTP?: string;
     OTPGeneratedAt?: Date;
-    googleId?:string;
+    googleId?: string;
 }
 
 
@@ -53,13 +53,13 @@ type RegisterUserType = {
     password: string | null
     fullName: string
     avatar?: string
-    googleId?:string
+    googleId?: string
 }
 
 type LoginUserType = {
     email: string
     password: string | null
-    googleId?:string
+    googleId?: string
 }
 
 type SetupProfileType = {

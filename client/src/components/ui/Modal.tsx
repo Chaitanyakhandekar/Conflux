@@ -32,7 +32,9 @@ function Modal({ open, onClose, children, width = "480px", className = "" }: Mod
     >
       <div className="fixed inset-0 bg-black/70 backdrop-blur-[10px]" />
       <div
-        className="relative animate-[scaleFade_200ms_ease] bg-[#111827] rounded-[8px] border border-[rgba(255,255,255,0.06)] shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden"
+        className={`relative animate-[scaleFade_200ms_ease] bg-[#111827] rounded-[8px] border border-[rgba(255,255,255,0.06)] shadow-[0_0_40px_rgba(0,0,0,0.5)] ${
+          className.includes("overflow-") ? "" : "overflow-hidden"
+        } ${className}`}
         style={{ width }}
       >
         {children}
