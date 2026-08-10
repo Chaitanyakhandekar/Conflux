@@ -1,5 +1,6 @@
 import { Check, UserPlus, Settings, BellOff, LogOut, Plus, FolderPlus } from "lucide-react"
 import { useUI } from "../../contexts/UIContext"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
   open: string | null
@@ -10,10 +11,13 @@ interface Props {
 
 function ContextMenu({ open, onClose, x, y }: Props) {
   const { setShowCreateCategory } = useUI()
+  const navigate = useNavigate()
 
   const handleItemClick = (label: string) => {
     if (label === "Create Category") {
       setShowCreateCategory(true)
+    } else if (label === "Server Settings") {
+      navigate("/server/setting")
     }
     // Handle other actions here...
     onClose()

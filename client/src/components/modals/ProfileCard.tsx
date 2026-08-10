@@ -2,6 +2,7 @@ import Popover from "../ui/Popover"
 import { useUI } from "../../contexts/UIContext"
 import { Pencil, Settings, LogOut } from "lucide-react"
 import { useAuth } from "../../hooks/useAuth"
+import { useAuthStore } from "../../store/auth-store"
 
 interface Props {
   open: boolean
@@ -10,11 +11,12 @@ interface Props {
 
 function ProfileCard({ open, onClose }: Props) {
   const { setShowSettings } = useUI()
-  const {logoutUser} = useAuth()
+  const { logoutUser } = useAuth()
+  const { user } = useAuthStore()
 
-  const handleLogout = async ()=>{
+  const handleLogout = async () => {
     console.log("Logout button clicked");
-    
+
     await logoutUser();
   }
 
@@ -24,11 +26,13 @@ function ProfileCard({ open, onClose }: Props) {
         <div className="w-full h-[60px] rounded-[8px] bg-gradient-to-r from-[#8B7DFF]/30 to-[#6B5CE7]/30 mb-14" />
 
         <div className="relative -mt-20 flex flex-col items-center">
-          <div className="w-[80px] h-[80px] rounded-full bg-gradient-to-br from-[#8B7DFF] to-[#6B5CE7] shadow-[0_0_24px_rgba(139,125,255,0.3)] flex items-center justify-center text-white text-2xl font-bold">
-            Y
+          <div className="w-[80px] h-[80px] rounded-full bg-gradient-to-br from-[#8B7DFF] to-[#6B5CE7] shadow-[0_0_24px_rgba(139,125,255,0.3)] flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
+            <img
+              className="w-full h-full object-cover overflow-hidden"
+              src={user.avatar.secure_url} alt="" />
           </div>
-          <h3 className="text-lg font-bold text-white mt-2">chaitanya_dev</h3>
-          <span className="text-sm text-[#94A3B8]">Chaitanya</span>
+          <h3 className="text-lg font-bold text-white mt-2">{user.username}</h3>
+          <span className="text-sm text-[#94A3B8]">{user.displayName}</span>
 
           <div className="flex items-center gap-1 mt-2 px-3 py-1 rounded-full bg-[rgba(34,197,94,0.12)] text-[#22C55E] text-xs font-medium">
             <span className="w-[6px] h-[6px] rounded-full bg-[#22C55E]" />
@@ -36,7 +40,7 @@ function ProfileCard({ open, onClose }: Props) {
           </div>
 
           <p className="text-[13px] text-[#94A3B8] mt-3 text-center">
-            Full-stack developer building Conflux
+            {user.bio}
           </p>
         </div>
 
@@ -53,8 +57,8 @@ function ProfileCard({ open, onClose }: Props) {
             Settings
           </button>
           <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm text-[#ED4245] hover:bg-[rgba(237,66,69,0.08)] transition-colors">
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] text-sm text-[#ED4245] hover:bg-[rgba(237,66,69,0.08)] transition-colors">
             <LogOut size={16} />
             Logout
           </button>

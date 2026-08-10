@@ -14,11 +14,12 @@ import { useAuthStore } from "./store/auth-store"
 import SendVerificationOtp from "./pages/auth/SendVerificationOtp"
 import ProfileSetupRestriction from "./routes/ProfileSetupRestriction"
 import { useServer } from "./hooks/useServer"
+import ServerSettings from "./pages/server/ServerSettings"
 
 function App() {
 
   const { authMe } = useAuth()
-  const {getMyCreatedServers} = useServer()
+  const { getMyCreatedServers } = useServer()
 
   const authMeP = async () => {
     await authMe()
@@ -51,6 +52,7 @@ function App() {
         <Routes>
 
           <Route path="/" element={<ProfileSetupRestriction><Workspace /></ProfileSetupRestriction>} />
+          <Route path="/server/setting" element={<ProfileSetupRestriction><ServerSettings /></ProfileSetupRestriction>} />
           <Route path="/register" element={<ProtectedRouteReverese><Register /></ProtectedRouteReverese>} />
           <Route path="/login" element={<ProtectedRouteReverese><Login /></ProtectedRouteReverese>} />
           <Route path="/verify-otp" element={<ProtectedRouteReverese><VerifyOtp /></ProtectedRouteReverese>} />

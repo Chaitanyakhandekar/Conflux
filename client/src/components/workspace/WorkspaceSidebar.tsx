@@ -1,9 +1,11 @@
 import { ChevronDown, Phone, Headphones } from "lucide-react"
 import ChannelList from "./ChannelList"
 import { useUI } from "../../contexts/UIContext"
+import { useAuthStore } from "../../store/auth-store"
 
 function WorkspaceSidebar() {
   const { setShowServerDropdown, setShowProfileCard } = useUI()
+  const { user } = useAuthStore()
 
   return (
     <aside className="w-[240px] h-full bg-[#0C1322] flex flex-col flex-shrink-0">
@@ -21,8 +23,10 @@ function WorkspaceSidebar() {
 
       <div className="h-[52px] flex items-center gap-2 px-3 bg-[#0C1322] border-t border-[rgba(255,255,255,0.04)] flex-shrink-0">
         <div className="relative group cursor-pointer" onClick={() => setShowProfileCard(true)}>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8B7DFF] to-[#6B5CE7] shadow-[0_0_12px_rgba(139,125,255,0.15)] flex items-center justify-center text-white text-[11px] font-semibold">
-            Y
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8B7DFF] to-[#6B5CE7] shadow-[0_0_12px_rgba(139,125,255,0.15)] flex items-center justify-center text-white text-[11px] font-semibold overflow-hidden">
+            <img
+              className="w-full h-full object-cover"
+              src={user.avatar.secure_url} alt="" />
           </div>
           <span className="absolute -bottom-[1px] -right-[1px] w-[10px] h-[10px] bg-[#22C55E] rounded-full border-[2px] border-[#0C1322] shadow-[0_0_6px_rgba(34,197,94,0.3)]" />
         </div>

@@ -4,9 +4,11 @@ import { useUI } from "../../contexts/UIContext"
 import { useServer } from "../../hooks/useServer"
 import type { IdealServerType } from "../../types/server.type"
 import { useCategory } from "../../hooks/useCategory"
+import { useAuthStore } from "../../store/auth-store"
 
 function AppSidebar() {
   const { setShowCreateServer, setShowProfileCard, setShowContextServer, setContextMenuPos, showDMHub, setShowDMHub } = useUI()
+  const { user } = useAuthStore()
   const { getMyCreatedServers, servers, selectedServer, setSelectedServer } = useServer()
   const { loading,
     setLoading,
@@ -87,8 +89,10 @@ function AppSidebar() {
 
       <div className="flex flex-col items-center gap-2 pb-1">
         <div className="relative group cursor-pointer" onClick={() => setShowProfileCard(true)}>
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B7DFF] to-[#6B5CE7] shadow-[0_0_16px_rgba(139,125,255,0.2)] flex items-center justify-center text-white text-xs font-semibold">
-            Y
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B7DFF] to-[#6B5CE7] shadow-[0_0_16px_rgba(139,125,255,0.2)] flex items-center justify-center text-white text-xs font-semibold overflow-hidden">
+            <img
+              className="w-full h-full object-cover"
+              src={user.avatar.secure_url} alt="" />
           </div>
           <span className="absolute -bottom-[2px] -right-[2px] w-[12px] h-[12px] bg-[#22C55E] rounded-full border-[3px] border-[#08101F] shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
           <div className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-[4px] h-0 rounded-r-full bg-white group-hover:h-5 transition-all duration-200 shadow-[0_0_12px_rgba(139,125,255,0.4)]" />

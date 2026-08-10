@@ -3,6 +3,7 @@ import {
   UserPlus, Settings, Hash, FolderPlus, BellOff, LogOut,
 } from "lucide-react"
 import { useUI } from "../../contexts/UIContext"
+import { useNavigate } from "react-router-dom"
 
 const items = [
   { icon: UserPlus, label: "Invite People" },
@@ -22,12 +23,15 @@ interface Props {
 
 function ServerDropdown({ open, onClose, anchorRect }: Props) {
   const { setShowCreateChannel, setShowCreateCategory } = useUI()
+  const navigate = useNavigate()
 
   const handleItemClick = (label: string) => {
     if (label === "Create Channel") {
       setShowCreateChannel(true)
     } else if (label === "Create Category") {
       setShowCreateCategory(true)
+    } else if (label === "Server Settings") {
+      navigate("/server/setting")
     }
     // Handle other actions here...
     onClose()

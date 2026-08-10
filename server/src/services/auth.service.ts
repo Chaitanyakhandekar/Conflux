@@ -53,7 +53,7 @@ const registerUserService = async (payload: RegisterUserType): Promise<any> => {
         password: payload.password,
         fullName: payload.fullName,
         avatar: {
-            secure_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${payload.username}`,
+            secure_url: `https://api.dicebear.com/10.x/pixel-art/svg?seed=${payload.username}`,
             public_id: ""
         },
         verificationOTP: otp,
@@ -97,8 +97,8 @@ const loginUserService = async (userData: LoginUserType): Promise<LoginServiceRe
         throw new ApiError(401, "User Not Verified", ERROR_CODES.VERIFICATION_REQUIRED)
     }
 
-    if(!user.password){
-        throw new ApiError(400,"User may had registered with Google so try to log in with Google.",ERROR_CODES.BAD_REQUEST)
+    if (!user.password) {
+        throw new ApiError(400, "User may had registered with Google so try to log in with Google.", ERROR_CODES.BAD_REQUEST)
     }
 
     if (! await user.isCorrectPassword(userData.password)) {
@@ -121,10 +121,10 @@ const loginUserService = async (userData: LoginUserType): Promise<LoginServiceRe
  * @description Service for Register/Login with Google OAuth
  * @param googleId 
  */
-const continueWithGoogleService = async (googleId:string) : Promise<any> =>{
+const continueWithGoogleService = async (googleId: string): Promise<any> => {
 
-    if(!googleId || (googleId && googleId.trim()==="")){
-        throw new ApiError(400,"Valid Google Credential is Required.",ERROR_CODES.REQUIRED_FIELDS_MISSING)
+    if (!googleId || (googleId && googleId.trim() === "")) {
+        throw new ApiError(400, "Valid Google Credential is Required.", ERROR_CODES.REQUIRED_FIELDS_MISSING)
     }
 
     const googleAuthPayload = await verifyGoogleToken(googleId)
@@ -132,34 +132,34 @@ const continueWithGoogleService = async (googleId:string) : Promise<any> =>{
     continueWithGoogleValidator(googleAuthPayload as TokenPayload)
 
     const userAlreadyExists = await User.findOne({
-        email:googleAuthPayload?.email
+        email: googleAuthPayload?.email
     })
 
-    if(!userAlreadyExists){
+    if (!userAlreadyExists) {
 
         const payload = {
-            username:`googleAuthPayload?.given_name + "_" + ${Date.now()}`, // it should be unique so by default its best option
-            email:googleAuthPayload?.email,
-            password:null,
-            fullName:googleAuthPayload?.given_name + " " + googleAuthPayload?.family_name,
+            username: `googleAuthPayload?.given_name + "_" + ${Date.now()}`, // it should be unique so by default its best option
+            email: googleAuthPayload?.email,
+            password: null,
+            fullName: googleAuthPayload?.given_name + " " + googleAuthPayload?.family_name,
             avatar: {
                 secure_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Date.now()}`,
                 public_id: ""
             },
             googleId,
-            isVerified:true
+            isVerified: true
         }
 
         const user = await User.create(payload)
 
-        if(!user){
-            throw new ApiError(500,"Server Error While Registering.",ERROR_CODES.CREATE_FAILED)
+        if (!user) {
+            throw new ApiError(500, "Server Error While Registering.", ERROR_CODES.CREATE_FAILED)
         }
 
         const tokens = generateAccessAndRefreshTokens(user)
 
         user.refreshToken = tokens.refreshToken
-    
+
         await user.save({ validateBeforeSave: false })
 
         return {
