@@ -18,7 +18,7 @@ const app = express()
 /**
  * @description Http Server created using express App
  */
-const httpServer = createServer(app)
+const httpServer = createServer(app)  // Created Http Server using app
 
 app.use(cors({
     origin: process.env.ALLOW_ORIGIN || ["http://localhost:5173", ""],
@@ -64,4 +64,4 @@ app.use("/api/v1/messages", messageRouter)
 app.use("/api/v1/categories", categoryRouter)
 
 
-export { httpServer }
+export { httpServer, app }
