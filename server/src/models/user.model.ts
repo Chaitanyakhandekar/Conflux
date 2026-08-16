@@ -26,11 +26,18 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
     },
     password: {
         type: String,
-        required: true
+
     },
     fullName: {
         type: String,
         trim: true
+    },
+    setupProfile: {
+        type: Boolean,
+        default: false
+    },
+    displayName: {
+        type: String
     },
     avatar: {
         secure_url: {
@@ -61,6 +68,11 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
     },
     OTPGeneratedAt: {
         type: Date
+    },
+    googleId:{
+        type:String,
+        unique:true,
+        sparse:true
     }
 
 
@@ -72,6 +84,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
  */
 
 userSchema.pre("save", async function () {
+    if(!this.password) return;
     if (!this.isModified("password")) return;
     this.password = await bcrypt.hash(this.password, 10)
 
@@ -84,6 +97,7 @@ userSchema.pre("save", async function () {
  * @returns 
  */
 userSchema.methods.isCorrectPassword = async function (password: string) {
+    if(!this.password) return false;
     return await bcrypt.compare(password, this.password)
 }
 

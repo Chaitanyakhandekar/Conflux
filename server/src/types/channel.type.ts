@@ -8,11 +8,20 @@ export interface IChannel extends Document {
     categoryId?: mongoose.Types.ObjectId;
     position: number;
     type: ChannelType;
-    createdBy?: string;
+    createdBy?: mongoose.Types.ObjectId | string;
 }
 
 export interface IChannelMethods {
     isVoiceChannel(): boolean;
+}
+
+export type ChannelDataType = {
+    name: string
+    serverId: mongoose.Types.ObjectId | string
+    categoryId: mongoose.Types.ObjectId | string
+    position?: number;
+    type: ChannelType;
+    createdBy?: string;
 }
 
 export interface ChannelModel extends Model<IChannel, {}, IChannelMethods> { }

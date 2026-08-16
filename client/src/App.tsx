@@ -3,10 +3,33 @@ import { Routes, Route } from "react-router-dom"
 import Register from './pages/auth/Register'
 import VerifyOtp from './pages/auth/VerifyOtp'
 import ProfileSetup from './pages/user/ProfileSetup'
-import Home from "./pages/user/Home"
+import Workspace from "./pages/workspace/Workspace"
 import Login from "./pages/auth/Login"
+import { UIProvider } from "./contexts/UIContext"
+import ProtectedRoute from "./routes/ProtectedRoute"
+import ProtectedRouteReverese from "./routes/ProtectedRouteReverese"
+import { useEffect } from "react"
+import { useAuth } from "./hooks/useAuth"
+import { useAuthStore } from "./store/auth-store"
+import SendVerificationOtp from "./pages/auth/SendVerificationOtp"
+import ProfileSetupRestriction from "./routes/ProfileSetupRestriction"
+import { useServer } from "./hooks/useServer"
+import ServerSettings from "./pages/server/ServerSettings"
 
 function App() {
+
+  const { authMe } = useAuth()
+  const { getMyCreatedServers } = useServer()
+
+  const authMeP = async () => {
+    await authMe()
+  }
+
+  useEffect(() => {
+    authMeP()
+    getMyCreatedServers()
+  }, [])
+
   return (
     <>
       <Toaster
@@ -25,15 +48,19 @@ function App() {
           },
         }}
       />
-      <Routes>
+      <UIProvider>
+        <Routes>
 
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/verify-otp" element={<VerifyOtp />} />
-        <Route path="/profile-setup" element={<ProfileSetup />} />
+          <Route path="/" element={<ProfileSetupRestriction><Workspace /></ProfileSetupRestriction>} />
+          <Route path="/server/setting" element={<ProfileSetupRestriction><ServerSettings /></ProfileSetupRestriction>} />
+          <Route path="/register" element={<ProtectedRouteReverese><Register /></ProtectedRouteReverese>} />
+          <Route path="/login" element={<ProtectedRouteReverese><Login /></ProtectedRouteReverese>} />
+          <Route path="/verify-otp" element={<ProtectedRouteReverese><VerifyOtp /></ProtectedRouteReverese>} />
+          <Route path="/send-otp" element={<ProtectedRouteReverese><SendVerificationOtp /></ProtectedRouteReverese>} />
+          <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
 
-      </Routes>
+        </Routes>
+      </UIProvider>
     </>
   )
 }

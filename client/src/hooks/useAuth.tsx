@@ -4,8 +4,15 @@ import { useState } from "react";
 import type { LoginUserType, RegisterUserType } from "../types/user.type";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { userApi } from "../api/user.api";
 
 type OTPStatus = 'sending' | "sent" | "verified" | "invalid" | "verifying"
+type ProfileFormType = {
+    displayName: string;
+    bio?: string;
+    avatar?: File | null;
+};
+
 
 export const useAuth = (): any => {
 
@@ -30,7 +37,6 @@ export const useAuth = (): any => {
         console.log("register user data: ", res.data)
 
         if (res.success) {
-            setUser(res.data)
             localStorage.setItem("email", res.data.email)
             setPendingVerificationEmail(res.data.email)
             navigate("/verify-otp")
@@ -40,20 +46,71 @@ export const useAuth = (): any => {
         }
     }
 
+    const continueWithGoogle = async (googleId: string): Promise<any> => {
+        setLoading(true)
+        const res = await authApi.continueWithGoogle(googleId)
+        setLoading(false)
+
+        if (!res.success) {
+            setErrorType(res.error)
+        }
+        else {
+            setUser(res.data.user)
+            toast.success(
+                "Login Successfull."
+            )
+            navigate("/")
+        }
+    }
+
     const login = async (userData: LoginUserType): Promise<any> => {
         setLoading(true)
         const res = await authApi.loginUser(userData)
         setLoading(false)
 
-        if (res.success) {
+        console.log("Login Auth : ", res);
+
+
+        if (!res.success) {
+
+            setErrorType(res.error)
+
+            if (res.error === "VERIFICATION_REQUIRED") {
+                navigate("/send-otp")
+            }
+        }
+        else {
             setUser(res.data)
             toast.success(
                 "Login Successfull."
             )
             navigate("/")
         }
+
+    }
+
+    const logoutUser = async (): Promise<any> => {
+        setLoading(true)
+        const res = await authApi.logoutUser()
+        setLoading(false)
+
+        console.log("Logout Auth : ", res);
+
+
+        setUser(null)
+        if (res.success) {
+
+            toast.success(
+                "Logout Successfull."
+            )
+            navigate("/")
+        }
         else {
-            setErrorType(res.error)
+            setUser(null)
+            toast.success(
+                "Logout Successfull."
+            )
+            navigate("/login")
         }
 
     }
@@ -106,6 +163,32 @@ export const useAuth = (): any => {
 
     }
 
+    const authMe = async () => {
+        setLoading(true)
+        const res = await authApi.authMe()
+        setLoading(false)
+
+        if (!res.success) {
+            logout()
+        }
+        else {
+            setUser(res.data)
+        }
+    }
+
+    const setupProfile = async (data: ProfileFormType) => {
+        setLoading(true)
+        const res = await userApi.setupProfile(data)
+        setLoading(false)
+
+        if (res.success) {
+            toast.success(
+                "Profile Setup Done."
+            )
+            navigate("/")
+        }
+    }
+
 
 
     return {
@@ -120,7 +203,11 @@ export const useAuth = (): any => {
         resendOTP,
         verifyOTP,
         errorType,
-        setErrorType
+        setErrorType,
+        authMe,
+        setupProfile,
+        continueWithGoogle,
+        logoutUser
     }
 
 }

@@ -1,7 +1,7 @@
 type EnvType = {
     VITE_SERVER_URL_LOCAL: string
     VITE_SERVER_URL_PRODUCTION: string
-    VITE_ENV: string
+    VITE_ENV: "production" | "development"
 }
 
 export const env: EnvType = {

@@ -1,10 +1,11 @@
 import { asyncHandler } from "../utils/index.ts";
 import { Request, Response, NextFunction } from "express";
 import type { LoginUserType, RegisterUserType } from "../types/user.type.ts";
-import { loginUserService, registerUserService, resendOTPEmailService } from "../services/auth.service.ts";
+import { authMeService, continueWithGoogleService, loginUserService, registerUserService, resendOTPEmailService } from "../services/auth.service.ts";
 import { ApiResponse } from "../types/error.type.ts";
 import { verifyOTPService } from "../services/auth.service.ts";
 import { env } from "../config/env.config.ts";
+import { User } from "../models/user.model.ts";
 
 /**
  * @description Controller for register user
@@ -37,17 +38,82 @@ const loginUser = asyncHandler(async (req: Request<{}, {}, LoginUserType>, res: 
         .cookie("accessToken", userData.tokens.accessToken, {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
-            sameSite: env.NODE_ENV === "production" ? "none" : "lax"
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
         })
         .cookie("refreshToken", userData.tokens.refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
-            sameSite: env.NODE_ENV === "production" ? "none" : "lax"
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
         })
         .json(
-            new ApiResponse(200, "User Login Successful.")
+            new ApiResponse(200, "User Login Successful.", userData.user)
         )
 
+})
+
+
+/**
+ * @description Controller for Logout User
+ * @method GET
+ * @access USER
+ */
+const logoutUser = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+
+   const user = await User.findByIdAndUpdate(
+    req?.user?._id,
+    {
+        $set:{
+            refreshToken:null
+        }
+    }
+   )
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
+        .clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
+        .json(
+            new ApiResponse(200, "User Login Successful.", [])
+        )
+
+})
+
+/**
+ * @description Controller for Continue With Google
+ * @method POST
+ * @access USER
+ */
+export const continueWithGoogleController = asyncHandler(async (req:Request, res:Response):Promise<any> =>{
+
+    const user = await continueWithGoogleService(req.body.googleId)
+
+    return res
+        .status(200)
+        .cookie("accessToken", user.tokens.accessToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+        })
+        .cookie("refreshToken", user.tokens.refreshToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+        })
+        .json(
+            new ApiResponse(200,"Google Auth Done",user)
+        )
 })
 
 /**
@@ -83,9 +149,46 @@ const verifyOTP = asyncHandler(async (req: Request<{}, {}, { email: string, otp:
         )
 })
 
+const authMe = asyncHandler(async (req: Request, res: Response) => {
+
+    const { accessToken, refreshToken } = req.cookies
+
+    const { user, tokens } = await authMeService(accessToken, refreshToken)
+
+    if (!tokens) {
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, "User Authorize.", user)
+            )
+    }
+
+    return res
+        .status(200)
+        .cookie("accessToken", tokens.accessToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
+        .cookie("refreshToken", tokens.refreshToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000
+
+        })
+        .json(
+            new ApiResponse(200, "User Authorized", user)
+        )
+})
+
 export {
     registerUser,
     loginUser,
     resendOTPEmail,
-    verifyOTP
+    verifyOTP,
+    authMe,
+    logoutUser
+    // continueWithGoogleController
 }

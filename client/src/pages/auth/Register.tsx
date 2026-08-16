@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 
 type FormDataType = {
     fullName: string;
@@ -14,7 +15,7 @@ type FormErrorsType = Partial<FormDataType>;
 
 const Register = () => {
     const { register, loading, errorType,
-        setErrorType } = useAuth();
+        setErrorType , continueWithGoogle } = useAuth();
 
     const [formData, setFormData] = useState<FormDataType>({
         fullName: "",
@@ -89,6 +90,16 @@ const Register = () => {
             }));
         }
     };
+
+    const handleGoogleLogin = async(credentialResponse: CredentialResponse) => {
+        console.log(credentialResponse);    // API call here to login/register
+        await continueWithGoogle(credentialResponse.credential)
+    };
+
+    const handleGoogleError = () => {
+        console.log("Google Authentication Error");
+    };
+
 
     const onSubmit = async (
         e: React.FormEvent<HTMLFormElement>
@@ -269,6 +280,14 @@ const Register = () => {
                         </div>
 
                         {/* BUTTON */}
+                        <GoogleLogin
+                         onSuccess={handleGoogleLogin}
+                          onError={handleGoogleError}
+                           text="continue_with" 
+                           shape="circle"
+                           size="large"
+                           useOneTap={true}
+                           />
 
                         <motion.button
                             whileHover={{ scale: 1.02 }}

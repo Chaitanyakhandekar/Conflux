@@ -18,7 +18,7 @@ const app = express()
 /**
  * @description Http Server created using express App
  */
-const httpServer = createServer(app)
+const httpServer = createServer(app)  // Created Http Server using app
 
 app.use(cors({
     origin: process.env.ALLOW_ORIGIN || ["http://localhost:5173", ""],
@@ -49,6 +49,7 @@ import permissionOverrideRouter from "./routes/permisson-override.route.ts"
 import channelRouter from "./routes/channel.route.ts"
 import conversationRouter from "./routes/conversation.route.ts"
 import messageRouter from "./routes/message.route.ts"
+import categoryRouter from "./routes/category.route.ts"
 
 
 app.use("/api/v1/users", userRouter)
@@ -60,6 +61,7 @@ app.use("/api/v1/permission-overrides", permissionOverrideRouter)
 app.use("/api/v1/channels", channelRouter)
 app.use("/api/v1/conversations", conversationRouter)
 app.use("/api/v1/messages", messageRouter)
+app.use("/api/v1/categories", categoryRouter)
 
 
-export { httpServer }
+export { httpServer, app }

@@ -110,7 +110,7 @@ const VerifyOtp = () => {
         if (otpCode.length !== OTP_LENGTH) return;
 
         await verifyOTP(
-            pendingVerificationEmail,
+            pendingVerificationEmail || localStorage.getItem("email"),
             otpCode,
         );
     };

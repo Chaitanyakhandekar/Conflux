@@ -1,24 +1,27 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useAuth } from "../../hooks/useAuth";
+import { useAuthStore } from "../../store/auth-store";
 
 type ProfileFormType = {
-    fullName: string;
-    bio: string;
-    avatar: File | null;
+    displayName: string;
+    bio?: string;
+    avatar?: File | null;
 };
 
 const ProfileSetup = () => {
     const [loading, setLoading] = useState(false);
-
+    const { setupProfile } = useAuth()
+    const { user } = useAuthStore()
     const [formData, setFormData] =
         useState<ProfileFormType>({
-            fullName: "",
+            displayName: "",
             bio: "",
             avatar: null,
         });
 
     const [preview, setPreview] =
-        useState<string>("");
+        useState<string>(user?.avatar?.secure_url || "");
 
     const handleInputChange = (
         e: React.ChangeEvent<
@@ -53,15 +56,7 @@ const ProfileSetup = () => {
 
         setLoading(true);
 
-        /*
-          call api here
-    
-          await updateProfile(formData)
-        */
-
-        setTimeout(() => {
-            setLoading(false);
-        }, 1000);
+        await setupProfile(formData)
     };
 
     return (
@@ -171,8 +166,8 @@ const ProfileSetup = () => {
                         <div>
                             <input
                                 type="text"
-                                name="fullName"
-                                value={formData.fullName}
+                                name="displayName"
+                                value={formData.displayName}
                                 onChange={handleInputChange}
                                 placeholder="Display Name"
                                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-purple-500 transition"

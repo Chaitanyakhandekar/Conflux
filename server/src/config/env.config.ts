@@ -24,6 +24,7 @@ type EnvConfig = {
     BREVO_API_KEY: string
     BREVO_SENDER_NAME: string
     BREVO_SENDER_EMAIL: string
+    GOOGLE_CLIENT_ID: string
 }
 
 export const env: EnvConfig = {
@@ -34,7 +35,7 @@ export const env: EnvConfig = {
     JWT_ACCESS_SECRET: (process.env.JWT_ACCESS_SECRET as string),
     EXPIRES_IN_ACCESS_TOKEN: (process.env.EXPIRES_IN_ACCESS_TOKEN as string),
     JWT_REFRESH_SECRET: (process.env.JWT_ACCESS_SECRET as string),
-    EXPIRES_IN_REFRESH_TOKEN: (process.env.EXPIRES_IN_ACCESS_TOKEN as string),
+    EXPIRES_IN_REFRESH_TOKEN: (process.env.EXPIRES_IN_REFRESH_TOKEN as string),
     REDIS_HOST: (process.env.REDIS_HOST as string),
     REDIS_PORT: Number(process.env.REDIS_PORT),
     REDIS_PASSWORD: (process.env.REDIS_PASSWORD as string),
@@ -45,5 +46,6 @@ export const env: EnvConfig = {
     CLOUDINARY_URL: (process.env.CLOUDINARY_URL as string),
     BREVO_API_KEY: (process.env.BREVO_API_KEY as string),
     BREVO_SENDER_EMAIL: (process.env.BREVO_SENDER_EMAIL as string),
-    BREVO_SENDER_NAME: (process.env.BREVO_SENDER_SENDER as string)
+    BREVO_SENDER_NAME: (process.env.BREVO_SENDER_SENDER as string),
+    GOOGLE_CLIENT_ID: (process.env.GOOGLE_CLIENT_ID as string)
 }

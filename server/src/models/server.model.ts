@@ -13,6 +13,12 @@ const serverSchema = new Schema<IServer, ServerModel, IServerMethods>({
         trim: true
     },
 
+    serverType: {
+        type: String,
+        enum: ["GAMING", "DEVELOPER", "STARTUP", "STUDY", "CUSTOM"],
+        default: "CUSTOM"
+    },
+
     description: {
         type: String,
         trim: true
@@ -22,6 +28,9 @@ const serverSchema = new Schema<IServer, ServerModel, IServerMethods>({
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true
+    },
+    serverIcon:{
+        type:String,
     }
 
 }, { timestamps: true })

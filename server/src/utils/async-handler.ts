@@ -5,7 +5,7 @@ import { ERROR_CODES } from "../constants/error-codes.ts";
 type AsyncHandlerType = (
     req: Request,
     res: Response,
-    next?: NextFunction
+    next: NextFunction
 ) => Promise<any>
 
 

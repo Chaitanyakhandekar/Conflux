@@ -1,10 +1,13 @@
-import { Document, Model } from "mongoose";
+import { Document, Model, Types } from "mongoose";
 
 export interface IUser extends Document {
+    _id: Types.ObjectId;
     username: string;
     email: string;
-    password: string;
+    password: string | null;
     fullName?: string;
+    displayName?: string;
+    setupProfile: boolean;
 
     avatar?: {
         secure_url?: string;
@@ -19,6 +22,7 @@ export interface IUser extends Document {
     verificationToken?: string;
     verificationOTP?: string;
     OTPGeneratedAt?: Date;
+    googleId?: string;
 }
 
 
@@ -46,17 +50,27 @@ export interface UserModel
 type RegisterUserType = {
     username: string
     email: string
-    password: string
+    password: string | null
     fullName: string
     avatar?: string
+    googleId?: string
 }
 
 type LoginUserType = {
     email: string
-    password: string
+    password: string | null
+    googleId?: string
+}
+
+type SetupProfileType = {
+    _id: Types.ObjectId | string
+    displayName: string
+    bio?: string
+    avatar?: string
 }
 
 export {
     RegisterUserType,
-    LoginUserType
+    LoginUserType,
+    SetupProfileType
 }

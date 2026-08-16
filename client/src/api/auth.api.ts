@@ -10,6 +10,35 @@ class AuthApi {
         this.baseUrl = `${env.VITE_ENV === "production" ? env.VITE_SERVER_URL_PRODUCTION : env.VITE_SERVER_URL_LOCAL}/api/v1/auth`
     }
 
+    authMe = async (): Promise<any> => {
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}/auth-me`,
+                {
+                    withCredentials: true
+                }
+            )
+
+            console.log('AUth Me :: ', response.data);
+
+
+            if (response.data.success) {
+                return {
+                    success: true,
+                    data: response.data.data
+                }
+            }
+            else {
+                return {
+                    success: false
+                }
+            }
+        } catch (error) {
+            console.log('AUth Me :: ', error);
+
+        }
+    }
+
     registerUser = async (user: RegisterUserType): Promise<any> => {
         try {
 
@@ -57,7 +86,7 @@ class AuthApi {
                 }
             )
 
-            console.log('Login data : ', response.data);
+            console.log('Login data : ', response.data.errorCode);
 
             if (!response.data.success) {
                 return {
@@ -74,7 +103,7 @@ class AuthApi {
             }
 
         } catch (error: any) {
-            console.log('register error : ', error);
+            console.log('Login error : ', error);
 
             return {
                 success: false,
@@ -82,6 +111,71 @@ class AuthApi {
                 message: error?.message
             }
 
+        }
+    }
+
+    logoutUser = async (): Promise<any> => {
+        try {
+
+            const response = await axios.get(
+                `${this.baseUrl}/logout`,
+                {
+                    withCredentials: true
+                }
+            )
+
+            console.log('logout data : ', response.data);
+
+            if (!response.data.success) {
+                return {
+                    success: false,
+                    error: response.data.errorCode,
+                    message: response.data?.message
+                }
+            }
+
+            return {
+                success: true,
+                statusCode: response.status,
+                data: response.data.data
+            }
+
+        } catch (error: any) {
+            console.log('Logout error : ', error);
+
+            return {
+                success: false,
+                error: error,
+                message: error?.message
+            }
+
+        }
+    }
+
+    continueWithGoogle = async (googleId: string):Promise<any> =>{
+        try {
+            const response = await axios.post(`${this.baseUrl}/google`,
+                {
+                    googleId
+                },
+                {
+                    withCredentials: true
+                })
+
+            console.log('Continue with Google response : ', response.data);
+
+            return {
+                success: true,
+                statusCode: response.status,
+                data: response.data.data
+            }
+        } catch (error: any) {
+            console.log('Continue with Google error : ', error);
+            return {
+                success: false,
+                error: error,
+                message: error?.message || "Something went wrong"
+            }
         }
     }
 

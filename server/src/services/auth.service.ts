@@ -1,4 +1,4 @@
-import { asyncHandler, gnerateOTP } from "../utils/index.ts";
+import { asyncHandler, decodeJWT, gnerateOTP } from "../utils/index.ts";
 import { Request, Response, NextFunction } from "express";
 import type { IUser, LoginUserType, RegisterUserType } from "../types/user.type.ts";
 import { ApiError } from "../types/error.type.ts";
@@ -10,6 +10,11 @@ import { ERROR_CODES } from "../constants/error-codes.ts";
 import { isUserExists } from "../utils/existance.ts";
 import { generateAccessAndRefreshTokens } from "../utils/generateARTokens.ts";
 import { LoginServiceReturnType } from "../types/auth.type.ts";
+import { env } from "../config/env.config.ts";
+import { verifyGoogleToken } from "../providers/google.provider.ts";
+import { continueWithGoogleValidator } from "../validators/auth.validator.ts";
+import { TokenPayload } from "google-auth-library";
+
 
 
 /**
@@ -18,7 +23,7 @@ import { LoginServiceReturnType } from "../types/auth.type.ts";
  */
 const registerUserService = async (payload: RegisterUserType): Promise<any> => {
 
-    if (payload.email.trim() === "" || payload.fullName.trim() === "" || payload.username.trim() === "" || payload.password.trim() === "") {
+    if (payload.email.trim() === "" || payload.fullName.trim() === "" || payload.username.trim() === "" || payload.password?.trim() === "") {
         throw new ApiError(400, "Empty Fields Not Allowed", ERROR_CODES.REQUIRED_FIELDS_MISSING)
     }
 
@@ -48,7 +53,7 @@ const registerUserService = async (payload: RegisterUserType): Promise<any> => {
         password: payload.password,
         fullName: payload.fullName,
         avatar: {
-            secure_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${payload.username}`,
+            secure_url: `https://api.dicebear.com/10.x/pixel-art/svg?seed=${payload.username}`,
             public_id: ""
         },
         verificationOTP: otp,
@@ -82,7 +87,7 @@ const registerUserService = async (payload: RegisterUserType): Promise<any> => {
  */
 const loginUserService = async (userData: LoginUserType): Promise<LoginServiceReturnType> => {
 
-    if (userData.email.trim() === "" || userData.password.trim() === "") {
+    if (userData.email.trim() === "" || userData.password?.trim() === "") {
         throw new ApiError(400, "Email and Password are Required and Should be non-empty.", ERROR_CODES.REQUIRED_FIELDS_MISSING)
     }
 
@@ -92,7 +97,11 @@ const loginUserService = async (userData: LoginUserType): Promise<LoginServiceRe
         throw new ApiError(401, "User Not Verified", ERROR_CODES.VERIFICATION_REQUIRED)
     }
 
-    if (!user.isCorrectPassword(userData.password)) {
+    if (!user.password) {
+        throw new ApiError(400, "User may had registered with Google so try to log in with Google.", ERROR_CODES.BAD_REQUEST)
+    }
+
+    if (! await user.isCorrectPassword(userData.password)) {
         throw new ApiError(401, "Invalid Credentials", ERROR_CODES.INVALID_CREDENTIALS)
     }
 
@@ -104,6 +113,69 @@ const loginUserService = async (userData: LoginUserType): Promise<LoginServiceRe
 
     return {
         user: user.toSafeObject(),
+        tokens
+    }
+}
+
+/**
+ * @description Service for Register/Login with Google OAuth
+ * @param googleId 
+ */
+const continueWithGoogleService = async (googleId: string): Promise<any> => {
+
+    if (!googleId || (googleId && googleId.trim() === "")) {
+        throw new ApiError(400, "Valid Google Credential is Required.", ERROR_CODES.REQUIRED_FIELDS_MISSING)
+    }
+
+    const googleAuthPayload = await verifyGoogleToken(googleId)
+
+    continueWithGoogleValidator(googleAuthPayload as TokenPayload)
+
+    const userAlreadyExists = await User.findOne({
+        email: googleAuthPayload?.email
+    })
+
+    if (!userAlreadyExists) {
+
+        const payload = {
+            username: `googleAuthPayload?.given_name + "_" + ${Date.now()}`, // it should be unique so by default its best option
+            email: googleAuthPayload?.email,
+            password: null,
+            fullName: googleAuthPayload?.given_name + " " + googleAuthPayload?.family_name,
+            avatar: {
+                secure_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Date.now()}`,
+                public_id: ""
+            },
+            googleId,
+            isVerified: true
+        }
+
+        const user = await User.create(payload)
+
+        if (!user) {
+            throw new ApiError(500, "Server Error While Registering.", ERROR_CODES.CREATE_FAILED)
+        }
+
+        const tokens = generateAccessAndRefreshTokens(user)
+
+        user.refreshToken = tokens.refreshToken
+
+        await user.save({ validateBeforeSave: false })
+
+        return {
+            user: user.toSafeObject(),
+            tokens
+        }
+    }
+
+    const tokens = generateAccessAndRefreshTokens(userAlreadyExists)
+
+    userAlreadyExists.refreshToken = tokens.refreshToken
+
+    await userAlreadyExists.save({ validateBeforeSave: false })
+
+    return {
+        user: userAlreadyExists.toSafeObject(),
         tokens
     }
 }
@@ -178,9 +250,81 @@ const verifyOTPService = async (email: string, otp: string): Promise<any> => {
 }
 
 
+// Type for AuthMe service Return type
+type AuthMeRType = {
+    user: object,
+    tokens?: {
+        accessToken: string,
+        refreshToken: string
+    } | null
+}
+
+/**
+ * @description Service for Auth me
+ * @param accessToken 
+ * @param refreshToken 
+ * @returns 
+ */
+const authMeService = async (accessToken: string, refreshToken: string): Promise<AuthMeRType> => {
+
+    try {
+
+        if (!accessToken) {
+            throw new Error()
+        }
+
+        const decodeJWTData = decodeJWT(accessToken, env.JWT_ACCESS_SECRET)
+
+        if (decodeJWTData.isExpired) {
+            throw new Error()
+        }
+
+
+        const user = await isUserExists(decodeJWTData.decodedToken._id)
+
+        return {
+            user,
+            tokens: null
+        }
+
+    } catch (error) {
+
+        if (!refreshToken) {
+            throw new ApiError(401, "Unauthorize User", ERROR_CODES.UNAUTHORIZED)
+        }
+
+        const decodeJWTData = decodeJWT(refreshToken, env.JWT_REFRESH_SECRET)
+
+        if (decodeJWTData.isExpired) {
+            throw new ApiError(401, "Unauthorized User", ERROR_CODES.UNAUTHORIZED)
+        }
+
+        const user = await isUserExists(decodeJWTData.decodedToken._id)
+
+        if (user.refreshToken !== refreshToken) {
+            throw new ApiError(401, "Unauthorized User", ERROR_CODES.UNAUTHORIZED)
+        }
+
+        const tokens = generateAccessAndRefreshTokens(user)
+
+        user.refreshToken = tokens.refreshToken
+
+        await user.save({ validateBeforeSave: false })
+
+        return {
+            user: user.toSafeObject(),
+            tokens
+        }
+
+    }
+}
+
+
 export {
     registerUserService,
     loginUserService,
     resendOTPEmailService,
-    verifyOTPService
+    verifyOTPService,
+    authMeService,
+    continueWithGoogleService
 }

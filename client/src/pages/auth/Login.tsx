@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 
 type LoginFormType = {
     email: string;
@@ -11,7 +12,7 @@ type LoginFormType = {
 type LoginErrorType = Partial<LoginFormType>;
 
 const Login = () => {
-    const { login, loading, errorType, setErrorType } = useAuth();
+    const { login, loading, errorType, setErrorType ,continueWithGoogle} = useAuth();
 
     const [formData, setFormData] =
         useState<LoginFormType>({
@@ -68,6 +69,15 @@ const Login = () => {
         if (!validateForm()) return;
 
         await login(formData);
+    };
+
+    const handleGoogleLogin = async(credentialResponse: CredentialResponse) => {
+        console.log(credentialResponse);    // API call here to login/register
+        await continueWithGoogle(credentialResponse.credential)
+    };
+
+    const handleGoogleError = () => {
+        console.log("Google Authentication Error");
     };
 
     return (
@@ -172,11 +182,11 @@ const Login = () => {
                                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-purple-500 transition"
                             />
 
-                            {errorType === "INVALID_emailS" && (
+                            {errorType === "INVALID_CREDENTIALS" || errorType === "NOT_FOUND" ? (
                                 <p className="text-red-400 text-sm mt-1">
                                     invalid email or password.
                                 </p>
-                            )}
+                            ) : <></>}
                         </div>
 
                         {/* FORGOT PASSWORD */}
@@ -191,6 +201,15 @@ const Login = () => {
                         </div>
 
                         {/* BUTTON */}
+
+                        <GoogleLogin
+                         onSuccess={handleGoogleLogin}
+                          onError={handleGoogleError}
+                           text="continue_with" 
+                           shape="circle"
+                           size="large"
+                           useOneTap={true}
+                           />
 
                         <motion.button
                             whileHover={{ scale: 1.02 }}

@@ -11,4 +11,11 @@ export interface ICategoryMethods {
     updatePosition(position: number): Promise<void>;
 }
 
+export type CategoryDataType = {
+    name: string;
+    position?: number;
+    serverId: mongoose.Types.ObjectId | string;
+    createdBy?: string;
+}
+
 export interface CategoryModel extends Model<ICategory, {}, ICategoryMethods> { }
