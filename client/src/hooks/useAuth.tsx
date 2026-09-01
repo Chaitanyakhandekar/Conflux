@@ -5,6 +5,8 @@ import type { LoginUserType, RegisterUserType } from "../types/user.type";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { userApi } from "../api/user.api";
+import { socket } from "../socket/constants/socketInstance";
+import { socketEvents } from "../constants/socketEvents";
 
 type OTPStatus = 'sending' | "sent" | "verified" | "invalid" | "verifying"
 type ProfileFormType = {
@@ -59,6 +61,7 @@ export const useAuth = (): any => {
             toast.success(
                 "Login Successfull."
             )
+            socket.connect()
             navigate("/")
         }
     }

@@ -5,6 +5,9 @@ import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { env } from './config/env.config.ts'
+import { initializeSocketListeners } from './socket/index.ts'
+
+initializeSocketListeners();
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
