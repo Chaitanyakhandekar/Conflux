@@ -7,8 +7,11 @@ import "./workers/email.worker.ts"
 
 
     ; import { User } from "./models/user.model.ts";
+import { initializeSocketListeners } from "./socket/listners/index.ts";
+import { initializeSocket } from "./socket/index.ts";
 connectDB()
     .then(async (): Promise<void> => {
+        initializeSocket()
 
         httpServer.listen(env.PORT, async () => {               // running server on port
             console.log('Server Running on Port ', env.PORT);
