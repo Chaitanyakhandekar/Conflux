@@ -47,24 +47,48 @@ function AppSidebar() {
       <div className="w-8 h-[2px] rounded-full bg-[rgba(255,255,255,0.06)] my-1" />
 
       {servers.slice(0, 4).map((server: IdealServerType) => (
+
         <button
           key={server._id}
           onContextMenu={(e) => handleContext(e, server._id)}
-          onClick={() => { getCategories(server) }}
+          onClick={() => getCategories(server)}
           title={server.name}
-          className={`group relative flex-shrink-0 w-12 h-12 flex items-center justify-center
-      rounded-2xl hover:rounded-[14px] transition-all duration-300 ease-out
-      text-white text-xs font-bold
-      ring-1 ring-white/5
-      hover:shadow-[0_4px_16px_rgba(139,92,246,0.35)]
-      hover:scale-105 active:scale-95
-      ${server._id ? "rounded-[14px]" : ""}
-    `}
+          className={`
+        group relative flex-shrink-0
+        w-12 h-12 p-0.5
+        flex items-center justify-center
+        rounded-2xl
+        transition-all duration-200 ease-out
+        focus-visible:outline-none
+          focus-visible:ring-2 focus-visible:ring-violet-400
+          ${server._id === selectedServer?._id
+              ? "rounded-xl bg-violet-500/15 ring-2 ring-violet-500 shadow-[0_0_18px_rgba(139,92,246,0.25)]"
+              : "hover:rounded-xl hover:bg-white/10 hover:ring-1 hover:ring-white/10"
+            }
+      `}
         >
-          <img
-            className="w-full h-full object-fit rounded-2xl"
-            src={server?.serverIcon} alt={server?.name?.charAt(0)?.toLocaleUpperCase()} />
+          {/* Active indicator */}
+
+
+          {/* Server icon */}
+          {server.serverIcon ? (
+            <img
+              src={server.serverIcon}
+              alt={server.name || "Server"}
+              className={`
+            w-full h-full object-cover
+            rounded-[inherit]
+            transition-transform duration-200
+            group-hover:scale-[0.96]
+          `}
+            />
+          ) : (
+            <span className="flex w-full h-full items-center justify-center rounded-[inherit] bg-gradient-to-br from-violet-500 to-indigo-600 text-sm font-bold text-white">
+              {server.name?.charAt(0)?.toUpperCase() || "S"}
+            </span>
+          )}
         </button>
+
       ))}
 
       <div className="w-8 h-[2px] rounded-full bg-[rgba(255,255,255,0.06)] my-1" />
