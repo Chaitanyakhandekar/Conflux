@@ -15,8 +15,10 @@ import SendVerificationOtp from "./pages/auth/SendVerificationOtp"
 import ProfileSetupRestriction from "./routes/ProfileSetupRestriction"
 import { useServer } from "./hooks/useServer"
 import ServerSettings from "./pages/server/ServerSettings"
+import { socket } from "./socket/constants/socketInstance"
 
 function App() {
+  // socket.connect()
 
   const { authMe } = useAuth()
   const { getMyCreatedServers } = useServer()

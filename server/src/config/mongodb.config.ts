@@ -12,10 +12,10 @@ async function connectDB(): Promise<void> {
     try {
         console.log('Connecting to MongoDB..');
         const connectionInfo = await mongoose.connect(env.MONGODB_ATLAS_URL)
-        console.log(`MongoDB connected successfully: ${connectionInfo.connection.host}`);
+        console.log(`🟢 [DATABASE] MongoDB connected successfully | Host: ${connectionInfo.connection.host}`);
     } catch (error: unknown) {
         if (error instanceof Error) {
-            console.log("MongoDB :: Connection :: Error :: ", error.message)
+            console.error(`❌ [DATABASE] MongoDB connection failed: ${error.message}`);
             return
         }
         console.log("MongoDB :: Connection :: Error :: ", error)

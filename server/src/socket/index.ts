@@ -23,12 +23,14 @@ export const initializeSocket = () => {
         }
     )
 
+    console.log("🔁 [Socket.IO] Real-time communication is active.");
+
     setIO(io);    // sets io so that we can access it globally
 
-    io.on(socketEvents.connection.CONNECT , (socket:Socket)=>{
-        console.log(`Socket ${socket.id} Connected to Socket Server/IO.`);
-        
-        initializeSocketListeners(io,socket)
+    io.on(socketEvents.connection.CONNECT, (socket: Socket) => {
+        console.log(`🟢 [Socket.IO] Client connected: ${socket.id}`);
+
+        initializeSocketListeners(io, socket)
     })
 
 }

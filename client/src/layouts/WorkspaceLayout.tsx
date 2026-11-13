@@ -23,6 +23,7 @@ import MemberProfilePopup from "../components/modals/MemberProfilePopup"
 import DMPopup from "../components/modals/DMPopup"
 import ContextMenu from "../components/modals/ContextMenu"
 import { useUI } from "../contexts/UIContext"
+import { useServer } from "../hooks/useServer"
 
 function WorkspaceLayout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
@@ -49,6 +50,10 @@ function WorkspaceLayout() {
     closeAll,
   } = useUI()
 
+  const {
+    getMyCreatedServers
+  } = useServer()
+
   useEffect(() => {
     const handleGlobalContext = (e: MouseEvent) => {
       const target = e.target as HTMLElement
@@ -64,6 +69,10 @@ function WorkspaceLayout() {
       document.removeEventListener("click", handleGlobalClick)
     }
   }, [showContextServer, setShowContextServer])
+
+  useEffect(() => {
+    getMyCreatedServers()
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -142,7 +151,7 @@ function WorkspaceLayout() {
       </div>
 
       <CreateChannelModal open={showCreateChannel} onClose={() => setShowCreateChannel(false)} />
-      
+
       <CreateCategoryModal open={showCreateCategory} onClose={() => setShowCreateCategory(false)} />
 
       <ProfileCard open={showProfileCard} onClose={() => setShowProfileCard(false)} />

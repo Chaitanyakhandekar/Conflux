@@ -22,7 +22,7 @@ function createRedisConnection(connectionName: string) {
     });
 
     redis.on("connect", () => {
-        console.log(`${connectionName} connected`)
+        console.log(`🟢 [CONNECTION] ${connectionName} connected successfully.`);
     })
 
     redis.on("error", (error: any) => {

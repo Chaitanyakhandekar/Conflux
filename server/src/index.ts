@@ -14,6 +14,6 @@ connectDB()
         initializeSocket()
 
         httpServer.listen(env.PORT, async () => {               // running server on port
-            console.log('Server Running on Port ', env.PORT);
+            console.log(`🚀 [SERVER] Running on port ${env.PORT}`);
         })
     })

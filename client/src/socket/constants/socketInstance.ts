@@ -7,7 +7,7 @@ export const socket = io(
     SOCKET_SERVER_URL,
     {
         withCredentials: true,
-        autoConnect: false,
+        autoConnect: false,        // we decide when to connect socket to socket server/io
         reconnection: true
     }
 )
