@@ -163,7 +163,7 @@ export default function ServerSettings() {
       setServerName(selectedServer.name || "")
       setServerType(selectedServer.serverType || "CUSTOM")
       setServerDesc(selectedServer.description || "")
-      setServerIcon(selectedServer.serverIcon || "")
+      setServerIcon(selectedServer.serverIcon.secure_url || "")
       setServerBanner(selectedServer.gradient || "from-[#1e1b4b] to-[#311042]")
       setIsDirty(false)
     }
@@ -210,7 +210,9 @@ export default function ServerSettings() {
       name: serverName,
       description: serverDesc,
       serverType: serverType,
-      serverIcon: serverIcon,
+      serverIcon: {
+        secure_url: serverIcon
+      },
       gradient: serverBanner,
     }
 
@@ -398,11 +400,10 @@ export default function ServerSettings() {
                     setActiveTab(item.id as TabType)
                     setIsCreatingWebhook(false)
                   }}
-                  className={`w-full text-left px-2.5 py-1.5 rounded-[6px] text-[13px] font-medium transition-all ${
-                    activeTab === item.id
-                      ? "bg-[rgba(139,125,255,0.12)] text-white shadow-sm border-l-2 border-[#8B7DFF] pl-2"
-                      : "text-[#94A3B8] hover:bg-[rgba(255,255,255,0.03)] hover:text-white"
-                  }`}
+                  className={`w-full text-left px-2.5 py-1.5 rounded-[6px] text-[13px] font-medium transition-all ${activeTab === item.id
+                    ? "bg-[rgba(139,125,255,0.12)] text-white shadow-sm border-l-2 border-[#8B7DFF] pl-2"
+                    : "text-[#94A3B8] hover:bg-[rgba(255,255,255,0.03)] hover:text-white"
+                    }`}
                 >
                   {item.label}
                 </button>
@@ -428,11 +429,10 @@ export default function ServerSettings() {
                     setActiveTab(item.id as TabType)
                     setIsCreatingWebhook(false)
                   }}
-                  className={`w-full text-left px-2.5 py-1.5 rounded-[6px] text-[13px] font-medium transition-all ${
-                    activeTab === item.id
-                      ? "bg-[rgba(139,125,255,0.12)] text-white shadow-sm border-l-2 border-[#8B7DFF] pl-2"
-                      : "text-[#94A3B8] hover:bg-[rgba(255,255,255,0.03)] hover:text-white"
-                  }`}
+                  className={`w-full text-left px-2.5 py-1.5 rounded-[6px] text-[13px] font-medium transition-all ${activeTab === item.id
+                    ? "bg-[rgba(139,125,255,0.12)] text-white shadow-sm border-l-2 border-[#8B7DFF] pl-2"
+                    : "text-[#94A3B8] hover:bg-[rgba(255,255,255,0.03)] hover:text-white"
+                    }`}
                 >
                   {item.label}
                 </button>
@@ -510,8 +510,8 @@ export default function ServerSettings() {
                     className="w-20 h-20 rounded-full border border-dashed border-[rgba(255,255,255,0.15)] flex items-center justify-center cursor-pointer overflow-hidden relative group hover:border-[#8B7DFF] transition-all bg-[rgba(255,255,255,0.02)]"
                     title="Click to randomize mock icon image"
                   >
-                    {serverIcon ? (
-                      <img src={serverIcon} alt="Icon Preview" className="w-full h-full object-cover" />
+                    {selectedServer?.serverIcon?.secure_url ? (
+                      <img src={selectedServer?.serverIcon?.secure_url} alt="Icon Preview" className="w-full h-full object-cover" />
                     ) : (
                       <ImageIcon className="text-[#94A3B8] group-hover:text-white transition-colors" size={24} />
                     )}
@@ -630,11 +630,10 @@ export default function ServerSettings() {
                       <button
                         key={r.id}
                         onClick={() => setSelectedRoleId(r.id)}
-                        className={`w-full text-left px-2 py-1.5 rounded-[6px] text-xs flex items-center justify-between transition-colors ${
-                          selectedRoleId === r.id
-                            ? "bg-[rgba(139,125,255,0.1)] text-white font-medium"
-                            : "text-[#94A3B8] hover:bg-[rgba(255,255,255,0.02)] hover:text-white"
-                        }`}
+                        className={`w-full text-left px-2 py-1.5 rounded-[6px] text-xs flex items-center justify-between transition-colors ${selectedRoleId === r.id
+                          ? "bg-[rgba(139,125,255,0.1)] text-white font-medium"
+                          : "text-[#94A3B8] hover:bg-[rgba(255,255,255,0.02)] hover:text-white"
+                          }`}
                       >
                         <span className="flex items-center gap-2 truncate">
                           <span
@@ -680,11 +679,10 @@ export default function ServerSettings() {
                           key={color.hex}
                           onClick={() => handleUpdateRoleColor(activeRole.id, color.hex)}
                           disabled={activeRole.id === "everyone"}
-                          className={`w-5 h-5 rounded-full border relative flex items-center justify-center transition-all ${
-                            activeRole.color === color.hex
-                              ? "border-white scale-110 shadow-md"
-                              : "border-transparent hover:scale-105"
-                          } disabled:opacity-30`}
+                          className={`w-5 h-5 rounded-full border relative flex items-center justify-center transition-all ${activeRole.color === color.hex
+                            ? "border-white scale-110 shadow-md"
+                            : "border-transparent hover:scale-105"
+                            } disabled:opacity-30`}
                           style={{ backgroundColor: color.hex }}
                           title={color.name}
                         >
@@ -950,11 +948,10 @@ export default function ServerSettings() {
                           setVerificationLevel(level.id as any)
                           toast.success(`Verification Level set to ${level.label}`)
                         }}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all flex flex-col justify-between h-24 ${
-                          selected
-                            ? "bg-[rgba(139,125,255,0.08)] border-[#8B7DFF] shadow-[0_0_15px_rgba(139,125,255,0.15)] scale-[1.02]"
-                            : "bg-[rgba(255,255,255,0.01)] border-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.02)]"
-                        }`}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all flex flex-col justify-between h-24 ${selected
+                          ? "bg-[rgba(139,125,255,0.08)] border-[#8B7DFF] shadow-[0_0_15px_rgba(139,125,255,0.15)] scale-[1.02]"
+                          : "bg-[rgba(255,255,255,0.01)] border-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.02)]"
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-bold text-white">{level.label}</span>
@@ -1206,13 +1203,12 @@ export default function ServerSettings() {
                         <td className="p-3 text-[#94A3B8]">{invite.uses} uses</td>
                         <td className="p-3">
                           <span
-                            className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
-                              invite.expires === "Never"
-                                ? "bg-green-500/10 text-green-400"
-                                : invite.expires === "Expired"
+                            className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${invite.expires === "Never"
+                              ? "bg-green-500/10 text-green-400"
+                              : invite.expires === "Expired"
                                 ? "bg-red-500/10 text-red-400"
                                 : "bg-orange-500/10 text-orange-400"
-                            }`}
+                              }`}
                           >
                             {invite.expires}
                           </span>

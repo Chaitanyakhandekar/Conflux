@@ -8,6 +8,7 @@ export const gamingTemplate: ServerTemplate = {
 
     categories: [
 
+
         {
             name: "📢 INFORMATION",
             channels: [

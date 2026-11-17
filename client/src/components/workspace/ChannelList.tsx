@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronDown, Hash, Volume2, Plus, Headphones } from "lucide-react"
 import { channelSections } from "../../data/channels"
 import { useUI } from "../../contexts/UIContext"
@@ -13,6 +13,11 @@ function ChannelList() {
   const toggleSection = (label: string) => {
     setCollapsed((prev) => ({ ...prev, [label]: !prev[label] }))
   }
+
+  useEffect(() => {
+    console.log("Channel Changed-------------------------------------", currentChannel);
+
+  }, [currentChannel])
 
   return (
     <div className="flex-1 overflow-y-auto px-2 space-y-4">
@@ -54,7 +59,7 @@ function ChannelList() {
                 }`}
             >
               <div className="space-y-[1px]">
-                {section.channels.map((channel: ChannelType) => {
+                {section.channels?.map((channel: ChannelType) => {
                   const isActive = false //channel.isActive
                   const isVoice = channel.type === "VOICE"
                   const isDM = false
@@ -72,8 +77,12 @@ function ChannelList() {
                       className={`flex items-center gap-1.5 px-2 h-[34px] rounded-[6px] cursor-pointer text-sm transition-all duration-200 group ${isActive
                         ? "bg-[rgba(139,125,255,0.14)] text-white shadow-[0_0_12px_rgba(139,125,255,0.06)]"
                         : "text-[#94A3B8] hover:bg-[rgba(255,255,255,0.03)] hover:text-white"
-
-                        }`}
+                        }
+                        ${currentChannel?._id === channel?._id
+                          ? "bg-gray-500"
+                          : ""
+                        }
+                        `}
                     >
                       {isVoice ? (
                         <Volume2 size={16} className="flex-shrink-0 text-[#94A3B8]" />

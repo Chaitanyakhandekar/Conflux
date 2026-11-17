@@ -11,7 +11,7 @@ export function useCategory() {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [categoryError, setCategoryError] = useState<string | null | undefined>(null)
-    const { categories, setCategories } = useServerStore()
+    const { categories, setCategories, setCurrentCategory, setCurrentChannel, currentChannel, currentCategory } = useServerStore()
 
     useEffect(() => {
         console.log("Categories :: ", categories);
@@ -25,6 +25,9 @@ export function useCategory() {
 
             if (res.success) {
                 setCategories(res.data)
+                let category = res.data[0]
+                setCurrentCategory(category);
+                setCurrentChannel(category?.channels[0])
                 toast.success(
                     "Categories and Channels Fetched."
                 )

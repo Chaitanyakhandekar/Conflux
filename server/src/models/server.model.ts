@@ -29,8 +29,9 @@ const serverSchema = new Schema<IServer, ServerModel, IServerMethods>({
         ref: "User",
         required: true
     },
-    serverIcon:{
-        type:String,
+    serverIcon: {
+        secure_url: String,
+        publicId: String
     }
 
 }, { timestamps: true })

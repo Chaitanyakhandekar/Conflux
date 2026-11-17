@@ -5,11 +5,14 @@ import { useServer } from "../../hooks/useServer"
 import type { IdealServerType } from "../../types/server.type"
 import { useCategory } from "../../hooks/useCategory"
 import { useAuthStore } from "../../store/auth-store"
+import { useServerStore } from "../../store/server-store."
+import { useEffect } from "react"
 
 function AppSidebar() {
   const { setShowCreateServer, setShowProfileCard, setShowContextServer, setContextMenuPos, showDMHub, setShowDMHub } = useUI()
   const { user } = useAuthStore()
   const { getMyCreatedServers, servers, selectedServer, setSelectedServer } = useServer()
+  const { categories, currentChannel, setCurrentChannel, currentCategory, setCurrentCategory } = useServerStore()
   const { loading,
     setLoading,
     categoryError,
@@ -21,6 +24,10 @@ function AppSidebar() {
     setContextMenuPos({ x: e.clientX, y: e.clientY })
     setShowContextServer(serverId)
   }
+
+  useEffect(() => {
+
+  }, [categories])
 
   const getCategories = async (server: IdealServerType) => {
     setShowDMHub(false)
@@ -73,7 +80,7 @@ function AppSidebar() {
           {/* Server icon */}
           {server.serverIcon ? (
             <img
-              src={server.serverIcon}
+              src={server.serverIcon.secure_url}
               alt={server.name || "Server"}
               className={`
             w-full h-full object-cover

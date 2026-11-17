@@ -7,6 +7,20 @@ export const startupTemplate: ServerTemplate = {
     name: "Startup Team",
 
     categories: [
+        {
+            name: "TEXT CHANNELS",
+            channels: [
+                { name: "general", type: ChannelType.TEXT },
+            ]
+        },
+
+
+        {
+            name: "🎙 VOICE CHANNELS",
+            channels: [
+                { name: "general", type: ChannelType.VOICE },
+            ]
+        },
 
         {
             name: "📢 INFORMATION",

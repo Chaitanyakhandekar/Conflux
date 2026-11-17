@@ -6,7 +6,7 @@ import { ApiResponse } from "../types/error.type.ts";
 import { verifyOTPService } from "../services/auth.service.ts";
 import { env } from "../config/env.config.ts";
 import { createServerValidator } from "../validators/server.validator.ts";
-import { createServerService, getUserServersService } from "../services/server.service.ts";
+import { createServerService, deleteAllServersService, getUserServersService } from "../services/server.service.ts";
 import { ServerInfoType } from "../types/server.type.ts";
 
 const createServerController = asyncHandler(async (req: Request<{}, {}, ServerInfoType>, res: Response) => {
@@ -55,8 +55,19 @@ const getServerCategoriesController = asyncHandler(async (req: Request, res: Res
         )
 })
 
+const deleteAllServersController = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+    await deleteAllServersService();
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, "All Servers Along with their Channels deleted Successfully.", [])
+        )
+})
+
 export {
     createServerController,
     getUserServersController,
-    getServerCategoriesController
+    getServerCategoriesController,
+    deleteAllServersController
 }

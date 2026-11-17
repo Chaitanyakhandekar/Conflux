@@ -140,8 +140,18 @@ const getUserServersService = async (user: IUser, page: number = 2, limit: numbe
 }
 
 
+/**
+ * @description Service for Servers Cleanup which deletes all servers from database along with its categoriese
+ * 
+ */
+const deleteAllServersService = async (): Promise<void> => {
+    await Channel.deleteMany()
+    await Server.deleteMany()
+}
+
 
 export {
     createServerService,
-    getUserServersService
+    getUserServersService,
+    deleteAllServersService
 }

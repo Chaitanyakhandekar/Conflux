@@ -15,7 +15,9 @@ const createServerValidator = (server: ServerInfoType, user: any): any => {
         description: server.description || "",
         serverType: server.serverType,
         ownerId: new mongoose.Types.ObjectId(user._id),
-        serverIcon: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(server.name.trim())}`
+        serverIcon: {
+            secure_url: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(server.name.trim())}`,
+        }
     }
 
     return serverInfo;

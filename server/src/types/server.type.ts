@@ -17,7 +17,10 @@ export type ServerInfoType = {
     description?: string
     serverType?: "GAMING" | "DEVELOPER" | "STARTUP" | "STUDY" | "CUSTOM"
     ownerId?: mongoose.Types.ObjectId
-    serverIcon?: string
+    serverIcon?: {
+        secure_url: String,
+        publicId?: String
+    }
 }
 
 export interface ServerModel extends Model<IServer, {}, IServerMethods> { }

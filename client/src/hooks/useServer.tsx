@@ -41,9 +41,9 @@ export function useServer() {
 
             if (res.success) {
                 setServers(res.data)
-                toast.success(
-                    "Servers Fetched."
-                )
+                // toast.success(
+                //     "Servers Fetched."
+                // )
             }
 
         } catch (error: any) {

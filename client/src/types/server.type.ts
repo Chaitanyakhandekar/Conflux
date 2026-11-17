@@ -15,7 +15,10 @@ export type IdealServerType = {
   name: string
   serverType: "GAMING" | "STUDY" | "DEVELOPER" | "STARTUP" | "CUSTOM"
   description: string,
-  serverIcon?:string,
+  serverIcon?: {
+    secure_url: string,
+    publicId?: string
+  },
   createdAt: Date
   updatedAt: Date
   gradient?: string

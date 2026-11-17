@@ -7,6 +7,12 @@ export const studyTemplate: ServerTemplate = {
     name: "Study Group",
 
     categories: [
+        {
+            name: "TEXT CHANNELS",
+            channels: [
+                { name: "general", type: ChannelType.TEXT },
+            ]
+        },
 
         {
             name: "📢 INFORMATION",
