@@ -24,6 +24,8 @@ import DMPopup from "../components/modals/DMPopup"
 import ContextMenu from "../components/modals/ContextMenu"
 import { useUI } from "../contexts/UIContext"
 import { useServer } from "../hooks/useServer"
+import type { IdealServerType } from "../types/server.type"
+import { useCategory } from "../hooks/useCategory"
 
 function WorkspaceLayout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
@@ -46,13 +48,30 @@ function WorkspaceLayout() {
     showDMPopup, setShowDMPopup,
     showContextServer, setShowContextServer,
     contextMenuPos,
-    showDMHub,
+    showDMHub, setShowDMHub,
     closeAll,
   } = useUI()
 
   const {
-    getMyCreatedServers
+    getMyCreatedServers,
+    setSelectedServer,
+    selectedServer,
+    servers,
   } = useServer()
+
+  const {
+    getServerCategories
+  } = useCategory()
+
+
+
+
+  const getCategories = async (server: IdealServerType) => {
+    setShowDMHub(false)
+    setSelectedServer(server)
+    await getServerCategories(server?._id)
+  }
+
 
   useEffect(() => {
     const handleGlobalContext = (e: MouseEvent) => {
@@ -73,6 +92,12 @@ function WorkspaceLayout() {
   useEffect(() => {
     getMyCreatedServers()
   }, [])
+
+  useEffect(() => {
+    console.log("Heyyyyyyyyyyyyyy servers :: ", selectedServer);
+    getCategories(servers[0])
+
+  }, [servers])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

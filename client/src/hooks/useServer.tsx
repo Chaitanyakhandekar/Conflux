@@ -40,7 +40,15 @@ export function useServer() {
             const res = await serverApi.getMyCreatedServers(page, limit)
 
             if (res.success) {
-                setServers(res.data)
+
+                if (servers.length === 0) {
+                    setServers(res.data)
+                    setSelectedServer(res.data[0])
+                }
+
+                else {
+                    setServers(res.data)
+                }
                 // toast.success(
                 //     "Servers Fetched."
                 // )
